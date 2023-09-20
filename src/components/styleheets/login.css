@@ -4,6 +4,7 @@
 .section1_login{
     width: 100%;
     height: 100vh;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -91,6 +92,16 @@
     background-color: #4167b2;
 }
 
+.notification_error{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+}
+.notification_error svg{
+    color: red;
+    font-size: 25px;
+}
 /*Movil*/
 @media only screen and (max-width: 1273px){
 

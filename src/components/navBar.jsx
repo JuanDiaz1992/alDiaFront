@@ -3,7 +3,6 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
   DropdownItem,
   DropdownTrigger,
   Dropdown,
@@ -18,12 +17,15 @@ import setCookie from "../Scripts/borrarCookies";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { NavLink, useLocation } from "react-router-dom";
-import { color } from "framer-motion";
+
 function NavBar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const { setIsLogout } = props;
   const url = useSelector((state) => state.auth.url);
+  const firstName = useSelector((state) => state.auth.firtsName);
+  const last_name = useSelector((state) => state.auth.last_name);
+  const photo = useSelector((state) => state.auth.photo);
   const logOut = () => {
     fetch(url, {
       method: "DELETE",
@@ -91,15 +93,14 @@ function NavBar(props) {
                 as="button"
                 className="transition-transform"
                 color="warning"
-                name="Jason Hughes"
-                size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                size="md"
+                src={url+photo}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem textValue="My Settings" className="h-14 gap-2">
                 <p className="font-semibold">Logueado como</p>
-                <p className="font-semibold">zoey@example.com</p>
+                <p className="font-semibold">{firstName + ' ' + last_name}</p>
               </DropdownItem>
               <DropdownItem textValue="My Settings"></DropdownItem>
               <DropdownItem textValue="My Settings">Team Settings</DropdownItem>

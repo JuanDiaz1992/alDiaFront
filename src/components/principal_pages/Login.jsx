@@ -1,17 +1,17 @@
 import "../styleheets/login.css";
 import logo from "../../img/logo.png";
-import { Button, Link  } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { AiOutlineGoogle, AiFillFacebook } from 'react-icons/ai';
-
+import { AiFillCloseCircle } from 'react-icons/ai';
 import { React, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "../Hoocks/userForm";
+import { useNavigate , NavLink } from "react-router-dom";
+
 
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/userSlice";
 import { useSelector } from "react-redux";
 import Cookies from 'js-cookie';
-import Swal from "sweetalert2";
+import { toast, Toaster } from "react-hot-toast";
 
 function Login(){
     const navigate = useNavigate();
@@ -19,19 +19,8 @@ function Login(){
     const url = useSelector((state) => state.auth.url);
     const companyName = useSelector((state) => state.auth.name_business);
     const [isLoading, setIsLoading] = useState(false);
-    const [company,setCompany] = useState('Food Ease');
     const [name,setName] = useState("");
     const [password,setPassword] =useState("")
-  
-  
-    useEffect(()=>{
-      if(companyName){
-        setCompany(companyName);
-      }
-    },[companyName]);
-  
-  
-  
   
 
     const dispatch = useDispatch();
@@ -75,16 +64,14 @@ function Login(){
             });
 
           } else {
-            Swal.fire({
-              title: "Error",
-              text: data.message,
-              icon: "error",
-              confirmButtonText: "Ok",
-              willClose: function () {},
-              customClass: {
-                container: "notification-modal",
-              },
-            });
+            toast((t) => (
+              <span className="notification_error">
+                <p>Usuario o contraseña incorrectos</p>
+                <button onClick={() => toast.dismiss(t.id)}>
+                  <AiFillCloseCircle />
+                </button>
+              </span>
+            ));
           }
         });
       setIsLoading(false);
@@ -131,8 +118,9 @@ function Login(){
                     Facebook
                 </Button>    
                 </div>
-                <a  href="/" color="Foreground" >¿Aún no tienes cuenta?</a>
+                <NavLink  to="/registro" color="Foreground" >¿Aún no tienes cuenta?</NavLink>
             </section>
+            <Toaster position="top-center" reverseOrder={true} />
         </>
     )
 }
