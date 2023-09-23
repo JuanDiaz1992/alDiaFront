@@ -7,6 +7,7 @@ import Error404 from '../components/Error404Page';
 import Home from '../components/principal_pages/HomePage'
 import Login from '../components/principal_pages/Login';
 import Admin from '../components/principal_pages/admin_pages/AdminPage';
+import NewRegistre from "../components/principal_pages/newRegistre";
 
 function AppRouter(){
 
@@ -18,6 +19,7 @@ function AppRouter(){
                 <Routes>
                     <Route path="/" element={<FatherComponent />}>
                         <Route path="/login" element={<Login />}/>
+                        <Route path="/registro" element={<NewRegistre />} />
                         <Route path="*" element={<Error404 />}/>
                         <Route path="/Error404" element={<Error404 />}/>
                         {type_user === 1 ? (

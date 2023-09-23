@@ -17,6 +17,7 @@ import setCookie from "../Scripts/borrarCookies";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { NavLink, useLocation } from "react-router-dom";
+import dafaultPhotoUser from "../img/default_user.png"
 
 function NavBar(props) {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function NavBar(props) {
   const firstName = useSelector((state) => state.auth.firtsName);
   const last_name = useSelector((state) => state.auth.last_name);
   const photo = useSelector((state) => state.auth.photo);
+
   const logOut = () => {
     fetch(url, {
       method: "DELETE",
@@ -94,7 +96,7 @@ function NavBar(props) {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={url+photo}
+                src={photo.length<5 ? dafaultPhotoUser : url+photo}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
