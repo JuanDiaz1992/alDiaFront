@@ -1,5 +1,5 @@
-import "../styleheets/login.css";
-import logo from "../../img/logo.png";
+import "../styleheets/Login.css";
+import logo from "../img/logo.png";
 import { Button } from "@nextui-org/react";
 import { AiOutlineGoogle, AiFillFacebook } from 'react-icons/ai';
 import { AiFillCloseCircle } from 'react-icons/ai';
@@ -8,7 +8,7 @@ import { useNavigate , NavLink } from "react-router-dom";
 
 
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/userSlice";
+import { login } from "../redux/userSlice";
 import { useSelector } from "react-redux";
 import Cookies from 'js-cookie';
 import { toast, Toaster } from "react-hot-toast";
@@ -118,7 +118,7 @@ function Login(){
                     Facebook
                 </Button>    
                 </div>
-                <NavLink  to="/registro" color="Foreground" >¿Aún no tienes cuenta?</NavLink>
+                <NavLink  to="/newRecord" color="Foreground" >¿Aún no tienes cuenta?</NavLink>
             </section>
             <Toaster position="top-center" reverseOrder={true} />
         </>

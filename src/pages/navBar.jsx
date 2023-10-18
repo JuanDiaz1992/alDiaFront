@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { useSelector } from "react-redux";
 import Logo from "../img/logoNavBar.png";
-import "./styleheets/navBar.css";
+import "../styleheets/navBar.css";
 import getCookie from "../Scripts/getCookies";
 import setCookie from "../Scripts/borrarCookies";
 import { useDispatch } from "react-redux";

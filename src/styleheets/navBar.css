@@ -1,11 +1,15 @@
 @font-face {
     font-family: 'aldiaFont'; /* Puedes elegir el nombre que desees */
-    src: url('../../fonst/good_times_rg.otf') format('woff2'), /* Formato WOFF2 */
+    src: url('../fonst/good_times_rg.otf') format('woff2'), /* Formato WOFF2 */
 
   }
+:root {
+--color-primary: #043249;
+--color-secondary: #FF7F3E;
+}
 
 .navBar_container{
-    background-color: #043249;
+    background-color: var(--color-primary);
     padding: 5px 0 5px 0;
 }
 
@@ -14,7 +18,7 @@
     font-family: aldiaFont;
 }
 .active{
-    color: #ff7f3e;
+    color: var(--color-secondary);
     font-weight: bold;
 }
 .inactive{

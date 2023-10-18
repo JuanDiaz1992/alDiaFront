@@ -40,9 +40,9 @@ function FatherComponent(){
     const [isLogout,setIsLogout] = useState(false)
     useEffect(()=>{
         validateSession()
-        if(type_user === 0 && location.pathname !== "/registro" ){
+        if(type_user === 0 && location.pathname !== "/newRecord" ){
             navigate("/login")
-        }else if (type_user > 0 && location.pathname === "/registro"){
+        }else if (type_user > 0 && location.pathname === "/newRecord"){
             navigate("/")
         }
         setIsLogout(false)
