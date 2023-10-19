@@ -60,6 +60,10 @@
     border: 2px solid #FF7F3E;
     padding: 5px 5px 5px 10px;
 }
+.input_new_record h2{
+    font-size: 20px;
+    color: var(--color-secondary);
+}
 .info_record{
     margin-top: 5px;
     font-size: 12px;
@@ -82,7 +86,7 @@
 }
 
 
-.form_record button{
+.button_record_form{
     width: 100%;
     max-width: 500px;
     height: 45px;

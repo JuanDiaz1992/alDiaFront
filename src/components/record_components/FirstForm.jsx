@@ -37,7 +37,7 @@ function FirstForm({setSaveInfo}){
         .then(response=>response.json())
         .then(data=>{
             if (data.status===200) {
-                setSaveInfo({
+                setSaveInfo([{
                     "firstName":firstName,
                     "secondName":secondName,
                     "firstLastName":firstLastName,
@@ -47,7 +47,7 @@ function FirstForm({setSaveInfo}){
                     "password":password,
                     "confirmPasword":confirmPasword,
                     "newUser_request":true
-                })
+                }])
             }else{
                 console.log(data)
             }
@@ -164,7 +164,7 @@ function FirstForm({setSaveInfo}){
               required
             />
           </div>
-          <Button type="submit">Siguiente</Button>
+          <Button className="button_record_form" type="submit">Siguiente</Button>
           <p className="info_record">*Si no posee segundo nombre o segundo apellido, deje esos campos en blanco</p>
         </form>
         </>
