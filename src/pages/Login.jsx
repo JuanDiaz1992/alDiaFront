@@ -89,6 +89,7 @@ function Login(){
                     <div className="formLogin__inputsPrincipales">
                         <input 
                             value={name}
+                            name = "username"
                             onChange={(e)=>{setName(e.target.value)}}
                             type="text" 
                             placeholder="Usuario" 
@@ -97,6 +98,7 @@ function Login(){
                     <div className="formLogin__inputsPrincipales">
                         <input 
                             type="password" 
+                            name = "password"
                             value={password}
                             onChange={(e)=>{setPassword(e.target.value)}}
                             placeholder="Contraseña"  
