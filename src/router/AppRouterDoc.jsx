@@ -11,7 +11,7 @@ import NewRecord from "../pages/NewRecord";
 
 function AppRouter(){
 
-    const type_user = useSelector(state => state.auth.type_user )
+    const type_user = useSelector(state => state.data_aldia.type_user )
 
     return(
         <>

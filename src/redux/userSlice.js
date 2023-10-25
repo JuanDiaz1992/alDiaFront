@@ -17,7 +17,7 @@ const initialState = {
 
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: 'data_aldia',
   initialState,
   reducers: {
     login: (state, action) => {
@@ -58,10 +58,10 @@ export const { login, logout, changeName } = authSlice.actions;
 
 
 
-export const selectAuth = state => state.auth;
-export const selectIsLoggedIn = state => state.auth.is_logged_in;
-export const selectName = state => state.auth.username;
-export const selectURL = state => state.auth.url;
+export const selectAuth = state => state.data_aldia;
+export const selectIsLoggedIn = state => state.data_aldia.is_logged_in;
+export const selectName = state => state.data_aldia.username;
+export const selectURL = state => state.data_aldia.url;
 
 
 

@@ -8,19 +8,21 @@ import SecondForm from "../components/record_components/secondForm";
 function NewRecord() {
 
   const [saveInfo,setSaveInfo] = useState([]);
+  const [selectOption,setSelectOption] = useState(0)
   const [viewForm,setViewForm] = useState("")
 
   const menu=()=>{
 
-    switch (saveInfo.length) {
-      case 1:
+    switch (selectOption) {
+      case 0:
             setViewForm(
                 <FirstForm
                 setSaveInfo={setSaveInfo}
+                setSelectOption={setSelectOption}
               />
             )
             break;
-      case 0:
+      case 1:
             setViewForm(
               <SecondForm 
               saveInfo={saveInfo}
@@ -31,6 +33,7 @@ function NewRecord() {
             setViewForm(
               <FirstForm
               setSaveInfo={setSaveInfo}
+              setSelectOption={setSelectOption}
             />
       )
         break;
@@ -61,6 +64,7 @@ function NewRecord() {
         </div>
         {viewForm}
       </section>
+
     </>
   );
 }

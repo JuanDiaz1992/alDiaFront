@@ -1,7 +1,8 @@
 import { useState }from "react";
 import { Button } from "@nextui-org/react";
-import { useSelector } from "react-redux"
-function FirstForm({setSaveInfo}){
+import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+function FirstForm({setSaveInfo, setSelectOption}){
     const [firstName, setFirtsName] = useState("");
     const [secondName, setSecondName] = useState("");
     const [firstLastName, setFirstLastName] = useState("");
@@ -10,7 +11,7 @@ function FirstForm({setSaveInfo}){
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPasword, setConfirmPasword] = useState("");
-    const url = useSelector((state) => state.auth.url);
+    const url = useSelector((state) => state.data_aldia.url);
     
     const setForm = (e) => {
         e.preventDefault();
@@ -36,21 +37,36 @@ function FirstForm({setSaveInfo}){
         })
         .then(response=>response.json())
         .then(data=>{
+          let message = "Error"
+          let icon = ""
             if (data.status===200) {
+                message = "Registro correcto";
+                icon = '👏'
                 setSaveInfo([{
-                    "firstName":firstName,
-                    "secondName":secondName,
-                    "firstLastName":firstLastName,
-                    "secondLastName":secondLastName,
-                    "email":email,
-                    "userName":userName,
                     "password":password,
-                    "confirmPasword":confirmPasword,
-                    "newUser_request":true
-                }])
+                    "userName":userName,
+                    "firstName":firstName,
+                    "idPerfil":data.results.idPerfil,
+                    "idInformacionComplementaria":data.results.idInformacionComplementaria,
+                    "idUser":data.results.idUser,
+                }]);
+                setSelectOption(1);
             }else{
-                console.log(data)
+              message = data.message
+              icon = '🚫'
             }
+            toast(message,
+            { 
+              duration: 10000,
+              position: "top-right",
+              icon:icon,
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            }
+          );
         })
 
       };
@@ -68,7 +84,7 @@ function FirstForm({setSaveInfo}){
               }}
               type="text"
               placeholder="Tatiana"
-              required
+              
             />
             </div>
             <div className="input_new_record">
@@ -95,7 +111,7 @@ function FirstForm({setSaveInfo}){
                 }}
                 type="text"
                 placeholder="Marín"
-                required
+                
               />
             </div>
             <div className="input_new_record">
@@ -122,7 +138,7 @@ function FirstForm({setSaveInfo}){
               }}
               type="email"
               placeholder="correo@correo.com"
-              required
+              
             />
           </div>
           <div className="input_new_record">
@@ -135,7 +151,7 @@ function FirstForm({setSaveInfo}){
               }}
               type="text"
               placeholder="tatiana2015"
-              required
+              
             />
           </div>
           <div className="input_new_record">
@@ -148,7 +164,7 @@ function FirstForm({setSaveInfo}){
                 setPassword(e.target.value);
               }}
               placeholder="********"
-              required
+              
             />
           </div>
           <div className="input_new_record  ">
@@ -161,12 +177,13 @@ function FirstForm({setSaveInfo}){
                 setConfirmPasword(e.target.value);
               }}
               placeholder="********"
-              required
+              
             />
           </div>
           <Button className="button_record_form" type="submit">Siguiente</Button>
           <p className="info_record">*Si no posee segundo nombre o segundo apellido, deje esos campos en blanco</p>
         </form>
+
         </>
     )
 }

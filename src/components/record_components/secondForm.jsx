@@ -1,7 +1,17 @@
 import { Button, Select, SelectItem, Checkbox } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../redux/userSlice";
 import dateToday from "../../Scripts/obtenerFechaActual";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
+import Cookies from 'js-cookie';
+import GoToTop from "../../Scripts/OnTop";
+
 function SecondForm({ saveInfo }) {
+  const url = useSelector((state)=>state.data_aldia.url);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const documents = [
     {
@@ -22,6 +32,33 @@ function SecondForm({ saveInfo }) {
     },
   ];
 
+  const civilStates = [
+    {
+      name: "Soltero",
+      id: 1,
+    },
+    {
+      name: "Casado",
+      id: 2,
+    },
+    {
+      name: "Unión Marital de Hecho",
+      id: 3,
+    },
+    {
+      name: "Separado",
+      id: 4,
+    },
+    {
+      name: "Divorsiado",
+      id: 5,
+    },
+    {
+      name: "Viudo",
+      id: 5,
+    },
+    
+  ];
   //Este bloque de código le resta 18 años a la fecha actual
   const today = dateToday();
   const year = today.split("-")[0] - 18;
@@ -42,8 +79,9 @@ function SecondForm({ saveInfo }) {
   const [birthdate, setBirthdate] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [departamentSelect, setDepartametSelect] = useState("");
-  const [citiSelecte, setCitiSelecte] = useState("");
+  const [departamentSelect, setDepartametSelect] = useState(null);
+  const [citiSelecte, setCitiSelecte] = useState(null);
+  const [civilState, setcivilState] = useState(null);
   const [occupation,setOccupation]= useState("");
   const [dataPolitic,setDataPolitic] = useState(false);
 
@@ -51,13 +89,69 @@ function SecondForm({ saveInfo }) {
 
   const setForm = (e) => {
     e.preventDefault();
-    if (typeDocument !== null) {
-      console.log(documents[typeDocument]["id"]);
+    if (
+      typeDocument !== null && 
+      document!==null && 
+      birthdate!==null && 
+      departamentSelect !== null && 
+      citiSelecte!==null && 
+      address!==null && 
+      phone!==null && 
+      occupation!==null && 
+      civilState !== null &&
+      dataPolitic === true
+      ) {
+        const data = {
+          "userName": saveInfo[0]["userName"],
+          "password": saveInfo[0]["password"],
+          "idsPerfil":saveInfo[0]["idPerfil"],
+          "typeDocument":documents[typeDocument]["id"],
+          "document":document,
+          "birthdate":birthdate,
+          "departamentSelect":departament[departamentSelect],
+          "citiSelecte":cities[citiSelecte],
+          "address":address,
+          "phone":phone,
+          "civilState": civilStates[civilState]["id"],
+          "occupation":occupation,
+          "dataPolitic":dataPolitic,
+          "complete_profile":true
+        }
+        fetch(url,{
+          method:"POST",
+          mode:"cors",
+          headers:{
+            Module: "user",
+        },    
+          body:JSON.stringify(data)
+        })
+        .then(response=>response.json())
+        .then(data=>{
+          if (data.is_logged_in) {
+            toast.success(`Bienvenido ${saveInfo[0]["firstName"]}`, {
+              position: "top-center"
+            })
+            dispatch(login(data));
+            const token = data.token;
+            Cookies.set('token', token, { SameSite: 'None', secure: true });
+            const name = saveInfo.userName
+            navigate("/", {
+              replace: true,
+              state: {
+                logged: true,
+                name,
+              },
+            });
+          }else{
+            toast.error(data.message)
+          }
+        })
     }
-    console.log(departament[departamentSelect])
-    console.log(cities[citiSelecte])
+
+
+
+    }
     
-  };
 
 
 
@@ -199,6 +293,21 @@ function SecondForm({ saveInfo }) {
           />
         </div>
         <div className="input_new_record">
+          <label htmlFor="civil_state">Estado Civil</label>
+          <Select
+            id="civil_state"
+            onChange={(e) => setcivilState(e.target.value)}
+            label="Seleccione el tipo de documento"
+            required
+          >
+            {civilStates.map((state, index) => (
+              <SelectItem key={index} value={state.id}>
+                {state.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+        <div className="input_new_record">
           <label htmlFor="occupation">Ocupación</label>
           <input
             id="occupation"
@@ -219,6 +328,7 @@ function SecondForm({ saveInfo }) {
           Siguiente
         </Button>
       </form>
+      <GoToTop/>
     </>
   );
 }

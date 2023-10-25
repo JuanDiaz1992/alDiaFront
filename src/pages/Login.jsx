@@ -15,9 +15,9 @@ import { toast, Toaster } from "react-hot-toast";
 
 function Login(){
     const navigate = useNavigate();
-    const isLoggedIn = useSelector((state) => state.auth.is_logged_in);
-    const url = useSelector((state) => state.auth.url);
-    const companyName = useSelector((state) => state.auth.name_business);
+    const isLoggedIn = useSelector((state) => state.data_aldia.is_logged_in);
+    const url = useSelector((state) => state.data_aldia.url);
+    const companyName = useSelector((state) => state.data_aldia.name_business);
     const [isLoading, setIsLoading] = useState(false);
     const [name,setName] = useState("");
     const [password,setPassword] =useState("")
@@ -51,7 +51,6 @@ function Login(){
         .then(function (data) {
           if (data.is_logged_in) {
             dispatch(login(data));
-            console.log(data)
             const token = data.token;
             Cookies.set('token', token, { SameSite: 'None', secure: true });
   

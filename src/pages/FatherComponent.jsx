@@ -6,11 +6,12 @@ import getCookie from "../Scripts/getCookies";
 import setCookie from "../Scripts/borrarCookies";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import { Toaster } from "react-hot-toast";
 function FatherComponent(){
     const dispatch = useDispatch();
     let location = useLocation();
-    const type_user = useSelector(state => state.auth.type_user );
-    const url = useSelector(state => state.auth.url );
+    const type_user = useSelector(state => state.data_aldia.type_user );
+    const url = useSelector(state => state.data_aldia.url );
     const validateSession=()=>{
         fetch(`${url}validateSession`, {
             method:"get",
@@ -51,6 +52,7 @@ function FatherComponent(){
         <>
             {type_user>0?  <NavBar setIsLogout={setIsLogout}/>:<></>}      
             <Outlet />
+            <Toaster position="top-center" reverseOrder={true} />
         </>
     )
 }

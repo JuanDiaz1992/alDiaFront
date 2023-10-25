@@ -23,10 +23,10 @@ function NavBar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const { setIsLogout } = props;
-  const url = useSelector((state) => state.auth.url);
-  const firstName = useSelector((state) => state.auth.firtsName);
-  const last_name = useSelector((state) => state.auth.last_name);
-  const photo = useSelector((state) => state.auth.photo);
+  const url = useSelector((state) => state.data_aldia.url);
+  const firstName = useSelector((state) => state.data_aldia.firtsName);
+  const last_name = useSelector((state) => state.data_aldia.last_name);
+  const photo = useSelector((state) => state.data_aldia.photo);
 
   const logOut = () => {
     fetch(url, {
@@ -96,7 +96,7 @@ function NavBar(props) {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={photo.length<5 ? dafaultPhotoUser : url+photo}
+                src={photo !== "" ? dafaultPhotoUser : url+photo}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
