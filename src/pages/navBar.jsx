@@ -70,8 +70,8 @@ function NavBar(props) {
                 </NavLink>
             </NavbarItem>
             <NavbarItem>
-              <NavLink to="/registrar_factura" className={location.pathname === "/registrar_factura"? "active":"inactive"}>
-                Registrar Factura
+              <NavLink to="/registro_financiero" className={location.pathname === "/registro_financiero"? "active":"inactive"}>
+                Registro Financiero
               </NavLink>
             </NavbarItem>
             <NavbarItem>

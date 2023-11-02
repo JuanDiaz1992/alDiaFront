@@ -237,7 +237,7 @@ function SecondForm({ saveInfo }) {
           />
         </div>
         <div className="input_new_record">
-          <label htmlFor="firstName">Elija su departamento actual</label>
+          <label htmlFor="departament">Elija su departamento actual</label>
           <Select
             id="departament"
             onChange={(e) => setDepartametSelect(e.target.value)}

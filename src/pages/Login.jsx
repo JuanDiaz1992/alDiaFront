@@ -17,8 +17,6 @@ function Login(){
     const navigate = useNavigate();
     const isLoggedIn = useSelector((state) => state.data_aldia.is_logged_in);
     const url = useSelector((state) => state.data_aldia.url);
-    const companyName = useSelector((state) => state.data_aldia.name_business);
-    const [isLoading, setIsLoading] = useState(false);
     const [name,setName] = useState("");
     const [password,setPassword] =useState("")
   
@@ -26,7 +24,7 @@ function Login(){
     const dispatch = useDispatch();
     const onLogin = async (e) => {
       e.preventDefault();
-      setIsLoading(true);
+
       await fetch(url, {
         method: "POST",
         mode: "cors",
@@ -45,11 +43,11 @@ function Login(){
           } else {
             console.error();
           }
-          setIsLoading(false);
           return response.json();
         })
         .then(function (data) {
           if (data.is_logged_in) {
+            console.log(data)
             dispatch(login(data));
             const token = data.token;
             Cookies.set('token', token, { SameSite: 'None', secure: true });
@@ -73,7 +71,6 @@ function Login(){
             ));
           }
         });
-      setIsLoading(false);
     };
     useEffect(() => {
       if (isLoggedIn) {

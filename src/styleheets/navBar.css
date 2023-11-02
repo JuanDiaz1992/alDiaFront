@@ -11,6 +11,7 @@
 .navBar_container{
     background-color: var(--color-primary);
     padding: 5px 0 5px 0;
+    position: absolute;
 }
 
 .text-logo{

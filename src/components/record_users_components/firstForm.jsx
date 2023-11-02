@@ -57,7 +57,7 @@ function FirstForm({setSaveInfo, setSelectOption}){
             }
             toast(message,
             { 
-              duration: 10000,
+              duration: 5000,
               position: "top-right",
               icon:icon,
               style: {

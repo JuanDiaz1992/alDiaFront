@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 
 import "../styleheets/NewRecord.css"
 import logo from "../img/logo_simple.png";
-import FirstForm from "../components/record_components/firstForm";
-import SecondForm from "../components/record_components/secondForm";
+import FirstForm from "../components/record_users_components/firstForm";
+import SecondForm from "../components/record_users_components/secondForm";
 
 function NewRecord() {
 

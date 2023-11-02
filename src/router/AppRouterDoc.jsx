@@ -7,7 +7,8 @@ import Error404 from '../pages/Error404Page';
 import Home from '../pages/HomePage'
 import Login from '../pages/Login';
 import Admin from '../pages/AdminPage';
-import NewRecord from "../pages/NewRecord";
+import NewRecord from "../pages/NewRecordUser";
+import RegistroFinanciero from "../pages/Financial_record/Registro_financiero"
 
 function AppRouter(){
 
@@ -25,20 +26,18 @@ function AppRouter(){
                         {type_user === 1 ? (
                             <>
                                 <Route path="/adminPage" element={ <Admin />}/>
-
                             </>
-                            
                             ) : (
                             <Route path='*' element={<Navigate to='/Error404' replace />} />
                         )}                        
                         {type_user>0? (
-                            <Route index element={<Home />}/>
+                            <>
+                                <Route index element={<Home />}/>
+                                <Route path="/registro_financiero" element={ <RegistroFinanciero />}/>
+                            </>
                             ) : (
                             <Route path='*' element={<Navigate to='/Error404' replace />} />
-                        )}
-                        
-
-                
+                        )}                
                     </Route>
                 </Routes>
             </HashRouter>
