@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
 import dateToday from "../../Scripts/obtenerFechaActual"
-import { Select, SelectItem } from "@nextui-org/react";
+import { useEffect, useState  } from "react";
+import { Select, SelectItem, Button } from "@nextui-org/react";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 import getCookie from "../../Scripts/getCookies"
-function FormRecord({table}){
+function FormRecord({tableGet, setOption, descriptionLabel, tablePost}){
     const url = useSelector((state)=>state.data_aldia.url);
     const userID = useSelector((state)=>state.data_aldia.id_user);
     const today = dateToday();
     const [date,setDate] = useState(today)
     const [amount,setAmount] = useState("")
+    const [description,setDescription] = useState("")
     const [categoryFromBd,setCategoryFromBd] = useState([])
-    const [category, setCategory] = useState("")
-    // console.log(categoryFromBd[category]["id"])
+    const [category, setCategory] = useState(new Set([]));
+
     useEffect(()=>{
-        fetch(`${url}${table}/`,{
+        fetch(`${url}${tableGet}/`,{
             method:"GET",
             mode:"cors",
             headers:{
@@ -28,9 +31,57 @@ function FormRecord({table}){
             }
         })
     },[])
+    const sendInfo=(e)=>{
+      e.preventDefault();
+
+
+      if(amount && date && categoryFromBd[category["currentKey"]]["id"]){
+        fetch(url,{
+          method:"POST",
+          mode:"cors",
+          headers:{
+            Authorization: "Token " + getCookie("token"),
+            Module: "financial_record"
+          },
+          body:JSON.stringify({
+            "table":tablePost,
+            "id_user":userID,
+            "date":date,
+            "amount":amount,
+            "description":description,
+            "category":categoryFromBd[category["currentKey"]]["id"],
+            "record_income":true
+            })
+        })
+        .then(response=>response.json())
+        .then(data=>{
+          let icon = ''
+          if(data.status === 200){
+            icon = '👏'
+            setDate(today);
+            setAmount("");
+            setDescription("");
+            setCategory(["$.0"])
+          }else{
+            icon = '🚫'
+          }
+          toast(data.message,
+            { 
+              duration: 3000,
+              position: "bottom-right",
+              icon:icon,
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            })
+        })
+      }
+    }
     return(
     <>
-        <form action="">
+        <form className="formRecord" onSubmit={(e)=>sendInfo(e)}>
         <div className="input_new_record">
             <label htmlFor="date">Fecha</label>
             <input
@@ -55,29 +106,40 @@ function FormRecord({table}){
             <label htmlFor="description">Descripción</label>
             <textarea
                 id="description"
-                value={amount}
-                onChange={(e)=>setAmount(e.target.value)}
+                value={description}
+                onChange={(e)=>setDescription(e.target.value)}
                 type="text"
-                placeholder="Descripción"
+                placeholder={descriptionLabel}
             />
         </div>
         <div className="input_new_record">
-          <label htmlFor="departament">Elija su departamento actual</label>
           <Select
             id="departament"
-            onChange={(e) => setCategory(e.target.value)}
-            label="Seleccione la categoría"
+            label="Categoría"
+            onSelectionChange={setCategory}
+            placeholder="Categoría"
             required
+            defaultSelectedKeys={["$.0"]}
+            selectedKeys={category}
           >
+            <SelectItem value="">Seleccione una opción</SelectItem>
             {categoryFromBd.map((category, index) => (
-              <SelectItem key={index} value={category}>
+              <SelectItem key={index} value={category["id"]}>
                 {category["name_category"]}
               </SelectItem>
             ))}
           </Select>
         </div>
+        <div className="buttons_container">
+          <Button color="primary" type="submit">Registrar</Button>
+          <Button className="come_back_button" type="button" isIconOnly color="warning" onClick={()=>setTimeout(setOption, 600)}>
+            <IoIosArrowRoundBack />
+          </Button>
+        </div>
+
           
         </form>
+
     </>
     )
 }

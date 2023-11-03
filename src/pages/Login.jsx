@@ -47,7 +47,6 @@ function Login(){
         })
         .then(function (data) {
           if (data.is_logged_in) {
-            console.log(data)
             dispatch(login(data));
             const token = data.token;
             Cookies.set('token', token, { SameSite: 'None', secure: true });

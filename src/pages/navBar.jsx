@@ -27,7 +27,6 @@ function NavBar(props) {
   const firstName = useSelector((state) => state.data_aldia.firtsName);
   const last_name = useSelector((state) => state.data_aldia.last_name);
   const photo = useSelector((state) => state.data_aldia.photo);
-
   const logOut = () => {
     fetch(url, {
       method: "DELETE",
@@ -96,7 +95,7 @@ function NavBar(props) {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={photo !== "" ? dafaultPhotoUser : url+photo}
+                src={photo === null ? dafaultPhotoUser : url+photo}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">

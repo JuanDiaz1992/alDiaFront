@@ -1,3 +1,8 @@
+:root {
+    --color-primary: #043249;
+    --color-secondary: #FF7F3E;
+    --color-third: rgb(121, 121, 121);
+    }
 
 .container_financial_record{
     width: 100%;
@@ -38,4 +43,19 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
+}
+
+.formRecord{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.buttons_container{
+    display: flex;
+    gap: 5px;
+    .come_back_button{
+        font-size: 25px;
+        color: white;
+    }
+
 }

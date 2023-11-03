@@ -1,4 +1,4 @@
-import "../../styleheets/Financial_record_styles/Financial_record.css";
+import "../../styleheets/Financial_record.css";
 import { useEffect, useState } from "react";
 import SelectOption from "../../components/Financial_record_components/SelectOption";
 import RecordIncome from "../../components/Financial_record_components/RecordIncome";
