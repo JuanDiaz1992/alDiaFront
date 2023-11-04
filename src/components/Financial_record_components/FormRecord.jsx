@@ -5,6 +5,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import getCookie from "../../Scripts/getCookies"
+import formatCompact from "../../Scripts/formatearPesos"
 function FormRecord({tableGet, setOption, descriptionLabel, tablePost}){
     const url = useSelector((state)=>state.data_aldia.url);
     const userID = useSelector((state)=>state.data_aldia.id_user);

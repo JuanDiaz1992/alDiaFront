@@ -1,3 +1,9 @@
+:root {
+    --color-primary: #043249;
+    --color-secondary: #FF7F3E;
+    --color-third: rgb(121, 121, 121);
+    }
+
 .content_index{
     width: 100%;
     height: 100vh;
@@ -5,4 +11,60 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+.month_buttons_container{
+    text-align: center;
+    margin-top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+}
+.month_buttons_container button{
+    font-size: 30px;
+}
+.content_index--info_container{
+    width: 100%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.content_index--info_container--data_info{
+    max-width: 300px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.content_index--info_container--data_info--div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.circle1{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+.circle2{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+}
+.null_register{
+    text-align: center;
+}
+.null_register a{
+    color: #FF7F3E;
+}
+.disable{
+    color: rgb(172, 172, 172);
 }
