@@ -68,3 +68,10 @@
 .disable{
     color: rgb(172, 172, 172);
 }
+
+.bars_container{
+    height: 250px;
+}
+.bars_container canvas{
+    height: 250px;
+}

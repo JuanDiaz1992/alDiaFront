@@ -17,7 +17,9 @@ import setCookie from "../Scripts/borrarCookies";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { NavLink, useLocation } from "react-router-dom";
-import dafaultPhotoUser from "../img/default_user.png"
+import dafaultPhotoUser from "../img/default_user.png";
+import { TbReportSearch, TbHome2, TbHistory, TbHelp } from "react-icons/tb";
+import { HiOutlineDocumentAdd } from "react-icons/hi"
 
 function NavBar(props) {
   const dispatch = useDispatch();
@@ -47,8 +49,6 @@ function NavBar(props) {
       });
   };
 
-
-
   return (
     <>
       <Navbar isBordered className="navBar_container">
@@ -59,27 +59,52 @@ function NavBar(props) {
           </NavbarBrand>
           <NavbarContent className="hidden sm:flex gap-3 ml-12">
             <NavbarItem>
-              <NavLink to="/" className={location.pathname === "/"? "active":"inactive"}>
+              <NavLink
+                to="/"
+                className={location.pathname === "/" ? "active" : "inactive"}
+              >
                 Inicio
               </NavLink>
             </NavbarItem>
             <NavbarItem>
-                <NavLink to="/informes" className={location.pathname === "/informes"? "active":"inactive"}>
-                    Informes
-                </NavLink>
+              <NavLink
+                to="/informes"
+                className={
+                  location.pathname === "/informes" ? "active" : "inactive"
+                }
+              >
+                Informes
+              </NavLink>
             </NavbarItem>
             <NavbarItem>
-              <NavLink to="/registro_financiero" className={location.pathname === "/registro_financiero"? "active":"inactive"}>
+              <NavLink
+                to="/registro_financiero"
+                className={
+                  location.pathname === "/registro_financiero"
+                    ? "active"
+                    : "inactive"
+                }
+              >
                 Registro Financiero
               </NavLink>
             </NavbarItem>
             <NavbarItem>
-              <NavLink to="/historial" className={location.pathname === "/historial"? "active":"inactive"}>
+              <NavLink
+                to="/historial"
+                className={
+                  location.pathname === "/historial" ? "active" : "inactive"
+                }
+              >
                 Historial
               </NavLink>
             </NavbarItem>
             <NavbarItem>
-              <NavLink to="/ayuda" className={location.pathname === "/ayuda"? "active":"inactive"}>
+              <NavLink
+                to="/ayuda"
+                className={
+                  location.pathname === "/ayuda" ? "active" : "inactive"
+                }
+              >
                 Ayuda
               </NavLink>
             </NavbarItem>
@@ -95,13 +120,13 @@ function NavBar(props) {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={photo === null ? dafaultPhotoUser : url+photo}
+                src={photo === null ? dafaultPhotoUser : url + photo}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem textValue="My Settings" className="h-14 gap-2">
                 <p className="font-semibold">Logueado como</p>
-                <p className="font-semibold">{firstName + ' ' + last_name}</p>
+                <p className="font-semibold">{firstName + " " + last_name}</p>
               </DropdownItem>
               <DropdownItem textValue="My Settings"></DropdownItem>
               <DropdownItem textValue="My Settings">Team Settings</DropdownItem>
@@ -124,6 +149,46 @@ function NavBar(props) {
           </Dropdown>
         </NavbarContent>
       </Navbar>
+
+      <div isBordered className="nav_botton">
+        <div className="nav_botton-container">
+          <NavLink
+            to="/"
+            className={"nav_botton--item "+(location.pathname === "/" ? "active" : "inactive")}
+          >
+            <TbHome2 />
+          </NavLink>
+          <NavLink
+            to="/informes"
+            className={
+              "nav_botton--item "+(location.pathname === "/informes" ? "active" : "inactive")
+            }
+          >
+            <TbReportSearch />
+          </NavLink>
+          <NavLink
+            to="/registro_financiero"
+            className={
+              "nav_botton--item "+(location.pathname === "/registro_financiero" ? "active" : "inactive")}
+          >
+            <HiOutlineDocumentAdd />
+          </NavLink>
+          <NavLink
+            to="/historial"
+            className={
+              "nav_botton--item "+(location.pathname === "/historial" ? "active" : "inactive")
+            }
+          >
+            <TbHistory />
+          </NavLink>
+          <NavLink
+            to="/ayuda"
+            className={"nav_botton--item "+(location.pathname === "/ayuda" ? "active" : "inactive")}
+          >
+            <TbHelp />
+          </NavLink>
+        </div>
+      </div>
     </>
   );
 }

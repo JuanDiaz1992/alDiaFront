@@ -1,9 +1,9 @@
-import "../../styleheets/Financial_record.css";
+import "../styleheets/Financial_record.css";
 import { useEffect, useState } from "react";
-import SelectOption from "../../components/Financial_record_components/SelectOption";
-import RecordIncome from "../../components/Financial_record_components/RecordIncome";
-import RecordExpenses from "../../components/Financial_record_components/RecordExpenses";
-
+import SelectOption from "../components/Financial_record_components/SelectOption";
+import RecordIncome from "../components/Financial_record_components/RecordIncome";
+import RecordExpenses from "../components/Financial_record_components/RecordExpenses";
+import HistoryFinancial from "./HistoryFinancial";
 
 function RegistroFinanciero(){
     const [option, setOption] = useState()
@@ -16,6 +16,9 @@ function RegistroFinanciero(){
             case 2:
                 setView(<RecordExpenses setOption={setOption} />)
                 break;    
+            case 3:
+                setView(<HistoryFinancial setOption={setOption}/>);
+                break;
             default:
                 setView(<SelectOption setOption={setOption} />)
                 break;

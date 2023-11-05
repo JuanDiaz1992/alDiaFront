@@ -1,6 +1,6 @@
 import { Card, CardBody } from "@nextui-org/react";
-import income from "../../img/income.png";
-import expenses from "../../img/expenses.png"
+import income from "../../img/income.webp";
+import expenses from "../../img/expenses.webp"
 function SelectOption({setOption}){
     return(
         <>            

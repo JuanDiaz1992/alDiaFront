@@ -6,7 +6,8 @@ import { NavLink } from "react-router-dom";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
 import date from "../Scripts/obtenerFechaActual";
 import getCookie from "../Scripts/getCookies";
-import formatCompact from "../Scripts/formatearPesos"
+import formatCompact from "../Scripts/formatearPesos";
+import Graphics from "../components/Home_components/Graphics";
 
 function Home() {
   const url = useSelector((state) => state.data_aldia.url);
@@ -15,8 +16,7 @@ function Home() {
   const [dateselected,setDate] = useState(dateFunction)
   const [month, setMonth] = useState(dateselected[1])
   const [year, setYear] = useState(dateselected[0])
-  const [haveData,setHaveData] = useState(true)
-  const [allresults, setAllResults] = useState([]);
+  const [haveData,setHaveData] = useState(false)
   const [expenses, setExpenses] = useState(0);
   const [income, setIncome] = useState(0);
   const [loadin,setLoadin] = useState(true)
@@ -43,7 +43,6 @@ function Home() {
       .then((response) => response.json())
       .then((data) => {
         if (data["status"] === 200) {
-                  setAllResults(data["results"]);
         if (data["results"]) {
           setHaveData(true)
           for (let j = 0; j < data["results"].length; j++) {
@@ -53,22 +52,23 @@ function Home() {
                 total += data["results"][j]["expenses"][i]["amount"];
               }
    
-              setExpenses(formatCompact(total));
+              // setExpenses(formatCompact(total));
+              setExpenses(total);
             }
             if (data["results"][j]["income"]) {
               let total = 0;
               for (let i = 0; i < data["results"][j]["income"].length; i++) {
                 total += data["results"][j]["income"][i]["amount"];
               }
-              setIncome(formatCompact(total));
+              setIncome(total);
             }
           }
         }}else{
           setHaveData(false)
         }
-
+        setLoadin(false)
       });
-      setLoadin(false)
+
   }, [month,year]);
   const setMonthFuntion = (option)=>{
     if (Number(month) === Number(dateFunction[1]) -1  &&  Number(year) === Number(dateFunction[0])) {
@@ -111,7 +111,7 @@ function Home() {
             <h2>{mesesDelAnio[month - 1 ]}</h2>
             <h3>{year}</h3>
           </div>
-          <button className={buttonEnable === false && "disable"} onClick={()=>setMonthFuntion(true)}><IoIosArrowForward /></button>
+          <button className={buttonEnable === false ? "disable" : ""} onClick={()=>setMonthFuntion(true)}><IoIosArrowForward /></button>
         </div>
         <div className="content_index--info_container">
           {loadin === true?
@@ -119,6 +119,9 @@ function Home() {
           :
           haveData === true ? (
             <>
+              <div>
+                <Graphics income={income} expenses={expenses} />
+              </div>
               <div className="content_index--info_container--data_info">
                 {expenses !== 0 ? 
                 <>
@@ -126,7 +129,7 @@ function Home() {
                     <div className="circle1"></div>
                     <p>Total gastos:</p>
                   </div>
-                  <p>{expenses}</p>
+                  <p>{formatCompact(expenses)}</p>
                 </> 
                   : <></>}
               </div>
@@ -137,7 +140,7 @@ function Home() {
                     <div className="circle2"></div>
                     <p>Total ingresos:</p>
                   </div>
-                  <p>{income}</p>
+                  <p>{formatCompact(income)}</p>
                 </> 
                   : <></>}
                </div>

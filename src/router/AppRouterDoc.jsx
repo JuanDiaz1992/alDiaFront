@@ -8,7 +8,8 @@ import Home from '../pages/HomePage'
 import Login from '../pages/Login';
 import Admin from '../pages/AdminPage';
 import NewRecord from "../pages/NewRecordUser";
-import RegistroFinanciero from "../pages/Financial_record/Registro_financiero"
+import RegistroFinanciero from "../pages/Registro_financiero";
+import HistoryFinancial from "../pages/HistoryFinancial";
 
 function AppRouter(){
 
@@ -34,6 +35,7 @@ function AppRouter(){
                             <>
                                 <Route index element={<Home />}/>
                                 <Route path="/registro_financiero" element={ <RegistroFinanciero />}/>
+                                <Route path="/historial" element={ <HistoryFinancial />}/>
                             </>
                             ) : (
                             <Route path='*' element={<Navigate to='/Error404' replace />} />
