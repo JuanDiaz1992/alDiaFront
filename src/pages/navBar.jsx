@@ -129,14 +129,9 @@ function NavBar(props) {
                 <p className="font-semibold">{firstName + " " + last_name}</p>
               </DropdownItem>
               <DropdownItem textValue="My Settings"></DropdownItem>
-              <DropdownItem textValue="My Settings">Team Settings</DropdownItem>
-              <DropdownItem textValue="My Settings">Analytics</DropdownItem>
-              <DropdownItem textValue="My Settings">System</DropdownItem>
+              <DropdownItem textValue="My Settings">Mi perfil</DropdownItem>
               <DropdownItem textValue="My Settings">
                 Configurations
-              </DropdownItem>
-              <DropdownItem textValue="My Settings">
-                Help & Feedback
               </DropdownItem>
               <DropdownItem
                 textValue="My Settings"
@@ -150,7 +145,7 @@ function NavBar(props) {
         </NavbarContent>
       </Navbar>
 
-      <div isBordered className="nav_botton">
+      <div className="nav_botton">
         <div className="nav_botton-container">
           <NavLink
             to="/"

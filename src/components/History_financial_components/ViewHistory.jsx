@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import date from "../../Scripts/obtenerFechaActual";
 import getCookie from "../../Scripts/getCookies";
-function ViewHistory({table}) {
+function ViewHistory({table, table_category}) {
     const url = useSelector((state) => state.data_aldia.url);
     const userId = useSelector((state) => state.data_aldia.id_user);
     const dateFunction = date().split("-");
@@ -37,7 +37,7 @@ function ViewHistory({table}) {
     useEffect(() => {
       const montAndYear = `${year}-${month}`;
       fetch(
-        `${url}expensesAndIncome?linkTo=id_user&equalTo=${userId}&date=date&dateTo=${montAndYear}&tableSelected=${table}`,
+        `${url}expensesAndIncome?linkTo=id_user&equalTo=${userId}&date=date&dateTo=${montAndYear}&tableSelected=${table}&category_selected=${table_category}`,
         {
           method: "GET",
           mode: "cors",
@@ -50,6 +50,7 @@ function ViewHistory({table}) {
         .then((response) => response.json())
         .then((data) => {
           if (data["status"] === 200) {
+            console.log(data["results"])
             if (data["results"]) {
               setHaveData(true);
               setData(data["results"])

@@ -1,8 +1,5 @@
 import "../styleheets/HistoryFinancial.css"
-import { useState } from "react";
 import ViewHistory from "../components/History_financial_components/ViewHistory";
-import SelectOption from "../components/History_financial_components/SelectOptionHistory";
-import { useEffect } from "react";
 import {Tabs, Tab} from "@nextui-org/react";
 function HistoryFinancial() {
   let options=[
@@ -10,12 +7,15 @@ function HistoryFinancial() {
       "name":"INGRESOS",
       "type":<ViewHistory 
       table={"income"}
+      table_category = {"income_category"}
     />
     },
     {
       "name":"EGRESOS",
       "type":<ViewHistory 
       table={"expenses"}
+      table_category = {"expenses_category"}
+      
       />
     }
 ]

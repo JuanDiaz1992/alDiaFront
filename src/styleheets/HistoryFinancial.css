@@ -36,11 +36,16 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: 70vh;
     width: 500px;
     max-width: 500px;
+    padding-bottom: 25px;
 }
+.content_history--info_container::-webkit-scrollbar {
+    display: none;
+  }
 .center{
+    align-items: center;
     justify-content: center;
     overflow: hidden;
 }

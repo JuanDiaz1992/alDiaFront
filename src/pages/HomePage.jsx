@@ -13,7 +13,7 @@ function Home() {
   const url = useSelector((state) => state.data_aldia.url);
   const userId = useSelector((state) => state.data_aldia.id_user);
   const dateFunction = date().split("-") 
-  const [dateselected,setDate] = useState(dateFunction)
+  const dateselected = dateFunction;
   const [month, setMonth] = useState(dateselected[1])
   const [year, setYear] = useState(dateselected[0])
   const [haveData,setHaveData] = useState(false)

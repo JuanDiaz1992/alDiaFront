@@ -10,7 +10,7 @@ const initialState = {
   second_last_name:'',
   type_user: 0,
   photo:'',
-  url: 'http://localhost:80/al_dia_backend/',
+  url: process.env.URL_HOST,
 
 };
 

@@ -41,8 +41,8 @@ function Graphics({income, expenses}){
             y: {
                 min: 0,
                 max: 100,
-                display: true, // Oculta el eje Y
-                beginAtZero: true
+                display: false, // Oculta el eje Y
+                beginAtZero: false
     
             },
             x: {
@@ -54,13 +54,20 @@ function Graphics({income, expenses}){
         }
     };
     
+    
     const midata = {
-        labels: ['Gastos', 'Ingresos'],
+        
+        labels: [`Gastos ${expensesPercentage}%`, `Ingresos ${incomesPercentage}%` ],
         datasets: [
             {
                 label: 'Porcentaje',
                 data: [expensesPercentage, incomesPercentage],
-                backgroundColor: ['#043249', '#ff7f3e']
+                backgroundColor: ['#0432499e', '#ff7f3e9c'],
+                borderColor: [
+                    '#043249',
+                    '#ff7f3e',
+                  ],
+                borderWidth: 3
             }
         ]
     };  
