@@ -25,7 +25,7 @@ function NavBar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const { setIsLogout } = props;
-  const url = useSelector((state) => state.data_aldia.url);
+  const url = process.env.REACT_APP_URL_HOST;
   const firstName = useSelector((state) => state.data_aldia.firtsName);
   const last_name = useSelector((state) => state.data_aldia.last_name);
   const photo = useSelector((state) => state.data_aldia.photo);

@@ -1,13 +1,12 @@
 import dateToday from "../../Scripts/obtenerFechaActual";
 import { useEffect, useState } from "react";
 import { Select, SelectItem, Button } from "@nextui-org/react";
-import { IoIosArrowRoundBack } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import getCookie from "../../Scripts/getCookies";
-import formatCompact from "../../Scripts/formatearPesos";
+
 function FormRecord() {
-  const url = useSelector((state) => state.data_aldia.url);
+  const url = process.env.REACT_APP_URL_HOST;
   const userID = useSelector((state) => state.data_aldia.id_user);
   const today = dateToday();
   const [descriptionLabel, setDescriptionLabel] = useState("");
@@ -58,6 +57,7 @@ function FormRecord() {
           }
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   useEffect(() => {

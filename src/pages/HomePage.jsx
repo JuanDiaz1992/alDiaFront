@@ -10,7 +10,7 @@ import formatCompact from "../Scripts/formatearPesos";
 import Graphics from "../components/Home_components/Graphics";
 
 function Home() {
-  const url = useSelector((state) => state.data_aldia.url);
+  const url = process.env.REACT_APP_URL_HOST;
   const userId = useSelector((state) => state.data_aldia.id_user);
   const dateFunction = date().split("-") 
   const dateselected = dateFunction;
@@ -69,6 +69,7 @@ function Home() {
         setLoadin(false)
       });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month,year]);
   const setMonthFuntion = (option)=>{
     if (Number(month) === Number(dateFunction[1]) -1  &&  Number(year) === Number(dateFunction[0])) {

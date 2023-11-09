@@ -1,6 +1,5 @@
 import { useState }from "react";
 import { Button } from "@nextui-org/react";
-import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 function FirstForm({setSaveInfo, setSelectOption}){
     const [firstName, setFirtsName] = useState("");
@@ -11,7 +10,7 @@ function FirstForm({setSaveInfo, setSelectOption}){
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPasword, setConfirmPasword] = useState("");
-    const url = useSelector((state) => state.data_aldia.url);
+    const url = process.env.REACT_APP_URL_HOST;
     
     const setForm = (e) => {
         e.preventDefault();

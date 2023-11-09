@@ -77,11 +77,11 @@
 .buttons_container{
     display: flex;
     gap: 5px;
-    .come_back_button{
-        font-size: 25px;
-        color: white;
-    }
 
+}
+.come_back_button{
+    font-size: 25px;
+    color: white;
 }
 @media only screen and (max-width:500px){
     .form_record_financial_container{

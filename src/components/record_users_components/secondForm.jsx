@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../redux/userSlice";
 import dateToday from "../../Scripts/obtenerFechaActual";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import Cookies from 'js-cookie';
 import GoToTop from "../../Scripts/OnTop";
 
 function SecondForm({ saveInfo }) {
-  const url = useSelector((state)=>state.data_aldia.url);
+  const url = process.env.REACT_APP_URL_HOST;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -181,6 +181,7 @@ function SecondForm({ saveInfo }) {
   };
   useEffect(() => {
     filterCities(departamentSelect);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [departamentSelect]);
   /**************************************************************************/
 

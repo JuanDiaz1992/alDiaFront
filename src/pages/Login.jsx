@@ -16,7 +16,7 @@ import { toast, Toaster } from "react-hot-toast";
 function Login(){
     const navigate = useNavigate();
     const isLoggedIn = useSelector((state) => state.data_aldia.is_logged_in);
-    const url = useSelector((state) => state.data_aldia.url);
+    const url = process.env.REACT_APP_URL_HOST;
     const [name,setName] = useState("");
     const [password,setPassword] =useState("")
   

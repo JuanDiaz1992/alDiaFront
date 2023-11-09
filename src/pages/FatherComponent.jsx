@@ -11,7 +11,7 @@ function FatherComponent(){
     const dispatch = useDispatch();
     let location = useLocation();
     const type_user = useSelector(state => state.data_aldia.type_user );
-    const url = useSelector(state => state.data_aldia.url );
+    const url = process.env.REACT_APP_URL_HOST;
     const validateSession=()=>{
         fetch(`${url}validateSession`, {
             method:"get",
@@ -47,6 +47,7 @@ function FatherComponent(){
             navigate("/")
         }
         setIsLogout(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[type_user,isLogout,location.pathname])
     return(
         <>

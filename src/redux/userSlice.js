@@ -9,9 +9,7 @@ const initialState = {
   last_name:'',
   second_last_name:'',
   type_user: 0,
-  photo:'',
-  url: process.env.URL_HOST,
-
+  photo:''
 };
 
 

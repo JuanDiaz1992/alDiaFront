@@ -2,13 +2,13 @@ import formatCompact from "../../Scripts/formatearPesos";
 import {useState, useEffect} from "react";
 import { useSelector } from "react-redux";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { CircularProgress, Button } from "@nextui-org/react";
+import { CircularProgress } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import date from "../../Scripts/obtenerFechaActual";
 import getCookie from "../../Scripts/getCookies";
 function ViewHistory({table, table_category}) {
-    const url = useSelector((state) => state.data_aldia.url);
+    const url = process.env.REACT_APP_URL_HOST;
     const userId = useSelector((state) => state.data_aldia.id_user);
     const dateFunction = date().split("-");
     const dateselected = dateFunction;
@@ -16,7 +16,6 @@ function ViewHistory({table, table_category}) {
     const [year, setYear] = useState(dateselected[0]);
     const [haveData, setHaveData] = useState(true);
     const [allData,setData] =useState([]);
-    const [totalData,setAllIncome] =useState([]);
     const [loadin, setLoadin] = useState(true);
     const [buttonEnable, setButtonEnable] = useState(false);
     const mesesDelAnio = [
@@ -50,7 +49,6 @@ function ViewHistory({table, table_category}) {
         .then((response) => response.json())
         .then((data) => {
           if (data["status"] === 200) {
-            console.log(data["results"])
             if (data["results"]) {
               setHaveData(true);
               setData(data["results"])
@@ -61,6 +59,7 @@ function ViewHistory({table, table_category}) {
           setLoadin(false);
         });
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [month, year]);
     const setMonthFuntion = (option) => {
       if (
@@ -129,7 +128,7 @@ function ViewHistory({table, table_category}) {
           ) : haveData === true ? (
             <>
               <div className="record_info_container--container">
-                {totalData !== 0 ? (
+                {allData !== 0 ? (
                   <>
                     <motion.div 
                     initial={ table=== "income"? { opacity: 0, x: 15 } : { opacity: 0, x: -15 }}
