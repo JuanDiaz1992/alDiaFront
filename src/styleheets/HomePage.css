@@ -74,8 +74,17 @@
 .bars_container canvas{
     height: 250px;
 }
+.bars_container div{
+    padding: 40px;
+    height: 250px; 
+    text-align: center;
+}
 @media only screen and (max-width:525px){
     .bars_container canvas{
+        width: 80%;
+        height: 350px;
+    }
+    .bars_container div{
         width: 80%;
         height: 350px;
     }

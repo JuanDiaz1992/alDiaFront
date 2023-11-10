@@ -10,6 +10,7 @@ import Admin from '../pages/AdminPage';
 import NewRecord from "../pages/NewRecordUser";
 import RegistroFinanciero from "../pages/Registro_financiero";
 import HistoryFinancial from "../pages/HistoryFinancial";
+import Profile from "../pages/Profile"
 
 function AppRouter(){
 
@@ -36,6 +37,7 @@ function AppRouter(){
                                 <Route index element={<Home />}/>
                                 <Route path="/registro_financiero" element={ <RegistroFinanciero />}/>
                                 <Route path="/historial" element={ <HistoryFinancial />}/>
+                                <Route path="/profile" element={ <Profile />}/>
                             </>
                             ) : (
                             <Route path='*' element={<Navigate to='/Error404' replace />} />

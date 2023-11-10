@@ -115,7 +115,7 @@ function FormRecord() {
     }else{
       toast("Completa todo el formulario", {
         duration: 3000,
-        position: "bottom-right",
+        position: "top",
         icon:  "🚫",
         style: {
           borderRadius: "10px",

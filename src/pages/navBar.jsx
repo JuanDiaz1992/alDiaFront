@@ -125,20 +125,22 @@ function NavBar(props) {
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem textValue="My Settings" className="h-14 gap-2">
-                <p className="font-semibold">Logueado como</p>
                 <p className="font-semibold">{firstName + " " + last_name}</p>
               </DropdownItem>
-              <DropdownItem textValue="My Settings"></DropdownItem>
-              <DropdownItem textValue="My Settings">Mi perfil</DropdownItem>
               <DropdownItem textValue="My Settings">
-                Configurations
+                <NavLink to="/profile" >
+                  Mi perfil
+                </NavLink>
+              </DropdownItem>
+              <DropdownItem textValue="My Settings">
+                Configuraciones
               </DropdownItem>
               <DropdownItem
                 textValue="My Settings"
                 onClick={logOut}
                 color="danger"
               >
-                Log Out
+                Cerrar sesión
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

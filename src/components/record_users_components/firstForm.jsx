@@ -1,6 +1,7 @@
 import { useState }from "react";
 import { Button } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
+import capitalizeFisrtLetter from "../../Scripts/upperCase";
 function FirstForm({setSaveInfo, setSelectOption}){
     const [firstName, setFirtsName] = useState("");
     const [secondName, setSecondName] = useState("");
@@ -22,10 +23,10 @@ function FirstForm({setSaveInfo, setSelectOption}){
                 Module: "user",
             },    
             body:JSON.stringify({
-                "firstName":firstName,
-                "secondName":secondName,
-                "firstLastName":firstLastName,
-                "secondLastName":secondLastName,
+                "firstName":firstName !==""? capitalizeFisrtLetter(firstName) : firstName,
+                "secondName":secondName !==""? capitalizeFisrtLetter(secondName) : secondName,
+                "firstLastName":firstLastName !==""? capitalizeFisrtLetter(firstLastName) : firstLastName,
+                "secondLastName": secondLastName !==""? capitalizeFisrtLetter(secondLastName) : secondName,
                 "email":email,
                 "userName":userName,
                 "password":password,

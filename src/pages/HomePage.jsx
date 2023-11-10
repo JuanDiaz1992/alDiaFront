@@ -28,7 +28,11 @@ function Home() {
 
   
   useEffect(() => {
-    const montAndYear = `${year}-${month}`;
+    let newMonth = month
+    if(month<10){
+      newMonth = month.toString().padStart(2, '0')
+    }
+    const montAndYear = `${year}-${newMonth}`;
     fetch(
       `${url}setStateFinancial?linkTo=id_user&equalTo=${userId}&date=date&dateTo=${montAndYear}`,
       {
@@ -42,6 +46,8 @@ function Home() {
     )
       .then((response) => response.json())
       .then((data) => {
+        setExpenses(0);
+        setIncome(0);
         if (data["status"] === 200) {
         if (data["results"]) {
           setHaveData(true)
@@ -51,8 +57,6 @@ function Home() {
               for (let i = 0; i < data["results"][j]["expenses"].length; i++) {
                 total += data["results"][j]["expenses"][i]["amount"];
               }
-   
-              // setExpenses(formatCompact(total));
               setExpenses(total);
             }
             if (data["results"][j]["income"]) {
@@ -62,6 +66,7 @@ function Home() {
               }
               setIncome(total);
             }
+
           }
         }}else{
           setHaveData(false)
@@ -70,7 +75,7 @@ function Home() {
       });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month,year]);
+  }, [month]);
   const setMonthFuntion = (option)=>{
     if (Number(month) === Number(dateFunction[1]) -1  &&  Number(year) === Number(dateFunction[0])) {
       setButtonEnable(false)

@@ -24,8 +24,8 @@ ChartJS.register(
 function Graphics({income, expenses}){
     
     
-    const expensesPercentage = Math.round((expenses / income) * 100);
-    const incomesPercentage = 100 - (expensesPercentage);
+    const expensesPercentage = income !== 0 ? Math.round((expenses / income) * 100) : 0;
+    const incomesPercentage = 100 - expensesPercentage;
 
     const misoptions = {
         responsive: true,
@@ -56,7 +56,7 @@ function Graphics({income, expenses}){
     
     const midata = {
         
-        labels: [`Gastos ${expensesPercentage}%`, `Ingresos ${incomesPercentage}%` ],
+        labels: [`Gastos ${expensesPercentage}%`, income ? `Ingresos ${incomesPercentage}%` : 'Sin Ingresos' ],
         datasets: [
             {
                 label: 'Porcentaje',
@@ -73,7 +73,12 @@ function Graphics({income, expenses}){
     return(
         <>
             <div className="bars_container">
-                <Bar data={midata} options={misoptions} />
+                {income === 0? 
+                    <div><h3>No hay ingresos registrados en este mes, no es posible generar una gráfica.</h3></div>
+                :
+                    <Bar data={midata} options={misoptions} />
+                }
+
             </div>
         </>
     )

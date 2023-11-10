@@ -34,7 +34,11 @@ function ViewHistory({table, table_category}) {
     ];
   
     useEffect(() => {
-      const montAndYear = `${year}-${month}`;
+      let newMonth = month
+      if(month<10){
+        newMonth = month.toString().padStart(2, '0')
+      }
+      const montAndYear = `${year}-${newMonth}`;
       fetch(
         `${url}expensesAndIncome?linkTo=id_user&equalTo=${userId}&date=date&dateTo=${montAndYear}&tableSelected=${table}&category_selected=${table_category}`,
         {
