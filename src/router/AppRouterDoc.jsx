@@ -1,7 +1,6 @@
 import React from "react";
 import {HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
-
 import FatherComponent from '../pages/FatherComponent';
 import Error404 from '../pages/Error404Page';
 import Home from '../pages/HomePage'
@@ -49,3 +48,4 @@ function AppRouter(){
     )
 }
 export default AppRouter
+

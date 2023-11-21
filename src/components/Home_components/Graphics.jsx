@@ -74,7 +74,7 @@ function Graphics({income, expenses}){
         <>
             <div className="bars_container">
                 {income === 0? 
-                    <div><h3>No hay ingresos registrados en este mes, no es posible generar una gráfica.</h3></div>
+                    <div><h3>No hay ingresos registrados, no es posible generar una gráfica.</h3></div>
                 :
                     <Bar data={midata} options={misoptions} />
                 }

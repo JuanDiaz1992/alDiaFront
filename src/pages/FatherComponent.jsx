@@ -7,6 +7,7 @@ import setCookie from "../Scripts/borrarCookies";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 import { Toaster } from "react-hot-toast";
+import 'react-confirm-alert/src/react-confirm-alert.css';
 function FatherComponent(){
     const dispatch = useDispatch();
     let location = useLocation();

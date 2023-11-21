@@ -1,10 +1,12 @@
 import formatCompact from "../../Scripts/formatearPesos";
 import {useState, useEffect} from "react";
 import { useSelector } from "react-redux";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward, IoIosArrowBack, IoIosClose  } from "react-icons/io";
 import { CircularProgress } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import { confirmAlert } from "react-confirm-alert";
+import { toast } from "react-hot-toast"
 import date from "../../Scripts/obtenerFechaActual";
 import getCookie from "../../Scripts/getCookies";
 function ViewHistory({table, table_category}) {
@@ -18,6 +20,7 @@ function ViewHistory({table, table_category}) {
     const [allData,setData] =useState([]);
     const [loadin, setLoadin] = useState(true);
     const [buttonEnable, setButtonEnable] = useState(false);
+    const [deleteItemUpdate, setDeleteItemUpdate] = useState(false);
     const mesesDelAnio = [
       "Enero",
       "Febrero",
@@ -61,10 +64,11 @@ function ViewHistory({table, table_category}) {
             setHaveData(false);
           }
           setLoadin(false);
+          setDeleteItemUpdate(false)
         });
-
+        
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [month, year]);
+    }, [month, year,deleteItemUpdate]);
     const setMonthFuntion = (option) => {
       if (
         Number(month) === Number(dateFunction[1]) - 1 &&
@@ -102,6 +106,48 @@ function ViewHistory({table, table_category}) {
         }
       }
     };
+    const deleteItem =  (idSelected,table)=>{
+      confirmAlert({
+        title: "Confirmación de eliminación",
+        message: `¿Estás seguro que deseas eliminar este registro?`,
+        buttons: [
+          {
+            label: "Sí",
+            onClick: async () => {
+            try {
+              await fetch(url,{
+                method:"DELETE",
+                mode:"cors",
+                headers:{
+                  Authorization: "Token " + getCookie("token"),
+                  Module: "financial_record",
+                },
+                body:JSON.stringify({
+                  table:table,
+                  id:idSelected,
+                  deleteItem:true
+                })
+              })
+              .then(response=>response.json())
+              .then(data=>{
+                if(data["status"]===200){
+                  toast.success('Registro eliminado.')
+                  setDeleteItemUpdate(true)
+                }
+                
+              })
+            } catch (error) {
+              console.log(error)
+            }
+          },
+        },
+          {
+            label: "No",
+            onClick: () => {}, // No hace nada
+          },
+        ],
+      });
+    }
   return (
     <>
       <div className="content_history">
@@ -144,14 +190,16 @@ function ViewHistory({table, table_category}) {
                     className="record_info_container">
                       {allData.map((data, index) => (
                         <div className="record_info" key={index}>
-                          <div className={table=== "income"? "circle2":"circle1"}></div>
+                          <div className={table === "income"? "circle2History":"circle1History"}></div>
                           <div className="record_info--info">
                             <p>Descipción: {data.description}</p>
                             <p>Categoría: {data.name_category}</p>
                             <p>Total: {formatCompact(data.amount)}</p>
                             <p>Fecha: {data.date}</p>
+                            
                             <hr />
                           </div>
+                          <IoIosClose onClick={()=>deleteItem(data["id"],table)}/>
                         </div>
                       ))}
                     </motion.div>

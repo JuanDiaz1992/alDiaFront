@@ -191,7 +191,7 @@ function SecondForm({ saveInfo }) {
       <form onSubmit={(e) => setForm(e)} className="form_record">
         <div className="input_new_record">
           <h2>
-            La siguiente información es crucial para que "AlDía" pueda elaborar
+            La siguiente información es crucial para que "ALDÍA" pueda elaborar
             su declaración de renta de manera precisa y completa.
           </h2>
         </div>
