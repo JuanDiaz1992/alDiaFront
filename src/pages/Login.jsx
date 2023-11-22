@@ -50,7 +50,7 @@ function Login(){
             dispatch(login(data));
             const token = data.token;
             Cookies.set('token', token, { SameSite: 'None', secure: true });
-  
+
             navigate("/", {
               replace: true,
               state: {

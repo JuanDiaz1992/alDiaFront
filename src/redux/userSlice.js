@@ -46,12 +46,16 @@ const authSlice = createSlice({
       const {name} = action.payload;
       state.name = name;
     },
+    changePhoto:(state, action) => {
+      const {foto_perfil} = action.payload;
+      state.photo = foto_perfil;
+    },
   },
 });
 
 
 
-export const { login, logout, changeName } = authSlice.actions;
+export const { login, logout, changeName, changePhoto } = authSlice.actions;
 
 
 

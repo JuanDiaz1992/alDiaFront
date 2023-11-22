@@ -11,7 +11,7 @@ function HistoryFinancial() {
     />
     },
     {
-      "name":"EGRESOS",
+      "name":"GASTOS",
       "type":<ViewHistory 
       table={"expenses"}
       table_category = {"expenses_category"}

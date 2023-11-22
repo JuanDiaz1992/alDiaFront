@@ -10,7 +10,7 @@
     align-items: center;
     width: 100%;
     height: 100vh;
-    padding: 130px 10px 40px 10px;
+    padding: 130px 20px 40px 20px;
 }
 
 .data_container{
@@ -61,4 +61,16 @@
 }
 .view_more{
     cursor: pointer;
+}
+.change_picture_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.change_picture_container svg{
+    color: #043249;
+    font-size: 20px;
 }

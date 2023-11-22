@@ -190,7 +190,7 @@ function ViewHistory({table, table_category}) {
                     className="record_info_container">
                       {allData.map((data, index) => (
                         <div className="record_info" key={index}>
-                          <div className={table === "income"? "circle2History":"circle1History"}></div>
+                          <div className={table === "income"? "circle1History":"circle2History"}></div>
                           <div className="record_info--info">
                             <p>Descipción: {data.description}</p>
                             <p>Categoría: {data.name_category}</p>
