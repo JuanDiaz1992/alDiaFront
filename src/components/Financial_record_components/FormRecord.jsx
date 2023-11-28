@@ -4,10 +4,11 @@ import { Select, SelectItem, Button } from "@nextui-org/react";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import getCookie from "../../Scripts/getCookies";
-
+import changeNamePicture from "../../Scripts/changeNamePicture";
 function FormRecord() {
   const url = process.env.REACT_APP_URL_HOST;
   const userID = useSelector((state) => state.data_aldia.id_user);
+  const userName = useSelector((state) => state.data_aldia.username);
   const today = dateToday();
   const [descriptionLabel, setDescriptionLabel] = useState("");
   const [tablePost, setTablePost] = useState("");
@@ -17,7 +18,9 @@ function FormRecord() {
   const [categoryFromBd, setCategoryFromBd] = useState([]);
   const [category, setCategory] = useState(new Set([]));
   const [type, setType] = useState(new Set([]));
-  const [formIsOk,setStateForm] = useState(false)
+  const [formIsOk,setStateForm] = useState(false);
+  const [file,setFile] = useState(null);
+  const [fileFull,setFileFUll] = useState(null);
   const options = [
     {
       name: "Gastos",
@@ -61,7 +64,6 @@ function FormRecord() {
   }, [type]);
 
   useEffect(() => {
-
     if (amount.length>2 && date && category["size"] > 0 && description.length>3) {
       setStateForm(true)
     } else {
@@ -71,33 +73,41 @@ function FormRecord() {
 
   const sendInfo = (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    let photo = null
+    if(fileFull){
+      const tiempoActual = Date.now().toString();
+      photo = changeNamePicture(fileFull,`${tiempoActual}-${userID}`);
+    }
+    formData.append("photo",photo);
+    formData.append("userName",userName);
+    formData.append("table",tablePost);
+    formData.append("id_user",userID);
+    formData.append("date",date);
+    formData.append("amount",amount);
+    formData.append("description",description);
+    formData.append("category",categoryFromBd[category["currentKey"]]["id"]);
+    formData.append("record_income",true);
     if (amount && date && categoryFromBd[category["currentKey"]]["id"]) {
       fetch(url, {
         method: "POST",
         mode: "cors",
+        body:formData,
         headers: {
           Authorization: "Token " + getCookie("token"),
           Module: "financial_record",
-        },
-        body: JSON.stringify({
-          table: tablePost,
-          id_user: userID,
-          date: date,
-          amount: amount,
-          description: description,
-          category: categoryFromBd[category["currentKey"]]["id"],
-          record_income: true,
-        }),
+        }
       })
         .then((response) => response.json())
         .then((data) => {
           let icon = "";
           if (data.status === 200) {
             icon = "👏";
+            setFile(null);
+            setFileFUll(null);
             setDate(today);
             setAmount("");
             setDescription("");
-            setCategory(["$.0"]);
           } else {
             icon = "🚫";
           }
@@ -125,6 +135,15 @@ function FormRecord() {
       });
     }
   };
+  const manejarSeleccionImagen = (e) => {
+    setFileFUll(e.target.files[0]);
+    const archivo = e.target.files[0];
+    if (archivo) {
+      const urlTemporal = URL.createObjectURL(archivo);
+      setFile(urlTemporal);
+    }
+  };
+
   return (
     <>
       <div className="form_record_financial_container">
@@ -146,6 +165,21 @@ function FormRecord() {
           className={"formRecord " + (type["size"] > 0 ? "" : "form_disabled")}
           onSubmit={(e) => sendInfo(e)}
         >
+          <div className="input_new_record">
+            <Select
+              id="departament"
+              label="Categoría"
+              onSelectionChange={setCategory}
+              placeholder="Seleccione una categoría"
+              required
+            >
+              {categoryFromBd.map((category, index) => (
+                <SelectItem key={index} value={category["id"]}>
+                  {category["name_category"]}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
           <div className="input_new_record">
             <label htmlFor="date">Fecha</label>
             <input
@@ -176,20 +210,17 @@ function FormRecord() {
               placeholder={descriptionLabel}
             />
           </div>
-          <div className="input_new_record">
-            <Select
-              id="departament"
-              label="Categoría"
-              onSelectionChange={setCategory}
-              placeholder="Seleccione una categoría"
-              required
-            >
-              {categoryFromBd.map((category, index) => (
-                <SelectItem key={index} value={category["id"]}>
-                  {category["name_category"]}
-                </SelectItem>
-              ))}
-            </Select>
+          <div className="">
+            {file &&
+              <img src={file} alt="" />
+            }
+            <label htmlFor="file">Comprobante</label>
+            <input
+              id="file"
+              onChange={manejarSeleccionImagen}
+              type="file"
+            />
+            <p className="text_info">Si tienes una fotografría del comprobante, subelo aquí</p>
           </div>
           <div className="buttons_container">
             <Button  color={formIsOk? "primary": "default"} className={formIsOk? "":"form_disabled"} type="submit">

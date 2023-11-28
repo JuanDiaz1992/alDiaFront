@@ -92,7 +92,6 @@ function ProfileInfo() {
               Contraseña
             </Button>
           </div>
-
           <div>
             <h4>
               <strong>Detalles</strong>
@@ -173,8 +172,8 @@ function ProfileInfo() {
           </div>
         </div>
       ))}
-        <Modal 
-        isOpen={isOpen} 
+        <Modal
+        isOpen={isOpen}
         placement="bottom-center"
         onOpenChange={onOpenChange} 
         motionProps={{

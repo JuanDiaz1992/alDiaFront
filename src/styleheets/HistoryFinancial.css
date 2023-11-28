@@ -98,6 +98,14 @@
     background-color: var(--color-secondary);
 }
 
+.photo_mini{
+    width: 100px;
+    cursor: pointer;
+}
+.img_modal{
+    max-height: 75vh;
+}
+
 @media only screen and (max-width:703px){
     .content_history--info_container{
         width:300px;

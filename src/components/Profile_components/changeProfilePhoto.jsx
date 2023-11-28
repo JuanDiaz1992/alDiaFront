@@ -10,6 +10,8 @@ import {
 } from "@nextui-org/react";
 import getCookie from "../../Scripts/getCookies";
 import { useSelector } from "react-redux"
+import changeNamePicture from "../../Scripts/changeNamePicture";
+
 function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
   const photo = useSelector((state) => state.data_aldia.photo);
   console.log(photo)
@@ -27,13 +29,7 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
   };
   useEffect(() => {
     if (selectedFile) {
-      const partes = selectedFile["name"].split(".");
-      const extension = partes[partes.length - 1];
-      const newName = `profilePicture.${extension}`;
-      const modifiedFile = new File([selectedFile], newName, {
-        type: selectedFile.type,
-      });
-      console.log(newName);
+      const modifiedFile = changeNamePicture(selectedFile,"profilePicture");
       let formData = new FormData();
       formData.append("id", id);
       formData.append("photo", modifiedFile);

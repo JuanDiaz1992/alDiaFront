@@ -2,7 +2,7 @@ import formatCompact from "../../Scripts/formatearPesos";
 import {useState, useEffect} from "react";
 import { useSelector } from "react-redux";
 import { IoIosArrowForward, IoIosArrowBack, IoIosClose  } from "react-icons/io";
-import { CircularProgress } from "@nextui-org/react";
+import {CircularProgress , Modal, ModalContent, ModalBody, Image, useDisclosure} from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { confirmAlert } from "react-confirm-alert";
@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast"
 import date from "../../Scripts/obtenerFechaActual";
 import getCookie from "../../Scripts/getCookies";
 function ViewHistory({table, table_category}) {
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const url = process.env.REACT_APP_URL_HOST;
     const userId = useSelector((state) => state.data_aldia.id_user);
     const dateFunction = date().split("-");
@@ -21,6 +22,7 @@ function ViewHistory({table, table_category}) {
     const [loadin, setLoadin] = useState(true);
     const [buttonEnable, setButtonEnable] = useState(false);
     const [deleteItemUpdate, setDeleteItemUpdate] = useState(false);
+    const [imgSelected,setImgSelected] = useState("")
     const mesesDelAnio = [
       "Enero",
       "Febrero",
@@ -35,7 +37,6 @@ function ViewHistory({table, table_category}) {
       "Noviembre",
       "Diciembre",
     ];
-  
     useEffect(() => {
       let newMonth = month
       if(month<10){
@@ -66,7 +67,6 @@ function ViewHistory({table, table_category}) {
           setLoadin(false);
           setDeleteItemUpdate(false)
         });
-        
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [month, year,deleteItemUpdate]);
     const setMonthFuntion = (option) => {
@@ -134,7 +134,6 @@ function ViewHistory({table, table_category}) {
                   toast.success('Registro eliminado.')
                   setDeleteItemUpdate(true)
                 }
-                
               })
             } catch (error) {
               console.log(error)
@@ -147,6 +146,10 @@ function ViewHistory({table, table_category}) {
           },
         ],
       });
+    }
+    const openImg=(img)=>{
+      onOpen()
+      setImgSelected(img)
     }
   return (
     <>
@@ -180,7 +183,7 @@ function ViewHistory({table, table_category}) {
               <div className="record_info_container--container">
                 {allData !== 0 ? (
                   <>
-                    <motion.div 
+                    <motion.div
                     initial={ table=== "income"? { opacity: 0, x: 15 } : { opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{
@@ -196,7 +199,9 @@ function ViewHistory({table, table_category}) {
                             <p>Categoría: {data.name_category}</p>
                             <p>Total: {formatCompact(data.amount)}</p>
                             <p>Fecha: {data.date}</p>
-                            
+                            {data["photo"] &&
+                              <Image onClick={()=>openImg(url + data["photo"])} isZoomed className="photo_mini" src={url + data["photo"]} alt="" />
+                            }
                             <hr />
                           </div>
                           <IoIosClose onClick={()=>deleteItem(data["id"],table)}/>
@@ -225,6 +230,39 @@ function ViewHistory({table, table_category}) {
           )}
         </div>
       </div>
+      <Modal
+        backdrop="opaque"
+        size="3xl"
+        isOpen={isOpen}
+        placement="center"
+        onOpenChange={onOpenChange}
+        motionProps={{
+          variants: {
+            enter: {
+              y: -20,
+              opacity: 1,
+              transition: {
+                duration: 0.3,
+                ease: "easeOut",
+              },
+            },
+            exit: {
+              y: 0,
+              opacity: 0,
+              transition: {
+                duration: 0.2,
+                ease: "easeIn",
+              },
+            },
+          }
+        }}
+      >
+      <ModalContent>
+        <ModalBody>
+          <img className="img_modal" src={imgSelected} alt="incomeOrExpensePicture" />
+        </ModalBody>
+      </ModalContent>
+      </Modal>
     </>
   );
 }
