@@ -5,7 +5,7 @@ function Profile(){
 
     return(
         <>
-            <div className="profile_container">                   
+            <div className="profile_container">
                 <ProfileInfo />
             </div>
         </>
