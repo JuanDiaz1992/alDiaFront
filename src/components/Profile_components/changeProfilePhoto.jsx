@@ -14,10 +14,9 @@ import changeNamePicture from "../../Scripts/changeNamePicture";
 
 function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
   const photo = useSelector((state) => state.data_aldia.photo);
-  console.log(photo)
   const url = process.env.REACT_APP_URL_HOST;
   const [selectedFile, setSelectedFile] = useState(null);
-
+  console.log(photo)
   //Al hacer click al botón, se abre un input de tipo file
   //Y se carga la imagen en el estado selectedFile
   const handleIconClick = () => {
@@ -29,7 +28,14 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
   };
   useEffect(() => {
     if (selectedFile) {
-      const modifiedFile = changeNamePicture(selectedFile,"profilePicture");
+      let newNAme = "profilePicture_0_"
+      if(photo!==null && photo!==""){
+        let number = photo.split("_");
+        console.log(number[3])
+        let sum = isNaN(parseInt(number[3]))? 0 : parseInt(number[3]) + 1;
+        newNAme = `profilePicture_${sum}_`
+      }
+      const modifiedFile = changeNamePicture(selectedFile,newNAme);
       let formData = new FormData();
       formData.append("id", id);
       formData.append("photo", modifiedFile);
@@ -47,8 +53,8 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
         .then((response) => response.json())
         .then((data) => {
           if (data["status"] === 200) {
-            setChangesProps(true);
             onOpenChange();
+            setChangesProps(true);
           }
         });
     }
@@ -71,8 +77,8 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
       .then((response) => response.json())
       .then((data) => {
         if (data["status"] === 200) {
-          setChangesProps(true);
           onOpenChange();
+          setChangesProps(true);
         }
       });
   };
@@ -104,7 +110,7 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
                 >
                   <FaCamera />
                 </Button>
-                {photo !== null&& 
+                {photo !== null&&
                     <Button
                     radius="full"
                     onClick={deltePhoto}
@@ -116,7 +122,6 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
                     <MdDelete />
                   </Button>
                 }
-
               </form>
             </ModalBody>
             <ModalFooter>

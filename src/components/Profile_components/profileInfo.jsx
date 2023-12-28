@@ -3,10 +3,10 @@ import getCookie from "../../Scripts/getCookies";
 import { useEffect, useState } from "react";
 import defaultPhoto from "../../img/default_user.png";
 import {
-    Modal, 
+    Modal,
     Avatar,
-    Button, 
-    useDisclosure, 
+    Button,
+    useDisclosure,
 } from "@nextui-org/react";
 import {
   AiFillCamera,
@@ -34,30 +34,28 @@ function ProfileInfo() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   /**/
 
-  const getProfile = async () => {
+  useEffect(() => {
     try {
-      const response = await fetch(`${url}profile?linkTo=id&equalTo=${id}`, {
+      fetch(`${url}profile?linkTo=id&equalTo=${id}`, {
         method: "GET",
         mode: "cors",
         headers: {
           Authorization: "Token " + getCookie("token"),
           Module: "user",
         },
-      });
-      const data = await response.json();
-      if (data["status"] === 200) {
-        setAllData(data["results"]);
-        if(haveChanges){
-          dispatch(changePhoto(data["results"][0]));
+      })
+      .then(response=>response.json())
+      .then(data=>{
+        if (data["status"] === 200) {
+          setAllData(data["results"]);
+          if(haveChanges === true){
+            dispatch(changePhoto(data["results"][0]));
+          }
         }
-      }
+      })
     } catch (error) {}
     setChanges(false)
-  };
-  useEffect(() => {
-    getProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [haveChanges]);
+  },[haveChanges,url,id,dispatch]);
 
 
 
@@ -197,9 +195,9 @@ function ProfileInfo() {
           }
         }}
       >
-        <ChangeProfilePhoto 
-          onOpenChange={onOpenChange} 
-          user={user} 
+        <ChangeProfilePhoto
+          onOpenChange={onOpenChange}
+          user={user}
           setChangesProps={setChanges}
           id={id}
           />
