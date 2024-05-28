@@ -9,45 +9,53 @@ import {
   DropdownMenu,
   Avatar,
 } from "@nextui-org/react";
+import axios from "../api/axiosInstance";
+import React, { useState, useEffect } from 'react';
 import { useSelector } from "react-redux";
 import Logo from "../img/logoNavBar.png";
 import "../styleheets/navBar.css";
-import getCookie from "../Scripts/getCookies";
-import setCookie from "../Scripts/borrarCookies";
+import Cookies from 'js-cookie';
 import { useDispatch } from "react-redux";
-import { logout } from "../redux/userSlice";
-import { NavLink, useLocation } from "react-router-dom";
+import { deleteStoreData } from "../redux/userSlice";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import dafaultPhotoUser from "../img/default_user.png";
 import { TbReportSearch, TbHome2, TbHistory, TbHelp } from "react-icons/tb";
-import { HiOutlineDocumentAdd } from "react-icons/hi"
+import { HiOutlineDocumentAdd } from "react-icons/hi";
+import { useAuth } from "../context/AuthContext";
 
 function NavBar(props) {
-  const dispatch = useDispatch();
+  const dispatchUserData = useDispatch();
+  const { dispatch } = useAuth();
   const location = useLocation();
-  const { setIsLogout } = props;
-  const url = process.env.REACT_APP_URL_HOST;
   const firstName = useSelector((state) => state.data_aldia.firtsName);
   const last_name = useSelector((state) => state.data_aldia.last_name);
-  const photo = useSelector((state) => state.data_aldia.photo);
-  const logOut = () => {
-    fetch(url, {
-      method: "DELETE",
-      mode: "cors",
-      headers: {
-        Authorization: "Token " + getCookie("token"),
-        Module: "user",
-      },
-      body: JSON.stringify({
-        logout_request: true,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCookie("loggedIn", false);
-        setIsLogout(false);
-        dispatch(logout());
-      });
+  const navigate = useNavigate()
+  const logout = () => {
+    Cookies.remove('token');
+    dispatchUserData(deleteStoreData());
+    dispatch({ type: 'LOGOUT' });
+    navigate("/login")
   };
+
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+  useEffect(() => {
+    const fetchProfilePhoto = async () => {
+      try {
+        const response = await axios.get('img/users/admin/profile.webp');
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const imageUrl = URL.createObjectURL(blob);
+        setProfilePhotoUrl(imageUrl);
+        console.log(response)
+      } catch (error) {
+        console.error('Error fetching profile photo:', error);
+        setProfilePhotoUrl(dafaultPhotoUser);
+      }
+    };
+
+    fetchProfilePhoto();
+  }, []);
+
+
 
   return (
     <>
@@ -120,7 +128,8 @@ function NavBar(props) {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={photo === null ? dafaultPhotoUser : url + photo}
+                src={profilePhotoUrl}
+                alt="Profile"
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -137,7 +146,7 @@ function NavBar(props) {
               </DropdownItem>
               <DropdownItem
                 textValue="My Settings"
-                onClick={logOut}
+                onClick={logout}
                 color="danger"
               >
                 Cerrar sesión

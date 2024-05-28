@@ -1,14 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  is_logged_in: false,
-  id_user:'',
+  idUser:'',
   username: '',
   firtsName:'',
   middleName:'',
-  last_name:'',
-  second_last_name:'',
-  type_user: 0,
+  lastName:'',
+  surnamen:'',
+  rol: "",
   photo:'',
 };
 
@@ -19,27 +18,25 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      const { username,id_user, is_logged_in, firtsName, middleName, last_name, second_last_name, type_user, photo } = action.payload;
-      state.is_logged_in = is_logged_in;
-      state.id_user = id_user;
+      const { username,idUser,  firtsName, middleName, lastName, surnamen, rol, photo } = action.payload;
+      state.idUser = idUser;
       state.username = username;
       state.firtsName = firtsName;
       state.middleName = middleName;
-      state.last_name = last_name;
-      state.second_last_name = second_last_name;
-      state.type_user = type_user;
+      state.lastName = lastName;
+      state.surnamen = surnamen;
+      state.rol = rol;
       state.photo = photo
     },
-    logout: (state) => {
-      state.is_logged_in = false;
+    deleteStoreData: (state) => {
       state.username = '';
       state.firtsName = '';
       state.middleName = '';
-      state.last_name = '';
-      state.second_last_name = '';
-      state.type_user = 0;
+      state.lastName = '';
+      state.surnamen = '';
+      state.rol = "";
       state.photo = '';
-      state.id_user = '';
+      state.idUser = '';
     },
 
     changeName:(state, action) => {
@@ -55,7 +52,7 @@ const authSlice = createSlice({
 
 
 
-export const { login, logout, changeName, changePhoto } = authSlice.actions;
+export const { login, deleteStoreData, changeName, changePhoto } = authSlice.actions;
 
 
 

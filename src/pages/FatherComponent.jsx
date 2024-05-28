@@ -1,58 +1,32 @@
-import { Outlet, useNavigate,useLocation  } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import NavBar from "./navBar";
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from "react";
+import { useNavigate, useLocation  } from "react-router-dom";
 import getCookie from "../Scripts/getCookies";
-import setCookie from "../Scripts/borrarCookies";
-import { useDispatch } from "react-redux";
-import { logout } from "../redux/userSlice";
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 function FatherComponent(){
-    const dispatch = useDispatch();
     let location = useLocation();
-    const type_user = useSelector(state => state.data_aldia.type_user );
-    const url = process.env.REACT_APP_URL_HOST;
-    const validateSession=()=>{
-        fetch(`${url}validateSession`, {
-            method:"get",
-            mode:"cors",
-            headers:{
-                Authorization: "Token " + getCookie("token"),
-                Module: "user",
-            }     
-        })
-        .then(response=>response.json())
-        .then(data=>{
-            if (!data.status === 200) {
-                dispatch(logout());
-                setCookie("loggedIn", false);
-            }
-        })
-        .catch(error => {
-            dispatch(logout());
-            setCookie("loggedIn", false);
-        })
-
-
-    }
-
-
     const navigate = useNavigate()
-    const [isLogout,setIsLogout] = useState(false)
-    useEffect(()=>{
-        validateSession()
-        if(type_user === 0 && location.pathname !== "/newRecord" ){
-            navigate("/login")
-        }else if (type_user > 0 && location.pathname === "/newRecord"){
+    let token = getCookie("token");
+    let setIsAuthenticated = false
+    if(token){
+        setIsAuthenticated=true;
+    }else{
+        setIsAuthenticated=false;
+    }
+    useEffect(() => {
+        if ( token && location.pathname === "/login"){
             navigate("/")
         }
-        setIsLogout(false)
+        if(!token && location.pathname !== "/newRecord"){
+            navigate("/login")
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[type_user,isLogout,location.pathname])
+    }, [location.pathname]);
     return(
         <>
-            {type_user>0?  <NavBar setIsLogout={setIsLogout}/>:<></>}      
+            {setIsAuthenticated === true?  <NavBar/>:<></>}
             <Outlet />
             <Toaster position="top-center" reverseOrder={true} />
         </>

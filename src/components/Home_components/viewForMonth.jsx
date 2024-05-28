@@ -1,18 +1,16 @@
 
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { CircularProgress } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
 import date from "../../Scripts/obtenerFechaActual";
-import getCookie from "../../Scripts/getCookies";
 import formatCompact from "../../Scripts/formatearPesos";
 import Graphics from "./Graphics";
-
+import axios from "../../api/axiosInstance";
 function ViewForMonth() {
-  const url = process.env.REACT_APP_URL_HOST;
-  const userId = useSelector((state) => state.data_aldia.id_user);
-  const dateFunction = date().split("-") 
+
+
+  const dateFunction = date().split("-")
   const dateselected = dateFunction;
   const [month, setMonth] = useState(dateselected[1])
   const [year, setYear] = useState(dateselected[0])
@@ -25,64 +23,42 @@ function ViewForMonth() {
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
-
-  
   useEffect(() => {
     let newMonth = month
     if(month<10){
       newMonth = month.toString().padStart(2, '0')
     }
     const montAndYear = `${year}-${newMonth}`;
-    fetch(
-      `${url}setStateFinancial?linkTo=id_user&equalTo=${userId}&date=date&dateTo=${montAndYear}`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          Authorization: "Token " + getCookie("token"),
-          Module: "financial_record",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
+      axios.get(`api/v1/users/financial/allAmount/month/${montAndYear}`)
+      .then(response => {
+        const data = response.data;
         setExpenses(0);
         setIncome(0);
-        if (data["status"] === 200) {
-        if (data["results"]) {
+        if (data) {
           setHaveData(true)
-          for (let j = 0; j < data["results"].length; j++) {
-            if (data["results"][j]["expenses"]) {
-              let total = 0;
-              for (let i = 0; i < data["results"][j]["expenses"].length; i++) {
-                total += parseInt(data["results"][j]["expenses"][i]["amount"]);
-              }
-              setExpenses(total);
-            }
-            if (data["results"][j]["income"]) {
-              let total = 0;
-              for (let i = 0; i < data["results"][j]["income"].length; i++) {
-                total += parseInt(data["results"][j]["income"][i]["amount"]);
-              }
-              setIncome(total);
-            }
-
+          if (data.expenses>0) {
+            setExpenses(data.expenses);
           }
-        }}else{
+          if (data.income>0) {
+            setIncome(data.income);
+          }
+        }else{
           setHaveData(false)
         }
         setLoadin(false)
+      })
+      .catch(error=>{
+        setHaveData(false)
       });
+  }, [month, year]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month]);
+
   const setMonthFuntion = (option)=>{
     if (Number(month) === Number(dateFunction[1]) -1  &&  Number(year) === Number(dateFunction[0])) {
       setButtonEnable(false)
     }
-   if (option) {
+    if (option) {
       if (Number(month) === Number(dateFunction[1])  &&  Number(year) === Number(dateFunction[0]) ) {
-        
       }else if(Number(year) !== Number(dateFunction[0]) && Number(month) === 12 ){
         let newMonth = 1;
         setMonth(newMonth);

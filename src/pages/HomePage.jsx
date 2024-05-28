@@ -3,9 +3,8 @@ import ViewForMonth from "../components/Home_components/viewForMonth";
 import ViewForYear from "../components/Home_components/viewForYear";
 import {Tabs, Tab} from "@nextui-org/react";
 function Home() {
-
   let options=[
-    { 
+    {
       "name":"MES",
       "type":<ViewForMonth />
     },
@@ -25,11 +24,8 @@ function Home() {
                 <>
                   {item.type}
                 </>
-                
               </Tab>
             )}
-
-
       </Tabs>
       </div>
     </>
