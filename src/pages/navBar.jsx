@@ -9,7 +9,6 @@ import {
   DropdownMenu,
   Avatar,
 } from "@nextui-org/react";
-import axios from "../api/axiosInstance";
 import React, { useState, useEffect } from 'react';
 import { useSelector } from "react-redux";
 import Logo from "../img/logoNavBar.png";
@@ -22,11 +21,13 @@ import dafaultPhotoUser from "../img/default_user.png";
 import { TbReportSearch, TbHome2, TbHistory, TbHelp } from "react-icons/tb";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
+import fetchDataImg from "../api/fetchGetInstanceImg";
 
-function NavBar(props) {
+function NavBar() {
   const dispatchUserData = useDispatch();
   const { dispatch } = useAuth();
   const location = useLocation();
+  const photo = useSelector(state=>state.data_aldia.photo)
   const firstName = useSelector((state) => state.data_aldia.firtsName);
   const last_name = useSelector((state) => state.data_aldia.last_name);
   const navigate = useNavigate()
@@ -39,21 +40,16 @@ function NavBar(props) {
 
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   useEffect(() => {
-    const fetchProfilePhoto = async () => {
-      try {
-        const response = await axios.get('img/users/admin/profile.webp');
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-        const imageUrl = URL.createObjectURL(blob);
-        setProfilePhotoUrl(imageUrl);
-        console.log(response)
-      } catch (error) {
-        console.error('Error fetching profile photo:', error);
-        setProfilePhotoUrl(dafaultPhotoUser);
-      }
-    };
-
-    fetchProfilePhoto();
-  }, []);
+    fetchDataImg(photo)
+    .then(response => {
+      const imageUrl = URL.createObjectURL(response);
+      setProfilePhotoUrl(imageUrl);
+    })
+    .catch(error => {
+      console.error('Error fetching profile photo:', error);
+      setProfilePhotoUrl(dafaultPhotoUser);
+    });
+  }, [photo]);
 
 
 

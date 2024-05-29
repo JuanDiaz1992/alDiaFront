@@ -48,7 +48,6 @@ function Login() {
           </span>
         ));
       } else {
-        console.error("Error:", error.message);
         toast.error(
           `Error HTTP: ${
             error.response ? error.response.status : error.message

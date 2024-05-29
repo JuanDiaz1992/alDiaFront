@@ -1,72 +1,55 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { CircularProgress } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import date from "../../Scripts/obtenerFechaActual";
-import getCookie from "../../Scripts/getCookies";
 import formatCompact from "../../Scripts/formatearPesos";
 import Graphics from "./Graphics";
+import fetchDataGet from "../../api/fetchDataGet";
 
 function ViewForYear() {
-  const url = process.env.REACT_APP_URL_HOST;
-  const userId = useSelector((state) => state.data_aldia.id_user);
+
   const actuallyYear = date().split("-")[0];
   const [yearSelected, setYearSelected] = useState(actuallyYear);
-  const [buttonEnable,setButtonEnable] = useState(false)
+  const [buttonEnable,setButtonEnable] = useState(false);
   const [expenses,setExpenses] = useState([]);
   const [income, setIncome] = useState([]);
-  const [haveData,setHaveData] = useState(false)
-  const [loadin,setLoadin] = useState(true)
+  const [haveData,setHaveData] = useState(false);
+  const [loadin,setLoadin] = useState(true);
+
+
   useEffect(() => {
     if (parseInt(actuallyYear) === parseInt(yearSelected) ) {
       setButtonEnable(false)
     }else{
       setButtonEnable(true)
     }
-    fetch(
-      `${url}setStateFinancial?linkTo=id_user&equalTo=${userId}&date=date&dateTo=${yearSelected}`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          Authorization: "Token " + getCookie("token"),
-          Module: "financial_record",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
+    fetchDataGet(`api/v1/users/financial/allAmount/year/${yearSelected}`)
+    .then((data) => {
           setExpenses(0);
           setIncome(0);
-          if (data["status"]===200) {
-            setHaveData(true);
-            for(let i = 0; i < data["results"].length;i++){
-              if(data["results"][i]["expenses"]){
-                let total = 0;
-                for (let j = 0; j < data["results"][i]["expenses"].length; j++) {
-                  total += parseInt(data["results"][i]["expenses"][j]["amount"]);
-                }
-                   setExpenses(total);
-              }            
-              if (data["results"][i]["income"]) {
-                let total = 0;
-                for (let j = 0; j < data["results"][i]["income"].length; j++) {
-                  total += parseInt(data["results"][i]["income"][j]["amount"]);
-                }
-                setIncome(total);
-              }
+          if (data) {
+            setHaveData(true)
+            if (data.expenses>0) {
+              setExpenses(data.expenses);
+            }
+            if (data.income>0) {
+              setIncome(data.income);
             }
           }else{
             setHaveData(false)
           }
           setLoadin(false)
+      })
+      .catch(error=>{
+        setHaveData(false)
       });
+      ;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [yearSelected]);
   const setMonthFuntion = (option)=>{
-   if (option) {
+    if (option) {
       setYearSelected(parseInt(yearSelected)+1)
     }else{
       setYearSelected(parseInt(yearSelected)-1)
@@ -82,7 +65,7 @@ function ViewForYear() {
         <div>
           <h2>{yearSelected}</h2>
         </div>
-        {buttonEnable === true? 
+        {buttonEnable === true?
           <button
           className={buttonEnable === false ? "disable" : ""}
           onClick={() => setMonthFuntion(true)}

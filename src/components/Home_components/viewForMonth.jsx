@@ -6,7 +6,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
 import date from "../../Scripts/obtenerFechaActual";
 import formatCompact from "../../Scripts/formatearPesos";
 import Graphics from "./Graphics";
-import axios from "../../api/axiosInstance";
+import fetchDataGet from "../../api/fetchDataGet";
 function ViewForMonth() {
 
 
@@ -18,20 +18,20 @@ function ViewForMonth() {
   const [expenses, setExpenses] = useState(0);
   const [income, setIncome] = useState(0);
   const [loadin,setLoadin] = useState(true)
-  const [buttonEnable, setButtonEnable] =useState(false)
+  const [buttonEnable, setButtonEnable] =useState(false);
   const mesesDelAnio = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
+
   useEffect(() => {
     let newMonth = month
     if(month<10){
       newMonth = month.toString().padStart(2, '0')
     }
     const montAndYear = `${year}-${newMonth}`;
-      axios.get(`api/v1/users/financial/allAmount/month/${montAndYear}`)
-      .then(response => {
-        const data = response.data;
+      fetchDataGet(`api/v1/users/financial/allAmount/month/${montAndYear}`)
+      .then(data => {
         setExpenses(0);
         setIncome(0);
         if (data) {
