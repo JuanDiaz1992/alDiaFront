@@ -24,7 +24,7 @@ function ViewForYear() {
     }else{
       setButtonEnable(true)
     }
-    fetchDataGet(`api/v1/users/financial/allAmount/year/${yearSelected}`)
+    fetchDataGet(`/api/v1/users/financial/allAmount/year/${yearSelected}`)
     .then((data) => {
           setExpenses(0);
           setIncome(0);

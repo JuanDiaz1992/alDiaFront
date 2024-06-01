@@ -1,6 +1,5 @@
 import React from "react";
 import {HashRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useSelector } from 'react-redux';
 import FatherComponent from '../pages/FatherComponent';
 import Error404 from '../pages/Error404Page';
 import Home from '../pages/HomePage'
@@ -13,8 +12,7 @@ import Profile from "../pages/Profile";
 
 function AppRouter(){
 
-    const rol = useSelector(state => state.data_aldia.rol )
-
+    const rol = localStorage.getItem("rol");
     return(
         <>
             <HashRouter>

@@ -10,11 +10,13 @@ function FatherComponent(){
     const navigate = useNavigate()
     let token = getCookie("token");
     let setIsAuthenticated = false
+
     if(token){
         setIsAuthenticated=true;
     }else{
         setIsAuthenticated=false;
     }
+
     useEffect(() => {
         if ( token && location.pathname === "/login"){
             navigate("/")
@@ -22,8 +24,7 @@ function FatherComponent(){
         if(!token && location.pathname !== "/newRecord"){
             navigate("/login")
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname]);
+    }, [location.pathname, navigate, token]);
     return(
         <>
             {setIsAuthenticated === true?  <NavBar/>:<></>}

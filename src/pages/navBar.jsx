@@ -10,46 +10,45 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import React, { useState, useEffect } from 'react';
-import { useSelector } from "react-redux";
 import Logo from "../img/logoNavBar.png";
 import "../styleheets/navBar.css";
 import Cookies from 'js-cookie';
-import { useDispatch } from "react-redux";
-import { deleteStoreData } from "../redux/userSlice";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import dafaultPhotoUser from "../img/default_user.png";
 import { TbReportSearch, TbHome2, TbHistory, TbHelp } from "react-icons/tb";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
-import fetchDataImg from "../api/fetchGetInstanceImg";
+import getPhotoUrl from "../Scripts/getPhoto";
 
 function NavBar() {
-  const dispatchUserData = useDispatch();
+
   const { dispatch } = useAuth();
   const location = useLocation();
-  const photo = useSelector(state=>state.data_aldia.photo)
-  const firstName = useSelector((state) => state.data_aldia.firtsName);
-  const last_name = useSelector((state) => state.data_aldia.last_name);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const user = {
+    "photo": localStorage.getItem("photo"),
+    "firtsName" : localStorage.getItem("firtsName"),
+    "lastName": localStorage.getItem("lastName")
+  };
+
+
+
   const logout = () => {
     Cookies.remove('token');
-    dispatchUserData(deleteStoreData());
+    localStorage.clear();
     dispatch({ type: 'LOGOUT' });
     navigate("/login")
   };
 
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   useEffect(() => {
-    fetchDataImg(photo)
-    .then(response => {
-      const imageUrl = URL.createObjectURL(response);
-      setProfilePhotoUrl(imageUrl);
-    })
-    .catch(error => {
-      console.error('Error fetching profile photo:', error);
-      setProfilePhotoUrl(dafaultPhotoUser);
-    });
-  }, [photo]);
+    const fetchPhoto = async () => {
+      const url = localStorage.getItem("photo");
+      const photo = await getPhotoUrl(url);
+      setProfilePhotoUrl(photo);
+    };
+    fetchPhoto();
+  }, []);
 
 
 
@@ -124,13 +123,13 @@ function NavBar() {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={profilePhotoUrl}
+                src={profilePhotoUrl ? profilePhotoUrl : dafaultPhotoUser}
                 alt="Profile"
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem textValue="My Settings" className="h-14 gap-2">
-                <p className="font-semibold">{firstName + " " + last_name}</p>
+                <p className="font-semibold">{user.firtsName + " " + user.lastName}</p>
               </DropdownItem>
               <DropdownItem textValue="My Settings">
                 <NavLink to="/profile" >

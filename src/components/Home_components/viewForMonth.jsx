@@ -30,7 +30,7 @@ function ViewForMonth() {
       newMonth = month.toString().padStart(2, '0')
     }
     const montAndYear = `${year}-${newMonth}`;
-      fetchDataGet(`api/v1/users/financial/allAmount/month/${montAndYear}`)
+      fetchDataGet(`/api/v1/users/financial/allAmount/month/${montAndYear}`)
       .then(data => {
         setExpenses(0);
         setIncome(0);

@@ -12,11 +12,9 @@ import getCookie from "../../Scripts/getCookies";
 import { useSelector } from "react-redux"
 import changeNamePicture from "../../Scripts/changeNamePicture";
 
-function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
-  const photo = useSelector((state) => state.data_aldia.photo);
-  const url = process.env.REACT_APP_URL_HOST;
+function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
+  const photo = localStorage.getItem("photo");
   const [selectedFile, setSelectedFile] = useState(null);
-  console.log(photo)
   //Al hacer click al botón, se abre un input de tipo file
   //Y se carga la imagen en el estado selectedFile
   const handleIconClick = () => {
@@ -37,10 +35,7 @@ function ChangeProfilePhoto({ user, setChangesProps, id, onOpenChange }) {
       }
       const modifiedFile = changeNamePicture(selectedFile,newNAme);
       let formData = new FormData();
-      formData.append("id", id);
       formData.append("photo", modifiedFile);
-      formData.append("user", user);
-      formData.append("chageProfilePhoto", true);
       fetch(url, {
         method: "POST",
         mode: "cors",

@@ -7,15 +7,13 @@ import { React, useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import axios from "../api/axiosNoAuthInstance";
 
-import { useDispatch } from "react-redux";
-import { login } from "../redux/userSlice";
+
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { toast, Toaster } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 function Login() {
   const { dispatch } = useAuth();
-  const dispatchUser = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.data_aldia.is_logged_in);
   const [name, setName] = useState("");
@@ -31,7 +29,14 @@ function Login() {
 
       if (response.status === 200) {
         const data = response.data;
-        dispatchUser(login(data));
+        localStorage.setItem("idUser",data.idUser);
+        localStorage.setItem("username",data.username);
+        localStorage.setItem("firtsName",data.firtsName);
+        localStorage.setItem("middleName",data.middleName);
+        localStorage.setItem("lastName",data.lastName);
+        localStorage.setItem("surnamen",data.surnamen);
+        localStorage.setItem("rol",data.rol);
+        localStorage.setItem("photo",data.photo);
         dispatch({ type: "LOGIN" });
         const token = data.token;
         Cookies.set("token", token, { SameSite: "None", secure: true });

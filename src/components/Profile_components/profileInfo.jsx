@@ -1,7 +1,6 @@
-import { useSelector } from "react-redux";
-import getCookie from "../../Scripts/getCookies";
+
+
 import { useEffect, useState } from "react";
-import defaultPhoto from "../../img/default_user.png";
 import {
     Modal,
     Avatar,
@@ -20,14 +19,13 @@ import { FaBriefcase } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { MdChildFriendly, MdPassword } from "react-icons/md";
 import ChangeProfilePhoto from "./changeProfilePhoto";
-import { useDispatch } from "react-redux";
-import { changePhoto } from "../../redux/userSlice";
+import fetchDataGet from "../../api/fetchDataGet";
+import dafaultPhotoUser from "../../img/default_user.png";
+
+import getPhotoUrl from "../../Scripts/getPhoto";
 function ProfileInfo() {
-  const dispatch = useDispatch();
-  const id = useSelector((state) => state.data_aldia.id_user);
-  const user = useSelector((state) => state.data_aldia.username);
-  const url = process.env.REACT_APP_URL_HOST;
-  const [allData, setAllData] = useState([]);
+
+  const [user,setUser]=useState([])
   const [viewMore, setViewMore] = useState(false);
   const [haveChanges,setChanges] = useState(false);
   /*Manejadores modal*/
@@ -36,36 +34,33 @@ function ProfileInfo() {
 
   useEffect(() => {
     try {
-      fetch(`${url}profile?linkTo=id&equalTo=${id}`, {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          Authorization: "Token " + getCookie("token"),
-          Module: "user",
-        },
-      })
-      .then(response=>response.json())
-      .then(data=>{
-        if (data["status"] === 200) {
-          setAllData(data["results"]);
-          if(haveChanges === true){
-            dispatch(changePhoto(data["results"][0]));
-          }
+      fetchDataGet("api/v1/users/profile")
+      .then(user=>{
+        if (user) {
+          setUser(user.profile);
         }
       })
     } catch (error) {}
     setChanges(false)
-  },[haveChanges,url,id,dispatch]);
+  },[haveChanges]);
 
 
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+  useEffect(() => {
+    const fetchPhoto = async () => {
+      const url = localStorage.getItem("photo");
+      const photo = await getPhotoUrl(url);
+      setProfilePhotoUrl(photo);
+    };
+    fetchPhoto();
+  }, []);
 
   return (
     <>
-      {allData.map((data, index) => (
-        <div className="data_container" key={index}>
+        <div className="data_container">
           <div className="avatar_container">
             <Avatar
-              src={data.foto_perfil ? url + data.foto_perfil : defaultPhoto}
+              src={profilePhotoUrl ? profilePhotoUrl : dafaultPhotoUser}
               isBordered
               radius="full"
               className="w-20 h-20 text-large"
@@ -75,12 +70,12 @@ function ProfileInfo() {
             </div>
           </div>
           <h3>
-            {data.primer_nombre}{" "}
-            {data.segundo_nombre ? data.segundo_nombre : ""}{" "}
-            {data.primer_apellido}{" "}
-            {data.segundo_apellido ? data.segundo_apellido : ""}
+            {user.firstName}{" "}
+            {user.middleName ? user.middleName : ""}{" "}
+            {user.lastName}{" "}
+            {user.surnamen ? user.surnamen : ""}
           </h3>
-          <p>@{data.user}</p>
+          <p>@{localStorage.getItem("username")}</p>
           <div className="data_container_buttons">
             <Button color="primary">
               <AiFillEdit /> Editar perfil
@@ -95,42 +90,42 @@ function ProfileInfo() {
               <strong>Detalles</strong>
             </h4>
             <div className="info_user_container">
-              {data.direccion && (
+              {user.address && (
                 <div className="info_user">
                   <AiFillHome />
                   <p>
                     {" "}
                     Vive en{" "}
                     <strong>
-                      {data.direccion} {data.municipio} {data.departamento}
+                      {user.address} {user.town} {user.department}
                     </strong>
                   </p>
                 </div>
               )}
-              {data.correo && (
+              {user.email && (
                 <div className="info_user">
                   <AiFillMail />
                   <p>
                     {" "}
-                    Email <strong>{data.correo}</strong>
+                    Email <strong>{user.email}</strong>
                   </p>
                 </div>
               )}
-              {data.telefono && (
+              {user.phone && (
                 <div className="info_user">
                   <AiFillPhone />
                   <p>
                     {" "}
-                    Teléfono <strong>{data.telefono}</strong>
+                    Teléfono <strong>{user.phone}</strong>
                   </p>
                 </div>
               )}
-              {data.ocupacion && (
+              {user.occupation && (
                 <div className="info_user">
                   <FaBriefcase />
                   <p>
                     {" "}
-                    Ocupación <strong>{data.ocupacion}</strong>
+                    Ocupación <strong>{user.occupation}</strong>
                   </p>
                 </div>
               )}
@@ -146,21 +141,21 @@ function ProfileInfo() {
               </div>
               {viewMore && (
                 <>
-                  {data.numero_documento && (
+                  {user.document && (
                     <div className="info_user">
                       <AiFillIdcard />
                       <p>
-                        {data.tipo_documento}{" "}
-                        <strong>{data.numero_documento}</strong>
+                        {user.typeDocument}{" "}
+                        <strong>{user.document}</strong>
                       </p>
                     </div>
                   )}
-                  {data.fecha_nacimiento && (
+                  {user.birthDate && (
                     <div className="info_user">
                       <MdChildFriendly />
                       <p>
                         Fecha de nacimiento{" "}
-                        <strong>{data.fecha_nacimiento}</strong>
+                        <strong>{user.birthDate}</strong>
                       </p>
                     </div>
                   )}
@@ -169,11 +164,11 @@ function ProfileInfo() {
             </div>
           </div>
         </div>
-      ))}
+
         <Modal
         isOpen={isOpen}
         placement="bottom-center"
-        onOpenChange={onOpenChange} 
+        onOpenChange={onOpenChange}
         motionProps={{
           variants: {
             enter: {
@@ -197,9 +192,7 @@ function ProfileInfo() {
       >
         <ChangeProfilePhoto
           onOpenChange={onOpenChange}
-          user={user}
           setChangesProps={setChanges}
-          id={id}
           />
       </Modal>
     </>
