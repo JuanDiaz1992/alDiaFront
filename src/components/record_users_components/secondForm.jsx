@@ -1,15 +1,14 @@
 import { Button, Select, SelectItem, Checkbox } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../redux/userSlice";
 import dateToday from "../../Scripts/obtenerFechaActual";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import Cookies from 'js-cookie';
 import GoToTop from "../../Scripts/OnTop";
-
+import fetchDataPostPublic from "../../api/fetchDataPostPublic";
 function SecondForm({ saveInfo }) {
-  const url = process.env.REACT_APP_URL_HOST;
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -42,22 +41,21 @@ function SecondForm({ saveInfo }) {
       id: 2,
     },
     {
-      name: "Unión Marital de Hecho",
+      name: "Unión Libre",
       id: 3,
     },
     {
-      name: "Separado",
+      name: "Divorsiado",
       id: 4,
     },
     {
-      name: "Divorsiado",
+      name: "Separado",
       id: 5,
     },
     {
       name: "Viudo",
       id: 5,
     },
-    
   ];
   //Este bloque de código le resta 18 años a la fecha actual
   const today = dateToday();
@@ -71,7 +69,7 @@ function SecondForm({ saveInfo }) {
   const [departmentsAndCities, setDepartmentsAndCities] = useState([]);
   const [departament, setDepartamet] = useState([]);
   const [cities, setCities] = useState([]);
-  
+
 
   /*Estos estados contienen la información del formulario*/
   const [typeDocument, setTypeDocument] = useState(null);
@@ -90,68 +88,61 @@ function SecondForm({ saveInfo }) {
   const setForm = (e) => {
     e.preventDefault();
     if (
-      typeDocument !== null && 
-      document!==null && 
-      birthdate!==null && 
-      departamentSelect !== null && 
-      citiSelecte!==null && 
-      address!==null && 
-      phone!==null && 
-      occupation!==null && 
+      typeDocument !== null &&
+      document!==null &&
+      birthdate!==null &&
+      departamentSelect !== null &&
+      citiSelecte!==null &&
+      address!==null &&
+      phone!==null &&
+      occupation!==null &&
       civilState !== null &&
       dataPolitic === true
       ) {
-        const data = {
-          "userName": saveInfo[0]["userName"],
-          "password": saveInfo[0]["password"],
-          "idsPerfil":saveInfo[0]["idPerfil"],
+        const request = {
+          "username": saveInfo.username,
+          "password": saveInfo.password,
+          "email":saveInfo.email,
+          "firstName":saveInfo.firstName,
+          "middleName":saveInfo.middleName,
+          "lastName":saveInfo.lastName,
+          "surnamen":saveInfo.surnamen,
           "typeDocument":documents[typeDocument]["id"],
           "document":document,
-          "birthdate":birthdate,
-          "departamentSelect":departament[departamentSelect],
-          "citiSelecte":cities[citiSelecte],
+          "birthDate":birthdate,
+          "department":departament[departamentSelect],
+          "town":cities[citiSelecte],
           "address":address,
-          "phone":phone,
-          "civilState": civilStates[civilState]["id"],
+          "numberPhone":phone,
+          "civilStatus": civilStates[civilState]["id"],
           "occupation":occupation,
-          "dataPolitic":dataPolitic,
-          "complete_profile":true
+          "dataTreatment":dataPolitic,
         }
-        fetch(url,{
-          method:"POST",
-          mode:"cors",
-          headers:{
-            Module: "user",
-        },    
-          body:JSON.stringify(data)
-        })
-        .then(response=>response.json())
+        fetchDataPostPublic("/public/register",request)
         .then(data=>{
-          if (data.is_logged_in) {
-            toast.success(`Bienvenido ${saveInfo[0]["firstName"]}`, {
-              position: "top-center"
-            })
-            dispatch(login(data));
+          if (parseInt(data.status)===200) {
+            toast.success(data.message);
+            localStorage.setItem("idUser",parseInt(data.idUser));
+            localStorage.setItem("username",data.username);
+            localStorage.setItem("firstName",data.firstName);
+            localStorage.setItem("middleName",data.middleName);
+            localStorage.setItem("lastName",data.lastName);
+            localStorage.setItem("surnamen",data.surnamen);
+            localStorage.setItem("rol",data.rol);
+            localStorage.setItem("photo",data.photo);
+            dispatch({ type: "LOGIN" });
             const token = data.token;
-            Cookies.set('token', token, { SameSite: 'None', secure: true });
-            const name = saveInfo.userName
-            navigate("/", {
-              replace: true,
-              state: {
-                logged: true,
-                name,
-              },
-            });
-          }else{
-            toast.error(data.message)
+            Cookies.set("token", token, { SameSite: "None", secure: true });
+            navigate("/");
+          }else if(parseInt(data.status)===409){
+            toast.error(data.message);
           }
+        }).catch(error=>{
+          toast.error(error.message);
         })
+      }
     }
 
-
-
-    }
-    
 
 
 

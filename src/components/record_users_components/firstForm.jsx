@@ -2,6 +2,7 @@ import { useState }from "react";
 import { Button } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import capitalizeFisrtLetter from "../../Scripts/upperCase";
+import fetchDataPostPublic from "../../api/fetchDataPostPublic";
 function FirstForm({setSaveInfo, setSelectOption}){
     const [firstName, setFirtsName] = useState("");
     const [secondName, setSecondName] = useState("");
@@ -11,62 +12,35 @@ function FirstForm({setSaveInfo, setSelectOption}){
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPasword, setConfirmPasword] = useState("");
-    const url = process.env.REACT_APP_URL_HOST;
-    
+
+
+
+
     const setForm = (e) => {
         e.preventDefault();
-
-        fetch(url,{
-            method:"POST",
-            mode:"cors",
-            headers:{
-                Module: "user",
-            },    
-            body:JSON.stringify({
-                "firstName":firstName !==""? capitalizeFisrtLetter(firstName) : firstName,
-                "secondName":secondName !==""? capitalizeFisrtLetter(secondName) : secondName,
-                "firstLastName":firstLastName !==""? capitalizeFisrtLetter(firstLastName) : firstLastName,
-                "secondLastName": secondLastName !==""? capitalizeFisrtLetter(secondLastName) : secondName,
-                "email":email,
-                "userName":userName,
-                "password":password,
-                "confirmPasword":confirmPasword,
-                "newUser_request":true
-            })
-
-        })
-        .then(response=>response.json())
+        console.log(firstName);
+        console.log(firstLastName);
+        const newUser = {
+          "firstName":firstName !==""? capitalizeFisrtLetter(firstName) : firstName,
+          "middleName":secondName !==""? capitalizeFisrtLetter(secondName) : secondName,
+          "lastName":firstLastName !==""? capitalizeFisrtLetter(firstLastName) : firstLastName,
+          "surnamen": secondLastName !==""? capitalizeFisrtLetter(secondLastName) : secondName,
+          "email":email,
+          "username":userName,
+          "password":password,
+          "confirmPassword":confirmPasword,
+        }
+        fetchDataPostPublic("/public/validate",newUser)
         .then(data=>{
-          let message = "Error"
-          let icon = ""
-            if (data.status===200) {
-                message = "Registro correcto";
-                icon = '👏'
-                setSaveInfo([{
-                    "password":password,
-                    "userName":userName,
-                    "firstName":firstName,
-                    "idPerfil":data.results.idPerfil,
-                    "idInformacionComplementaria":data.results.idInformacionComplementaria,
-                    "idUser":data.results.idUser,
-                }]);
+            if (parseInt(data.status)===200) {
+                setSaveInfo(newUser);
                 setSelectOption(1);
-            }else{
-              message = data.message
-              icon = '🚫'
+                toast.success(data.message);
+            }else if(parseInt(data.status)===409){
+              toast.error(data.message);
             }
-            toast(message,
-            { 
-              duration: 5000,
-              position: "top-right",
-              icon:icon,
-              style: {
-                borderRadius: '10px',
-                background: '#333',
-                color: '#fff',
-              },
-            }
-          );
+        }).catch(error=>{
+          toast.error(error.message);
         })
 
       };
@@ -84,7 +58,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
               }}
               type="text"
               placeholder="Tatiana"
-              
             />
             </div>
             <div className="input_new_record">

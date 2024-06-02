@@ -1,11 +1,11 @@
 import getCookie from "../Scripts/getCookies";
 
-async function fetchDataPut(apiEndpoint,body) {
+async function fetchDataPost(apiEndpoint,body) {
   const baseUrl = process.env.REACT_APP_URL_HOST;
   const url =  baseUrl + apiEndpoint;
 
   const defaultOptions = {
-    method: "PUT",
+    method: "POST",
     mode: "cors",
     body: JSON.stringify(body),
     headers: {
@@ -24,4 +24,4 @@ async function fetchDataPut(apiEndpoint,body) {
   }
 }
 
-export default fetchDataPut;
+export default fetchDataPost;

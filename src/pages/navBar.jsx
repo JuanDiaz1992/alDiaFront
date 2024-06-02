@@ -28,10 +28,10 @@ function NavBar() {
   const navigate = useNavigate();
   const user = {
     "photo": localStorage.getItem("photo"),
-    "firtsName" : localStorage.getItem("firtsName"),
+    "firstName" : localStorage.getItem("firstName"),
     "lastName": localStorage.getItem("lastName")
   };
-
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
 
   const logout = () => {
@@ -41,13 +41,17 @@ function NavBar() {
     navigate("/login")
   };
 
-  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+
   useEffect(() => {
     const url = localStorage.getItem("photo");
-    getPhotoUrl(url)
-    .then(response=>{
-      setProfilePhotoUrl(response);
-    })
+    if(url === null || url === ""){
+      setProfilePhotoUrl(dafaultPhotoUser);
+    }else{
+      getPhotoUrl(url)
+      .then(response=>{
+        setProfilePhotoUrl(response);
+      })
+    }
     if(isChague.isChanged){
       dispatchPicturProfile({ type: 'RESETSTATUS' });
     }
@@ -127,13 +131,13 @@ function NavBar() {
                 className="transition-transform"
                 color="warning"
                 size="md"
-                src={profilePhotoUrl ? profilePhotoUrl : dafaultPhotoUser}
+                src={profilePhotoUrl}
                 alt="Profile"
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem textValue="My Settings" className="h-14 gap-2">
-                <p className="font-semibold">{user.firtsName + " " + user.lastName}</p>
+                <p className="font-semibold">{user.firstName + " " + user.lastName}</p>
               </DropdownItem>
               <DropdownItem textValue="My Settings">
                 <NavLink to="/profile" >

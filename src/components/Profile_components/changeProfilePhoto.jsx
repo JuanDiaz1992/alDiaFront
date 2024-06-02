@@ -32,24 +32,30 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
 
   useEffect(() => {
     const sendPicture = async ()=>{
-      let base64 = null;
-      if (selectedFile) {
-        try {
-          base64 = await convertToBase64(selectedFile);
+      try {
+        let base64 = null;
+        if (selectedFile) {
+          try {
+            base64 = await convertToBase64(selectedFile);
+        } catch (error) {
+            console.error('Error al convertir el archivo a base64:', error);
+        }
+        const response = await fetchDataPut("/api/v1/users/profile/edit/picture",base64);
+            if (parseInt(response.status) === 200) {
+              localStorage.setItem("photo",response.url);
+              onOpenChange();
+              setChangesProps(true);
+              toast.success(response.message)
+              dispatchPicturProfile({ type: 'ISCHANGE' });
+            }else{
+              toast.error(response.message)
+              onOpenChange();
+            }
+        }
       } catch (error) {
-          console.error('Error al convertir el archivo a base64:', error);
+        toast.error('Ocurrió un error, intentelo de nuevo')
       }
-      const response = await fetchDataPut("/api/v1/users/profile/edit/picture",base64);
-          if (parseInt(response.status) === 200) {
-            localStorage.setItem("photo",response.url);
-            onOpenChange();
-            setChangesProps(true);
-            toast.success(response.message)
-            dispatchPicturProfile({ type: 'ISCHANGE' });
-          }else{
-            toast.error(response.message)
-          }
-      }
+
     }
     sendPicture();
 

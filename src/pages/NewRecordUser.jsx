@@ -46,8 +46,8 @@ function NewRecord() {
             <img className="logo_container_div_logo" src={logo} alt="logo" />
           </div>
           <div className="logo_container_p">
-            {saveInfo.length === 1 ? (
-              <p>Hola {saveInfo[0]["firstName"]}</p>
+            {saveInfo != null ? (
+              <p>Hola {saveInfo.firstName}</p>
             ) : (
               <p>Registro</p>
             )}

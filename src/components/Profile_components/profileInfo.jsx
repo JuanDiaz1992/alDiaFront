@@ -28,9 +28,12 @@ function ProfileInfo() {
   const [user,setUser]=useState([])
   const [viewMore, setViewMore] = useState(false);
   const [haveChanges,setChanges] = useState(false);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   /*Manejadores modal*/
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  /**/
+
+
+
 
   useEffect(() => {
     try {
@@ -44,14 +47,17 @@ function ProfileInfo() {
     setChanges(false)
   },[haveChanges]);
 
-  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+
   useEffect(() => {
-    const fetchPhoto = async () => {
-      const url = localStorage.getItem("photo");
-      const photo = await getPhotoUrl(url);
-      setProfilePhotoUrl(photo);
-    };
-    fetchPhoto();
+    const url = localStorage.getItem("photo");
+    if(url === null || url === ""){
+      setProfilePhotoUrl(dafaultPhotoUser);
+    }else{
+      getPhotoUrl(url)
+      .then(response=>{
+        setProfilePhotoUrl(response);
+      })
+    }
   }, [isChague.isChanged]);
 
   return (

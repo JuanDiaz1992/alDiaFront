@@ -31,7 +31,7 @@ function Login() {
         const data = response.data;
         localStorage.setItem("idUser",data.idUser);
         localStorage.setItem("username",data.username);
-        localStorage.setItem("firtsName",data.firtsName);
+        localStorage.setItem("firstName",data.firstName);
         localStorage.setItem("middleName",data.middleName);
         localStorage.setItem("lastName",data.lastName);
         localStorage.setItem("surnamen",data.surnamen);
