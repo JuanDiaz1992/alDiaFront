@@ -1,8 +1,8 @@
-import getCookie from "../Scripts/getCookies"; // Assuming this function retrieves your token
+import getCookie from "../Scripts/getCookies";
 
-async function fetchDataImg(apiEndpoint) {
+function fetchDataImg(apiEndpoint) {
   const baseUrl = process.env.REACT_APP_URL_HOST;
-  const url =  baseUrl + apiEndpoint;
+  const url = baseUrl + apiEndpoint;
 
   const defaultOptions = {
     method: "GET",
@@ -12,20 +12,21 @@ async function fetchDataImg(apiEndpoint) {
       Accept: 'image/*',
       'Content-Type': 'application/json',
     },
-    responseType: 'blob'
+    responseType: 'blob',
+    cache: 'no-cache',
+    cacheControl: 'no-cache, no-store, must-revalidate'
   };
-  try {
-    const response = await fetch(url, defaultOptions);
 
-    if (!response.ok) {
-      throw new Error(`Error fetching data: ${response.statusText}`);
-    }
-
-    return await response.blob();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
-  }
+  return fetch(url, defaultOptions)
+    .then(response => {
+      if (!response.ok) {
+        console.log(response);
+      }
+      return response.blob();
+    })
+    .catch(error => {
+      console.error("Error fetching data:", error);
+    });
 }
 
 export default fetchDataImg;

@@ -1,13 +1,12 @@
 import getCookie from "../Scripts/getCookies";
 
-async function fetchDataGet(apiEndpoint,body) {
+async function fetchDataDelete(apiEndpoint) {
   const baseUrl = process.env.REACT_APP_URL_HOST;
   const url =  baseUrl + apiEndpoint;
 
   const defaultOptions = {
-    method: "POST",
+    method: "DELETE",
     mode: "cors",
-    body: JSON.stringify(body),
     headers: {
       Authorization: `Bearer ${getCookie("token")}`,
       'Content-Type': 'application/json',
@@ -24,4 +23,4 @@ async function fetchDataGet(apiEndpoint,body) {
   }
 }
 
-export default fetchDataGet;
+export default fetchDataDelete;

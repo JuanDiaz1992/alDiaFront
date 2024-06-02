@@ -1,12 +1,13 @@
 import getCookie from "../Scripts/getCookies";
 
-async function fetchDataGet(apiEndpoint) {
+async function fetchDataPut(apiEndpoint,body) {
   const baseUrl = process.env.REACT_APP_URL_HOST;
   const url =  baseUrl + apiEndpoint;
 
   const defaultOptions = {
-    method: "GET",
+    method: "PUT",
     mode: "cors",
+    body: JSON.stringify(body),
     headers: {
       Authorization: `Bearer ${getCookie("token")}`,
       'Content-Type': 'application/json',
@@ -15,14 +16,12 @@ async function fetchDataGet(apiEndpoint) {
   try {
     const response = await fetch(url, defaultOptions);
     if (!response.ok) {
-      console.log(response.status);
-      return null;
+      throw new Error(`Error fetching data: ${response.statusText}`);
     }
     return await response.json();
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 }
 
-export default fetchDataGet;
+export default fetchDataPut;

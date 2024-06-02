@@ -19,9 +19,10 @@ import { TbReportSearch, TbHome2, TbHistory, TbHelp } from "react-icons/tb";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import getPhotoUrl from "../Scripts/getPhoto";
-
+import { useProfilePictureContext } from "../context/profilePicture"
 function NavBar() {
-
+  const { isChague } = useProfilePictureContext();
+  const { dispatchPicturProfile } = useProfilePictureContext();
   const { dispatch } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,13 +43,16 @@ function NavBar() {
 
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   useEffect(() => {
-    const fetchPhoto = async () => {
-      const url = localStorage.getItem("photo");
-      const photo = await getPhotoUrl(url);
-      setProfilePhotoUrl(photo);
-    };
-    fetchPhoto();
-  }, []);
+    const url = localStorage.getItem("photo");
+    getPhotoUrl(url)
+    .then(response=>{
+      setProfilePhotoUrl(response);
+    })
+    if(isChague.isChanged){
+      dispatchPicturProfile({ type: 'RESETSTATUS' });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChague.isChanged]);
 
 
 

@@ -21,10 +21,10 @@ import { MdChildFriendly, MdPassword } from "react-icons/md";
 import ChangeProfilePhoto from "./changeProfilePhoto";
 import fetchDataGet from "../../api/fetchDataGet";
 import dafaultPhotoUser from "../../img/default_user.png";
-
+import { useProfilePictureContext } from "../../context/profilePicture";
 import getPhotoUrl from "../../Scripts/getPhoto";
 function ProfileInfo() {
-
+  const { isChague } = useProfilePictureContext();
   const [user,setUser]=useState([])
   const [viewMore, setViewMore] = useState(false);
   const [haveChanges,setChanges] = useState(false);
@@ -34,7 +34,7 @@ function ProfileInfo() {
 
   useEffect(() => {
     try {
-      fetchDataGet("api/v1/users/profile")
+      fetchDataGet("/api/v1/users/profile")
       .then(user=>{
         if (user) {
           setUser(user.profile);
@@ -44,7 +44,6 @@ function ProfileInfo() {
     setChanges(false)
   },[haveChanges]);
 
-
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   useEffect(() => {
     const fetchPhoto = async () => {
@@ -53,7 +52,7 @@ function ProfileInfo() {
       setProfilePhotoUrl(photo);
     };
     fetchPhoto();
-  }, []);
+  }, [isChague.isChanged]);
 
   return (
     <>

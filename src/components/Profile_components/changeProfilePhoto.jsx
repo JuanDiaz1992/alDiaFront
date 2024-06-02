@@ -8,15 +8,19 @@ import {
   ModalFooter,
   Button,
 } from "@nextui-org/react";
-import getCookie from "../../Scripts/getCookies";
-import { useSelector } from "react-redux"
-import changeNamePicture from "../../Scripts/changeNamePicture";
+import fetchDataPut from "../../api/fetchDataPut";
+import fetchDataDelete from "../../api/fetchDataDelete";
+import convertToBase64 from "../../Scripts/converToBase64";
+import { toast } from "react-hot-toast";
+import { useProfilePictureContext } from "../../context/profilePicture";
 
 function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
+
+  const { dispatchPicturProfile } = useProfilePictureContext();
   const photo = localStorage.getItem("photo");
   const [selectedFile, setSelectedFile] = useState(null);
-  //Al hacer click al botón, se abre un input de tipo file
-  //Y se carga la imagen en el estado selectedFile
+
+
   const handleIconClick = () => {
     document.getElementById("fileInput").click();
   };
@@ -24,52 +28,35 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+
+
   useEffect(() => {
-    if (selectedFile) {
-      let newNAme = "profilePicture_0_"
-      if(photo!==null && photo!==""){
-        let number = photo.split("_");
-        console.log(number[3])
-        let sum = isNaN(parseInt(number[3]))? 0 : parseInt(number[3]) + 1;
-        newNAme = `profilePicture_${sum}_`
+    const sendPicture = async ()=>{
+      let base64 = null;
+      if (selectedFile) {
+        try {
+          base64 = await convertToBase64(selectedFile);
+      } catch (error) {
+          console.error('Error al convertir el archivo a base64:', error);
       }
-      const modifiedFile = changeNamePicture(selectedFile,newNAme);
-      let formData = new FormData();
-      formData.append("photo", modifiedFile);
-      fetch(url, {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-        headers: {
-          Authorization: "Token " + getCookie("token"),
-          Module: "user",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data["status"] === 200) {
+      const response = await fetchDataPut("/api/v1/users/profile/edit/picture",base64);
+          if (parseInt(response.status) === 200) {
+            localStorage.setItem("photo",response.url);
             onOpenChange();
             setChangesProps(true);
+            toast.success(response.message)
+            dispatchPicturProfile({ type: 'ISCHANGE' });
+          }else{
+            toast.error(response.message)
           }
-        });
+      }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFile]);
+    sendPicture();
+
+  }, [onOpenChange, selectedFile, setChangesProps,dispatchPicturProfile]);
 
   const deltePhoto = () => {
-    fetch(url, {
-      method: "DELETE",
-      mode: "cors",
-      body: JSON.stringify({
-        "id":id,
-        "delete_picture_profile":true
-      }),
-      headers: {
-        Authorization: "Token " + getCookie("token"),
-        Module: "user",
-      },
-    })
-      .then((response) => response.json())
+    fetchDataDelete()
       .then((data) => {
         if (data["status"] === 200) {
           onOpenChange();

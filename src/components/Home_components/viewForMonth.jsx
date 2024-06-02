@@ -25,31 +25,33 @@ function ViewForMonth() {
   ];
 
   useEffect(() => {
-    let newMonth = month
-    if(month<10){
-      newMonth = month.toString().padStart(2, '0')
-    }
-    const montAndYear = `${year}-${newMonth}`;
-      fetchDataGet(`/api/v1/users/financial/allAmount/month/${montAndYear}`)
-      .then(data => {
-        setExpenses(0);
-        setIncome(0);
-        if (data) {
-          setHaveData(true)
-          if (data.expenses>0) {
-            setExpenses(data.expenses);
+      const getData= async () =>{
+        let newMonth = month
+        if(month<10){
+          newMonth = month.toString().padStart(2, '0')
+        }
+        const montAndYear = `${year}-${newMonth}`;
+        try {
+          const response = await fetchDataGet(`/api/v1/users/financial/allAmount/month/${montAndYear}`)
+          setExpenses(0);
+          setIncome(0);
+          if (response) {
+            setHaveData(true)
+            if (response.expenses>0) {
+              setExpenses(response.expenses);
+            }
+            if (response.income>0) {
+              setIncome(response.income);
+            }
+          }else{
+            setHaveData(false)
           }
-          if (data.income>0) {
-            setIncome(data.income);
-          }
-        }else{
+        } catch (error) {
           setHaveData(false)
         }
-        setLoadin(false)
-      })
-      .catch(error=>{
-        setHaveData(false)
-      });
+      }
+      getData();
+      setLoadin(false)
   }, [month, year]);
 
 
