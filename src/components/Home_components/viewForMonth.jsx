@@ -7,9 +7,11 @@ import date from "../../Scripts/obtenerFechaActual";
 import formatCompact from "../../Scripts/formatearPesos";
 import Graphics from "./Graphics";
 import fetchDataGet from "../../api/fetchDataGet";
+import useLogout from "../../customHooks/logout";
+
 function ViewForMonth() {
 
-
+  const logout = useLogout();
   const dateFunction = date().split("-")
   const dateselected = dateFunction;
   const [month, setMonth] = useState(dateselected[1])
@@ -23,7 +25,6 @@ function ViewForMonth() {
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
-
   useEffect(() => {
       const getData= async () =>{
         let newMonth = month
@@ -47,12 +48,13 @@ function ViewForMonth() {
             setHaveData(false)
           }
         } catch (error) {
+          console.log(error);
           setHaveData(false)
         }
       }
       getData();
       setLoadin(false)
-  }, [month, year]);
+  }, [month, year, logout]);
 
 
   const setMonthFuntion = (option)=>{

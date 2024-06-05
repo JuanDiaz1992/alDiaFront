@@ -18,8 +18,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
 
     const setForm = (e) => {
         e.preventDefault();
-        console.log(firstName);
-        console.log(firstLastName);
         const newUser = {
           "firstName":firstName !==""? capitalizeFisrtLetter(firstName) : firstName,
           "middleName":secondName !==""? capitalizeFisrtLetter(secondName) : secondName,
@@ -32,6 +30,7 @@ function FirstForm({setSaveInfo, setSelectOption}){
         }
         fetchDataPostPublic("/public/validate",newUser)
         .then(data=>{
+          console.log(data)
             if (parseInt(data.status)===200) {
                 setSaveInfo(newUser);
                 setSelectOption(1);
@@ -40,7 +39,7 @@ function FirstForm({setSaveInfo, setSelectOption}){
               toast.error(data.message);
             }
         }).catch(error=>{
-          toast.error(error.message);
+          toast.error("No hay conexión, intentelo de nuevo.");
         })
 
       };
@@ -84,7 +83,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
                 }}
                 type="text"
                 placeholder="Marín"
-                
               />
             </div>
             <div className="input_new_record">
@@ -97,7 +95,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
                 }}
                 type="text"
                 placeholder="Castellanos"
-
               />
             </div>
           </div>
@@ -111,7 +108,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
               }}
               type="email"
               placeholder="correo@correo.com"
-              
             />
           </div>
           <div className="input_new_record">
@@ -124,7 +120,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
               }}
               type="text"
               placeholder="tatiana2015"
-              
             />
           </div>
           <div className="input_new_record">
@@ -137,7 +132,6 @@ function FirstForm({setSaveInfo, setSelectOption}){
                 setPassword(e.target.value);
               }}
               placeholder="********"
-              
             />
           </div>
           <div className="input_new_record  ">
@@ -150,13 +144,11 @@ function FirstForm({setSaveInfo, setSelectOption}){
                 setConfirmPasword(e.target.value);
               }}
               placeholder="********"
-              
             />
           </div>
           <Button className="button_record_form" type="submit">Siguiente</Button>
           <p className="info_record">*Si no posee segundo nombre o segundo apellido, deje esos campos en blanco</p>
         </form>
-
         </>
     )
 }

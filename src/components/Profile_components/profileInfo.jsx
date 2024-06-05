@@ -23,7 +23,9 @@ import fetchDataGet from "../../api/fetchDataGet";
 import dafaultPhotoUser from "../../img/default_user.png";
 import { useProfilePictureContext } from "../../context/profilePicture";
 import getPhotoUrl from "../../Scripts/getPhoto";
+import uselogout from "../../customHooks/logout";
 function ProfileInfo() {
+  const logout = uselogout();
   const { isChague } = useProfilePictureContext();
   const [user,setUser]=useState([])
   const [viewMore, setViewMore] = useState(false);
@@ -36,16 +38,24 @@ function ProfileInfo() {
 
 
   useEffect(() => {
-    try {
-      fetchDataGet("/api/v1/users/profile")
-      .then(user=>{
-        if (user) {
-          setUser(user.profile);
+    const fetchData = async () => {
+      try {
+        const response = await fetchDataGet("/api/v1/users/profile");
+        if (response.status === 403) {
+          logout();
+        } else {
+          let user = response;
+          if (user) {
+            setUser(user.profile);
+          }
         }
-      })
-    } catch (error) {}
-    setChanges(false)
-  },[haveChanges]);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+      setChanges(false);
+    };
+    fetchData();
+  }, [setUser, setChanges, logout, haveChanges]);
 
 
   useEffect(() => {

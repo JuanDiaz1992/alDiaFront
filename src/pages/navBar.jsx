@@ -12,20 +12,18 @@ import {
 import React, { useState, useEffect } from 'react';
 import Logo from "../img/logoNavBar.png";
 import "../styleheets/navBar.css";
-import Cookies from 'js-cookie';
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import dafaultPhotoUser from "../img/default_user.png";
 import { TbReportSearch, TbHome2, TbHistory, TbHelp } from "react-icons/tb";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
-import { useAuth } from "../context/AuthContext";
 import getPhotoUrl from "../Scripts/getPhoto";
 import { useProfilePictureContext } from "../context/profilePicture"
+import useLogout  from "../customHooks/logout";
 function NavBar() {
   const { isChague } = useProfilePictureContext();
   const { dispatchPicturProfile } = useProfilePictureContext();
-  const { dispatch } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
+  const logout = useLogout();
   const user = {
     "photo": localStorage.getItem("photo"),
     "firstName" : localStorage.getItem("firstName"),
@@ -34,12 +32,6 @@ function NavBar() {
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
 
-  const logout = () => {
-    Cookies.remove('token');
-    localStorage.clear();
-    dispatch({ type: 'LOGOUT' });
-    navigate("/login")
-  };
 
 
   useEffect(() => {

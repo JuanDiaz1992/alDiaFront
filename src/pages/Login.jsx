@@ -11,9 +11,7 @@ import axios from "../api/axiosNoAuthInstance";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { toast, Toaster } from "react-hot-toast";
-import { useAuth } from "../context/AuthContext";
 function Login() {
-  const { dispatch } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.data_aldia.is_logged_in);
   const [name, setName] = useState("");
@@ -37,7 +35,7 @@ function Login() {
         localStorage.setItem("surnamen",data.surnamen);
         localStorage.setItem("rol",data.rol);
         localStorage.setItem("photo",data.photo);
-        dispatch({ type: "LOGIN" });
+        localStorage.setItem("isLoggin",true);
         const token = data.token;
         Cookies.set("token", token, { SameSite: "None", secure: true });
         navigate("/");
@@ -53,11 +51,8 @@ function Login() {
           </span>
         ));
       } else {
-        toast.error(
-          `Error HTTP: ${
-            error.response ? error.response.status : error.message
-          }`
-        );
+        console.log(error);
+        toast.error("Error de conexión");
       }
     }
   };

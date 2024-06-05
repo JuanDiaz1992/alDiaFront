@@ -1,28 +1,26 @@
 import getCookie from "../Scripts/getCookies";
+import axios from 'axios';
 
-async function fetchDataGet(apiEndpoint) {
+async function fetchGetData(apiEndpoint) {
   const baseUrl = process.env.REACT_APP_URL_HOST;
-  const url =  baseUrl + apiEndpoint;
+  const url = baseUrl + apiEndpoint;
 
-  const defaultOptions = {
-    method: "GET",
-    mode: "cors",
-    headers: {
-      Authorization: `Bearer ${getCookie("token")}`,
-      'Content-Type': 'application/json',
-    },
-  };
   try {
-    const response = await fetch(url, defaultOptions);
-    if (!response.ok) {
-      console.log(response.status);
-      return null;
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${getCookie("token")}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status !==200 ) {
+      throw new Error(`API request failed with status ${response.status}`);
     }
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("Error fetching data:", error);
+    throw error;
   }
 }
 
-export default fetchDataGet;
+export default fetchGetData;
