@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --color-primary: #043249;
+  --color-secondary: #FF7F3E;
+  --color-third: rgb(121, 121, 121);
+}
+
+*{
+  font-family: Lucida Sans Unicode;
+}
+
+.react-confirm-alert-overlay{
+  background-color: #979797c9 !important;
+}
+.react-confirm-alert-body{
+  background-color: var(--color-primary) !important;
+}
+.react-confirm-alert-body{
+  color: rgb(253, 253, 253) !important;
+}
+.react-confirm-alert-button-group > button:nth-child(1){
+  background-color: var(--color-secondary);
+}

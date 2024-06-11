@@ -1,0 +1,83 @@
+@font-face {
+    font-family: 'aldiaFont'; /* Puedes elegir el nombre que desees */
+    src: url('../fonst/good_times_rg.otf') format('woff2'), /* Formato WOFF2 */
+
+  }
+:root {
+--color-primary: #043249;
+--color-secondary: #FF7F3E;
+}
+
+.navBar_container{
+    background-color: var(--color-primary) !important;
+    padding: 5px 0 5px 0;
+    position: fixed;
+}
+
+.text-logo{
+    color: white !important;
+    font-family: aldiaFont;
+}
+.active{
+    color: var(--color-secondary);
+    font-weight: bold;
+}
+.inactive{
+    color:white;
+    font-weight: bold;
+}
+
+.active:hover{
+    color: #d86932;
+}
+.inactive:hover{
+    color:rgb(192, 192, 192)
+}
+
+.nav_botton{
+    display: none;
+}
+
+@media only screen and (max-width:639px){
+    .nav_botton{
+        z-index: 80;
+        display: inline;
+        position: fixed;
+        bottom: 0;
+        height: 60px;
+        background-color: #c9c9c9;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .nav_botton-container{
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 15px;
+    }
+    .nav_botton--item{
+        padding: 10px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .nav_botton--item svg{
+        border-radius: 50%;
+        font-size: 25px;
+        color: var(--color-primary);
+    }
+    .active{
+        transition: background-color 1s ease;
+        background-color:#b9b9b9;
+    }
+    .active svg{
+        color: var(--color-secondary);
+        
+    }
+
+}
