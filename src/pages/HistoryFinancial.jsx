@@ -2,19 +2,19 @@ import "../styleheets/HistoryFinancial.css"
 import ViewHistory from "../components/History_financial_components/ViewHistory";
 import {Tabs, Tab} from "@nextui-org/react";
 function HistoryFinancial() {
+
   let options=[
     {
       "name":"INGRESOS",
       "type":<ViewHistory
-      table={"income"}
-      table_category = {"income_category"}
+      table={"incomes"}
     />
     },
     {
       "name":"GASTOS",
       "type":<ViewHistory
       table={"expenses"}
-      table_category = {"expenses_category"}
+
       />
     }
 ]

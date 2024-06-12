@@ -1,5 +1,5 @@
 import dateToday from "../../Scripts/obtenerFechaActual";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Select, SelectItem, Button } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import convertToBase64 from "../../Scripts/converToBase64";
@@ -18,6 +18,7 @@ function FormRecord() {
   const [formIsOk, setStateForm] = useState(false);
   const [file, setFile] = useState(null);
   const [fileFull, setFileFUll] = useState(null);
+  const inputFileRef = useRef(null);
   const options = [
     {
       name: "Gastos",
@@ -99,6 +100,7 @@ function FormRecord() {
     }
     const response = await fetchDataPost(`/api/v1/users/financial/${table}`, body);
     if (parseInt(response.status) === 200) {
+      inputFileRef.current.value = null;
       setFile(null);
       setFileFUll(null);
       setDate(today);
@@ -192,7 +194,7 @@ function FormRecord() {
           <div className="">
             {file && <img src={file} alt="" />}
             <label htmlFor="file">Comprobante</label>
-            <input id="file" onChange={manejarSeleccionImagen} type="file" />
+            <input ref={inputFileRef} id="file" onChange={manejarSeleccionImagen} type="file" />
             <p className="text_info">
               Si tienes una fotografría del comprobante, subelo aquí
             </p>

@@ -1,154 +1,178 @@
 import formatCompact from "../../Scripts/formatearPesos";
-import {useState, useEffect} from "react";
-import { IoIosArrowForward, IoIosArrowBack, IoIosClose  } from "react-icons/io";
-import {CircularProgress , Modal, ModalContent, ModalBody, Image, useDisclosure} from "@nextui-org/react";
+import { useState, useEffect } from "react";
+import { IoIosArrowForward, IoIosArrowBack, IoIosClose } from "react-icons/io";
+import {
+  CircularProgress,
+  Modal,
+  ModalContent,
+  ModalBody,
+  Image,
+  useDisclosure,
+} from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { confirmAlert } from "react-confirm-alert";
-import { toast } from "react-hot-toast"
+import { toast } from "react-hot-toast";
 import date from "../../Scripts/obtenerFechaActual";
-import getCookie from "../../Scripts/getCookies";
-function ViewHistory({table, table_category}) {
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const dateFunction = date().split("-");
-    const dateselected = dateFunction;
-    const [month, setMonth] = useState(dateselected[1]);
-    const [year, setYear] = useState(dateselected[0]);
-    const [haveData, setHaveData] = useState(true);
-    const [allData,setData] =useState([]);
-    const [loadin, setLoadin] = useState(true);
-    const [buttonEnable, setButtonEnable] = useState(false);
-    const [deleteItemUpdate, setDeleteItemUpdate] = useState(false);
-    const [imgSelected,setImgSelected] = useState("")
-    const mesesDelAnio = [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ];
-    useEffect(() => {
-      let newMonth = month
-      if(month<10){
-        newMonth = month.toString().padStart(2, '0')
-      }
-      const montAndYear = `${year}-${newMonth}`;
-      fetch(
-        `${"w"}expensesAndIncome?linkTo=id_user&equalTo=${"fd"}&date=date&dateTo=${montAndYear}&tableSelected=${table}&category_selected=${table_category}`,
-        {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            Authorization: "Token " + getCookie("token"),
-            Module: "financial_record",
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data["status"] === 200) {
-            if (data["results"]) {
-              setHaveData(true);
-              setData(data["results"])
-            }
-          } else {
-            setHaveData(false);
+import fetchDataGet from "../../api/fetchDataGet";
+import fetchDataImg from "../../Scripts/getPhoto";
+import Paginator from "../paginator";
+
+
+function ViewHistory({ table }) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const dateFunction = date().split("-");
+  const dateselected = dateFunction;
+  const [month, setMonth] = useState(dateselected[1]);
+  const [year, setYear] = useState(dateselected[0]);
+  const [haveData, setHaveData] = useState(true);
+  const [allData, setData] = useState([]);
+  const [loadin, setLoadin] = useState(true);
+  const [buttonEnable, setButtonEnable] = useState(false);
+  const [deleteItemUpdate, setDeleteItemUpdate] = useState(false);
+  const [imgSelected, setImgSelected] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const mesesDelAnio = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  const getData = async () => {
+    let newMonth = month;
+    if (month < 10) {
+      newMonth = month.toString().padStart(2, "0");
+    }
+    const montAndYear = `${year}-${newMonth}`;
+    try {
+      const result = await fetchDataGet(
+        `/api/v1/users/financial/${table}/month/${montAndYear}?page=${
+          pageNumber - 1
+        }&size=5`
+      );
+      if (result) {
+        setHaveData(true);
+        const data = result.content;
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].picture !== null && data[i].picture !=="") {
+            const response = await fetchDataImg(data[i].picture)
+            data[i].picture = response;
           }
-          setLoadin(false);
-          setDeleteItemUpdate(false)
-        });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [month, year,deleteItemUpdate]);
-    const setMonthFuntion = (option) => {
+        }
+        setData(data);
+        setTotalPages(result.totalPages);
+      } else {
+        setHaveData(false);
+      }
+    } catch (error) {
+      setHaveData(false);
+    }
+    setLoadin(false);
+    setDeleteItemUpdate(false);
+  };
+
+
+
+  const setMonthFuntion = (option) => {
+    setPageNumber(1);
+    if (
+      Number(month) === Number(dateFunction[1]) - 1 &&
+      Number(year) === Number(dateFunction[0])
+    ) {
+      setButtonEnable(false);
+    }
+    if (option) {
       if (
-        Number(month) === Number(dateFunction[1]) - 1 &&
+        Number(month) === Number(dateFunction[1]) &&
         Number(year) === Number(dateFunction[0])
       ) {
-        setButtonEnable(false);
-      }
-      if (option) {
-        if (
-          Number(month) === Number(dateFunction[1]) &&
-          Number(year) === Number(dateFunction[0])
-        ) {
-            console.log("Data")
-        } else if (
-          Number(year) !== Number(dateFunction[0]) &&
-          Number(month) === 12
-        ) {
-          let newMonth = 1;
-          setMonth(newMonth);
-          let newYear = Number(year) + 1;
-          setYear(newYear);
-        } else {
-          let newMonth = Number(month) + 1;
-          setMonth(newMonth);
-        }
+        null;
+      } else if (
+        Number(year) !== Number(dateFunction[0]) &&
+        Number(month) === 12
+      ) {
+        let newMonth = 1;
+        setMonth(newMonth);
+        let newYear = Number(year) + 1;
+        setYear(newYear);
       } else {
-        setButtonEnable(true);
-        if (month === 1) {
-          let newMonth = Number(month) + 11;
-          let newYear = Number(year) - 1;
-          setMonth(newMonth);
-          setYear(newYear);
-        } else {
-          let newMonth = Number(month) - 1;
-          setMonth(newMonth);
-        }
+        let newMonth = Number(month) + 1;
+        setMonth(newMonth);
       }
-    };
-    const deleteItem =  (idSelected,table)=>{
-      confirmAlert({
-        title: "Confirmación de eliminación",
-        message: `¿Estás seguro que deseas eliminar este registro?`,
-        buttons: [
-          {
-            label: "Sí",
-            onClick: async () => {
+    } else {
+      setButtonEnable(true);
+      if (month === 1) {
+        let newMonth = Number(month) + 11;
+        let newYear = Number(year) - 1;
+        setMonth(newMonth);
+        setYear(newYear);
+      } else {
+        let newMonth = Number(month) - 1;
+        setMonth(newMonth);
+      }
+    }
+  };
+
+  const deleteItem = (idSelected, table) => {
+    confirmAlert({
+      title: "Confirmación de eliminación",
+      message: `¿Estás seguro que deseas eliminar este registro?`,
+      buttons: [
+        {
+          label: "Sí",
+          onClick: async () => {
             try {
-              await fetch("url",{
-                method:"DELETE",
-                mode:"cors",
-                headers:{
-                  Authorization: "Token " + getCookie("token"),
+              await fetch("url", {
+                method: "DELETE",
+                mode: "cors",
+                headers: {
                   Module: "financial_record",
                 },
-                body:JSON.stringify({
-                  table:table,
-                  id:idSelected,
-                  deleteItem:true
-                })
+                body: JSON.stringify({
+                  table: table,
+                  id: idSelected,
+                  deleteItem: true,
+                }),
               })
-              .then(response=>response.json())
-              .then(data=>{
-                if(data["status"]===200){
-                  toast.success('Registro eliminado.')
-                  setDeleteItemUpdate(true)
-                }
-              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data["status"] === 200) {
+                    toast.success("Registro eliminado.");
+                    setDeleteItemUpdate(true);
+                  }
+                });
             } catch (error) {
-              console.log(error)
+              console.log(error);
             }
           },
         },
-          {
-            label: "No",
-            onClick: () => {}, // No hace nada
-          },
-        ],
-      });
-    }
-    const openImg=(img)=>{
-      onOpen()
-      setImgSelected(img)
-    }
+        {
+          label: "No",
+          onClick: () => {}, // No hace nada
+        },
+      ],
+    });
+  };
+
+  const openImg = (img) => {
+    onOpen();
+    setImgSelected(img);
+  };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, year, deleteItemUpdate, pageNumber]);
   return (
     <>
       <div className="content_history">
@@ -174,7 +198,7 @@ function ViewHistory({table, table_category}) {
         >
           {loadin === true ? (
             <div className="loading_container center">
-              <CircularProgress aria-label="Loading..."/>
+              <CircularProgress aria-label="Loading..." />
             </div>
           ) : haveData === true ? (
             <>
@@ -182,27 +206,44 @@ function ViewHistory({table, table_category}) {
                 {allData !== 0 ? (
                   <>
                     <motion.div
-                    initial={ table=== "income"? { opacity: 0, x: 15 } : { opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
+                      initial={
+                        table === "incomes"
+                          ? { opacity: 0, x: 15 }
+                          : { opacity: 0, x: -15 }
+                      }
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
                         duration: 0.3,
-                        ease: [0, 0.71, 0.2, 1.01]
-                    }}
-                    className="record_info_container">
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                      className="record_info_container"
+                    >
                       {allData.map((data, index) => (
                         <div className="record_info" key={index}>
-                          <div className={table === "income"? "circle1History":"circle2History"}></div>
+                          <div
+                            className={
+                              table === "incomes"
+                                ? "circle1History"
+                                : "circle2History"
+                            }
+                          ></div>
                           <div className="record_info--info">
                             <p>Descipción: {data.description}</p>
                             <p>Categoría: {data.name_category}</p>
                             <p>Total: {formatCompact(data.amount)}</p>
                             <p>Fecha: {data.date}</p>
-                            {data["photo"] &&
-                              <Image onClick={()=>openImg("aw" + data["photo"])} isZoomed className="photo_mini" src={"url" + data["photo"]} alt="" />
-                            }
+                            <Image
+                                isZoomed
+                                onClick={() => openImg(data.picture)}
+                                className="photo_mini"
+                                src={data.picture}
+                                alt="picture"
+                              />
                             <hr />
                           </div>
-                          <IoIosClose onClick={()=>deleteItem(data["id"],table)}/>
+                          <IoIosClose
+                            onClick={() => deleteItem(data["id"], table)}
+                          />
                         </div>
                       ))}
                     </motion.div>
@@ -211,6 +252,13 @@ function ViewHistory({table, table_category}) {
                   <></>
                 )}
               </div>
+              {totalPages > 1 && (
+                <Paginator
+                  totalPages={totalPages}
+                  currentPage={pageNumber}
+                  setCurrentPage={setPageNumber}
+                />
+              )}
             </>
           ) : (
             <>
@@ -252,14 +300,18 @@ function ViewHistory({table, table_category}) {
                 ease: "easeIn",
               },
             },
-          }
+          },
         }}
       >
-      <ModalContent>
-        <ModalBody>
-          <img className="img_modal" src={imgSelected} alt="incomeOrExpensePicture" />
-        </ModalBody>
-      </ModalContent>
+        <ModalContent>
+          <ModalBody>
+            <img
+              className="img_modal"
+              src={imgSelected}
+              alt="incomeOrExpensePicture"
+            />
+          </ModalBody>
+        </ModalContent>
       </Modal>
     </>
   );
