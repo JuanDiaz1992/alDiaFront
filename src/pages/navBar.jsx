@@ -31,9 +31,6 @@ function NavBar() {
   };
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
-
-
-
   useEffect(() => {
     const url = localStorage.getItem("photo");
     if(url === null || url === ""){

@@ -4,7 +4,6 @@ import axios from 'axios';
 async function fetchDataImg(apiEndpoint) {
   const baseUrl = import.meta.env.VITE_API_URL;
   const url = baseUrl + apiEndpoint;
-
   const token = getCookie("token"); // Retrieve token from cookie
 
   try {
