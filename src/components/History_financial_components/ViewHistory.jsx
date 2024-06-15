@@ -202,7 +202,7 @@ function ViewHistory({ table }) {
           ) : haveData === true ? (
             <>
               <div className="record_info_container--container">
-                {allData !== 0 ? (
+                {allData.length !== 0 ? (
                   <>
                     <motion.div
                       initial={
@@ -228,16 +228,18 @@ function ViewHistory({ table }) {
                           ></div>
                           <div className="record_info--info">
                             <p>Descipción: {data.description}</p>
-                            <p>Categoría: {data.name_category}</p>
+                            <p>Categoría: {data.category.name}</p>
                             <p>Total: {formatCompact(data.amount)}</p>
                             <p>Fecha: {data.date}</p>
-                            <Image
-                                isZoomed
-                                onClick={() => openImg(data.picture)}
-                                className="photo_mini"
-                                src={data.picture}
-                                alt="picture"
-                              />
+                            {data.picture&&
+                                  <Image
+                                  isZoomed
+                                  onClick={() => openImg(data.picture)}
+                                  className="photo_mini"
+                                  src={data.picture}
+                                  alt="picture"
+                                />
+                            }
                             <hr />
                           </div>
                           <IoIosClose
