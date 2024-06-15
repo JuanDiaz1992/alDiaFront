@@ -1,11 +1,12 @@
 import dateToday from "../../Scripts/obtenerFechaActual";
 import { useEffect, useState, useRef } from "react";
-import { Select, SelectItem, Button } from "@nextui-org/react";
+import { Select, SelectItem, Button, Divider } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import convertToBase64 from "../../Scripts/converToBase64";
 import fetchDataPost from "../../api/fetchDataPost";
 import changeNamePicture from "../../Scripts/changeNamePicture";
 import fetchDataGet from "../../api/fetchDataGet";
+import { IoMdCloseCircle } from "react-icons/io";
 function FormRecord() {
   const today = dateToday();
   const [descriptionLabel, setDescriptionLabel] = useState("");
@@ -106,11 +107,18 @@ function FormRecord() {
       setDate(today);
       setAmount("");
       setDescription("");
-      toast.success(response.message);
-    } else {
-      toast.error(response.message);
+      }
+      toast((t) => (
+        <span className="message_toas">
+          {response.message? response.message : "Ah ocurrido un error, intentelo de nuevo más tarde."}
+          <Divider orientation="vertical" />
+          <button onClick={() => toast.dismiss(t.id)}>
+            <IoMdCloseCircle />
+          </button>
+        </span>
+      ));
     }
-  };
+
 
 
   //Mostrar imagen temporalmente

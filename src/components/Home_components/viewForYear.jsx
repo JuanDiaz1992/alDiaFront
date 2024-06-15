@@ -13,43 +13,40 @@ function ViewForYear() {
   const [buttonEnable, setButtonEnable] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [income, setIncome] = useState([]);
-  const [haveData, setHaveData] = useState(false);
+  const [haveData, setHaveData] = useState(true);
   const [loadin, setLoadin] = useState(true);
 
-  useEffect(() => {
-    const getData = async () => {
-      if (parseInt(actuallyYear) === parseInt(yearSelected)) {
-        setButtonEnable(false);
-      } else {
-        setButtonEnable(true);
-      }
-      try {
-        const response = await fetchDataGet(
-          `/api/v1/users/financial/allAmount/year/${yearSelected}`
-        );
-        setExpenses(0);
-        setIncome(0);
+
+  const getData = async () => {
+    if (parseInt(actuallyYear) === parseInt(yearSelected)) {
+      setButtonEnable(false);
+    } else {
+      setButtonEnable(true);
+    }
+    try {
+      const response = await fetchDataGet(`/api/v1/users/financial/allAmount/year/${yearSelected}`);
+      setExpenses(0);
+      setIncome(0);
+      if (response) {
         if (response) {
-          if (response) {
-            setHaveData(true);
-            if (response.expenses > 0) {
-              setExpenses(response.expenses);
-            }
-            if (response.income > 0) {
-              setIncome(response.income);
-            }
-          } else {
-            setHaveData(false);
+          setHaveData(true);
+          if (response.expenses > 0) {
+            setExpenses(response.expenses);
           }
+          if (response.income > 0) {
+            setIncome(response.income);
+          }
+        } else {
+          setHaveData(false);
         }
-      } catch (error) {
-        setHaveData(false);
       }
-    };
-    getData();
-    setLoadin(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [yearSelected]);
+    } catch (error) {
+      setHaveData(false);
+    }
+    finally{
+      setLoadin(false);
+    }
+  };
 
   const setMonthFuntion = (option) => {
     if (option) {
@@ -58,6 +55,13 @@ function ViewForYear() {
       setYearSelected(parseInt(yearSelected) - 1);
     }
   };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [yearSelected]);
+
+
   return (
     <>
       <div className="month_buttons_container">

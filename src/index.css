@@ -23,3 +23,15 @@
 .react-confirm-alert-button-group > button:nth-child(1){
   background-color: var(--color-secondary);
 }
+
+.message_toas{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.message_toas svg{
+  fill: red;
+  width: 30px;
+  height: 30px;
+}

@@ -1,22 +1,21 @@
 import getCookie from "../Scripts/getCookies";
+import axios from 'axios';
 
 async function fetchDataDelete(apiEndpoint) {
   const baseUrl = import.meta.env.VITE_API_URL;
   const url =  baseUrl + apiEndpoint;
 
-  const defaultOptions = {
-    method: "DELETE",
-    mode: "cors",
+  const response = await axios.delete(url, {
     headers: {
       Authorization: `Bearer ${getCookie("token")}`,
       'Content-Type': 'application/json',
     },
-  };
-  const response = await fetch(url, defaultOptions);
-  if (!response.ok) {
+  });
+
+  if (response.status !==200) {
     throw new Error(`Error fetching data: ${response.statusText}`);
   }
-  return await response.json();
+  return await response.data;
 }
 
 export default fetchDataDelete;

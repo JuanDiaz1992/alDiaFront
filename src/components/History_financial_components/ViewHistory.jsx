@@ -15,6 +15,7 @@ import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-hot-toast";
 import date from "../../Scripts/obtenerFechaActual";
 import fetchDataGet from "../../api/fetchDataGet";
+import fetchDataDelete from "../../api/fetchDataDelete";
 import fetchDataImg from "../../Scripts/getPhoto";
 import Paginator from "../paginator";
 
@@ -48,6 +49,7 @@ function ViewHistory({ table }) {
     "Diciembre",
   ];
 
+  //Obtiene la lista de los gatos e ingresos del mes o año
   const getData = async () => {
     let newMonth = month;
     if (month < 10) {
@@ -82,7 +84,7 @@ function ViewHistory({ table }) {
   };
 
 
-
+  //Se encarga de formatear las fechas
   const setMonthFuntion = (option) => {
     setPageNumber(1);
     if (
@@ -123,6 +125,8 @@ function ViewHistory({ table }) {
     }
   };
 
+
+  //Elimina el ingreso o egreso solicitado
   const deleteItem = (idSelected, table) => {
     confirmAlert({
       title: "Confirmación de eliminación",
@@ -132,27 +136,15 @@ function ViewHistory({ table }) {
           label: "Sí",
           onClick: async () => {
             try {
-              await fetch("url", {
-                method: "DELETE",
-                mode: "cors",
-                headers: {
-                  Module: "financial_record",
-                },
-                body: JSON.stringify({
-                  table: table,
-                  id: idSelected,
-                  deleteItem: true,
-                }),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data["status"] === 200) {
-                    toast.success("Registro eliminado.");
-                    setDeleteItemUpdate(true);
-                  }
-                });
+              const result = await fetchDataDelete(`/api/v1/users/financial/${table}/delete/id/${idSelected}`);
+              if(result) {
+                  toast.success(result.message);
+                  setDeleteItemUpdate(true);
+                }else{
+                  toast.error(result.message);
+                }
             } catch (error) {
-              console.log(error);
+              toast.error("Ah ocurrido un error, intentelo de nuevo más tarde.");
             }
           },
         },
@@ -164,15 +156,22 @@ function ViewHistory({ table }) {
     });
   };
 
+
+
+  //Abre la imagen del gasto o ingreso
   const openImg = (img) => {
     onOpen();
     setImgSelected(img);
   };
 
+
+  //Inicia el método getData
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, year, deleteItemUpdate, pageNumber]);
+
+
   return (
     <>
       <div className="content_history">
@@ -242,7 +241,7 @@ function ViewHistory({ table }) {
                             <hr />
                           </div>
                           <IoIosClose
-                            onClick={() => deleteItem(data["id"], table)}
+                            onClick={() => deleteItem(table === "incomes"?data.idIncome:data.idExpense, table)}
                           />
                         </div>
                       ))}

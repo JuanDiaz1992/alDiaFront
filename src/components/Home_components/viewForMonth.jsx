@@ -16,43 +16,51 @@ function ViewForMonth() {
   const dateselected = dateFunction;
   const [month, setMonth] = useState(dateselected[1])
   const [year, setYear] = useState(dateselected[0])
-  const [haveData,setHaveData] = useState(false)
+  const [haveData,setHaveData] = useState(true)
   const [expenses, setExpenses] = useState(0);
   const [income, setIncome] = useState(0);
   const [loadin,setLoadin] = useState(true)
-  const [buttonEnable, setButtonEnable] =useState(false);
+  const [buttonEnable, setButtonEnable] = useState(false);
   const mesesDelAnio = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
-  useEffect(() => {
-      const getData= async () =>{
-        let newMonth = month
-        if(month<10){
-          newMonth = month.toString().padStart(2, '0')
+
+
+  const getData= async () =>{
+    let newMonth = month
+    if(month<10){
+      newMonth = month.toString().padStart(2, '0')
+    }
+    const montAndYear = `${year}-${newMonth}`;
+    try {
+      const response = await fetchDataGet(`/api/v1/users/financial/allAmount/month/${montAndYear}`)
+      setExpenses(0);
+      setIncome(0);
+      if (response) {
+        setHaveData(true)
+        if (response.expenses>0) {
+          setExpenses(response.expenses);
         }
-        const montAndYear = `${year}-${newMonth}`;
-        try {
-          const response = await fetchDataGet(`/api/v1/users/financial/allAmount/month/${montAndYear}`)
-          setExpenses(0);
-          setIncome(0);
-          if (response) {
-            setHaveData(true)
-            if (response.expenses>0) {
-              setExpenses(response.expenses);
-            }
-            if (response.income>0) {
-              setIncome(response.income);
-            }
-          }else{
-            setHaveData(false)
-          }
-        } catch (error) {
-          setHaveData(false)
+        if (response.income>0) {
+          setIncome(response.income);
         }
+      }else{
+        setHaveData(false)
       }
-      getData();
+    }
+    catch (error) {
+      setHaveData(false)
+    }
+    finally{
       setLoadin(false)
+    }
+  }
+
+
+  useEffect(() => {
+      getData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, year, logout]);
 
 
@@ -62,6 +70,7 @@ function ViewForMonth() {
     }
     if (option) {
       if (Number(month) === Number(dateFunction[1])  &&  Number(year) === Number(dateFunction[0]) ) {
+        null;
       }else if(Number(year) !== Number(dateFunction[0]) && Number(month) === 12 ){
         let newMonth = 1;
         setMonth(newMonth);
@@ -85,6 +94,8 @@ function ViewForMonth() {
 
     }
   }
+
+
   return (
     <>
       <div className="month_buttons_container">
@@ -103,56 +114,57 @@ function ViewForMonth() {
         </button>
       </div>
       <div className="content_index--info_container">
-        {loadin === true ? (
+        {loadin? (
           <>
-            {" "}
             <CircularProgress label="Cargando..." />
           </>
-        ) : haveData === true ? (
-          <>
-            <div>
-              <Graphics income={income} expenses={expenses} />
-            </div>
-            <div className="content_index--info_container--data_info">
-              {expenses !== 0 ? (
-                <>
-                  <div className="content_index--info_container--data_info--div">
-                    <div className="circle1"></div>
-                    <p>Total gastos:</p>
-                  </div>
-                  <p>{formatCompact(expenses)}</p>
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-            <div className="content_index--info_container--data_info">
-              {income !== 0 ? (
-                <>
-                  <div className="content_index--info_container--data_info--div">
-                    <div className="circle2"></div>
-                    <p>Total ingresos:</p>
-                  </div>
-                  <p>{formatCompact(income)}</p>
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-          </>
         ) : (
-          <>
-            <div className="null_register">
-              <h2>
-                No hay registros para el mes de {mesesDelAnio[month - 1]} del{" "}
-                {year}
-              </h2>
-              <p>
-                Empieza a registrar tus gastos e ingresos{" "}
-                <NavLink to="/registro_financiero">aquí</NavLink>
-              </p>
-            </div>
-          </>
+          haveData? (
+            <>
+              <div>
+                <Graphics income={income} expenses={expenses} />
+              </div>
+              <div className="content_index--info_container--data_info">
+                {expenses !== 0 ? (
+                  <>
+                    <div className="content_index--info_container--data_info--div">
+                      <div className="circle1"></div>
+                      <p>Total gastos:</p>
+                    </div>
+                    <p>{formatCompact(expenses)}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="content_index--info_container--data_info">
+                {income !== 0 ? (
+                  <>
+                    <div className="content_index--info_container--data_info--div">
+                      <div className="circle2"></div>
+                      <p>Total ingresos:</p>
+                    </div>
+                    <p>{formatCompact(income)}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="null_register">
+                <h2>
+                  No hay registros para el mes de {mesesDelAnio[month - 1]} del{" "}
+                  {year}
+                </h2>
+                <p>
+                  Empieza a registrar tus gastos e ingresos{" "}
+                  <NavLink to="/registro_financiero">aquí</NavLink>
+                </p>
+              </div>
+            </>
+          )
         )}
       </div>
     </>
