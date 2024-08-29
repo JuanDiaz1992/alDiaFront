@@ -6,7 +6,7 @@ import convertToBase64 from "../../Scripts/converToBase64";
 import fetchDataPost from "../../api/fetchDataPost";
 import changeNamePicture from "../../Scripts/changeNamePicture";
 import fetchDataGet from "../../api/fetchDataGet";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoMdClose, IoIosCloseCircle, IoMdCheckmarkCircleOutline  } from "react-icons/io";
 function FormRecord() {
   const today = dateToday();
   const [descriptionLabel, setDescriptionLabel] = useState("");
@@ -110,10 +110,10 @@ function FormRecord() {
       }
       toast((t) => (
         <span className="message_toas">
-          {response.message? response.message : "Ah ocurrido un error, intentelo de nuevo más tarde."}
+          {response.message? <div className="toas_message_ok"> <IoMdCheckmarkCircleOutline  />{response.message}</div> : <div className="toas_message_error"><IoIosCloseCircle /><> Ah ocurrido un error, intentelo de nuevo más tarde.</></div>}
           <Divider orientation="vertical" />
           <button onClick={() => toast.dismiss(t.id)}>
-            <IoMdCloseCircle />
+            <IoMdClose />
           </button>
         </span>
       ));

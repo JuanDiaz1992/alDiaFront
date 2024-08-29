@@ -5,8 +5,6 @@
     }
 
 .content_index{
-    padding-top: 20px;
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -81,7 +79,7 @@
 }
 .bars_container div{
     padding: 40px;
-    height: 250px; 
+    height: 250px;
     text-align: center;
 }
 @media only screen and (max-width:525px){

@@ -1,14 +1,17 @@
 import {
   Navbar,
-  NavbarBrand,
   NavbarContent,
   NavbarItem,
-  DropdownItem,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
   Avatar,
 } from "@nextui-org/react";
+import { Link } from 'react-router-dom';
+import iconAcount from "../img/icons/account_circle.svg";
+import add from "../img/icons/add.svg";
+import cancel from "../img/icons/cancel.svg";
+import settings from "../img/icons/Settings.svg";
+import stats from "../img/icons/Stats.svg";
+import question from "../img/icons/question.svg";
+import notificarion from "../img/icons/notifications.svg"
 import { useState, useEffect } from 'react';
 import Logo from "../img/logoNavBar.png";
 import "../styleheets/navBar.css";
@@ -27,7 +30,8 @@ function NavBar() {
   const user = {
     "photo": localStorage.getItem("photo"),
     "firstName" : localStorage.getItem("firstName"),
-    "lastName": localStorage.getItem("lastName")
+    "lastName": localStorage.getItem("lastName"),
+    "occupation": localStorage.getItem("occupation")
   };
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
@@ -47,106 +51,77 @@ function NavBar() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChague.isChanged]);
 
-
+  const navLinks = [
+    { path: "/", label: "Inicio", icon:stats },
+    { path: "/registro_financiero", label: "Añadir Registro", icon: add },
+    { path: "/profile", label: "Perfil", icon: iconAcount},
+    { path: "/configuration", label: "Ajustes", icon: settings  },
+  ];
 
   return (
     <>
-      <Navbar isBordered className="navBar_container">
-        <NavbarContent justify="start">
-          <NavbarBrand className="mr-12">
-            <img src={Logo} alt="logo" />
-            <p className="hidden sm:block text-inherit text-logo">ALDÍA</p>
-          </NavbarBrand>
-          <NavbarContent className="hidden sm:flex gap-3 ml-12">
-            <NavbarItem>
+      <Navbar className="vertical_nav hidden md:flex flex-col justify-start items-center h-[100vh] w-[162px] fixed top-0 left-0 z-50">
+        <div className="flex flex-col pt-[20px] justify-start items-center">
+          <img src={Logo} alt="logo" />
+          <p className="hidden sm:block text-inherit text-logo">ALDÍA</p>
+        </div>
+        <NavbarContent className="flex flex-col items-start w-[100%]">
+          {navLinks.map((link) => (
+            <NavbarItem key={link.path} className="w-[100%]">
               <NavLink
-                to="/"
-                className={location.pathname === "/" ? "active" : "inactive"}
-              >
-                Inicio
-              </NavLink>
-            </NavbarItem>
-            <NavbarItem>
-              <NavLink
-                to="/informes"
+                to={link.path}
                 className={
-                  location.pathname === "/informes" ? "active" : "inactive"
+                  location.pathname === link.path
+                    ? "active item_menu"
+                    : "inactive item_menu"
                 }
               >
-                Informes
+                <img src={link.icon} alt="" />
+                {link.label}
               </NavLink>
             </NavbarItem>
-            <NavbarItem>
-              <NavLink
-                to="/registro_financiero"
-                className={
-                  location.pathname === "/registro_financiero"
-                    ? "active"
-                    : "inactive"
-                }
-              >
-                Registro Financiero
-              </NavLink>
+          ))}
+            <NavbarItem className="w-[100%]">
+              <div className="inactive item_menu cursor-pointer" onClick={logout}>
+                <img src={cancel} alt="" />
+                Cerrar Sesión
+              </div>
             </NavbarItem>
-            <NavbarItem>
-              <NavLink
-                to="/historial"
-                className={
-                  location.pathname === "/historial" ? "active" : "inactive"
-                }
-              >
-                Historial
-              </NavLink>
-            </NavbarItem>
-            <NavbarItem>
-              <NavLink
-                to="/ayuda"
-                className={
-                  location.pathname === "/ayuda" ? "active" : "inactive"
-                }
-              >
-                Ayuda
-              </NavLink>
-            </NavbarItem>
-          </NavbarContent>
         </NavbarContent>
-
-        <NavbarContent as="div" className="items-center" justify="end">
-          <Dropdown placement="bottom-end">
-            <DropdownTrigger>
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color="warning"
-                size="md"
-                src={profilePhotoUrl}
-                alt="Profile"
-              />
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem textValue="My Settings" className="h-14 gap-2">
-                <p className="font-semibold">{user.firstName + " " + user.lastName}</p>
-              </DropdownItem>
-              <DropdownItem textValue="My Settings">
-                <NavLink to="/profile" >
-                  Mi perfil
-                </NavLink>
-              </DropdownItem>
-              <DropdownItem textValue="My Settings">
-                Configuraciones
-              </DropdownItem>
-              <DropdownItem
-                textValue="My Settings"
-                onClick={logout}
-                color="danger"
-              >
-                Cerrar sesión
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </NavbarContent>
+        <div className="h-[88px] pb-[20px] item_menu inactive"><img src={question} alt="question" /><p>Ayuda</p></div>
       </Navbar>
+
+
+      <nav className="navBar_container pr-[20px] md:pr-[60px] pl-[20px] md:pl-[200px] w-[100%] h-[80px] flex justify-between items-center fixed">
+        <div>
+          <form >
+            <input className="searh_input h-[35px] w-[100px] rounded-xl" type="text" placeholder="Buscar"/>
+          </form>
+        </div>
+        <div className="flex justify-center items-center gap-[20px]">
+          <img src={notificarion} alt="" />
+          <Link to="/profile">
+            <Avatar
+              isBordered
+              as="button"
+              className="transition-transform"
+              color="warning"
+              size="md"
+              src={profilePhotoUrl}
+              alt="Profile"
+              />
+            </Link>
+          <div>
+            <p className="nav_avatar_name font-semibold">{user.firstName + " " + user.lastName}</p>
+            <p className="nav_avatar_ocupation">{user.occupation ? user.occupation : ""}</p>
+          </div>
+
+        </div>
+
+
+      </nav>
+
+
 
       <div className="nav_botton">
         <div className="nav_botton-container">

@@ -31,7 +31,21 @@
   gap: 5px;
 }
 .message_toas svg{
-  fill: red;
+  fill: rgb(59, 59, 59);
   width: 30px;
   height: 30px;
+}
+
+.toas_message_ok, .toas_message_error {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.toas_message_ok svg{
+  fill: rgb(50, 214, 0);
+}
+.toas_message_error svg{
+  fill: rgb(214, 25, 0);
 }

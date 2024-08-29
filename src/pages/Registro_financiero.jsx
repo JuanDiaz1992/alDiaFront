@@ -7,7 +7,7 @@ function RegistroFinanciero(){
 
     return(
         <>
-        <div className="container_financial_record">
+        <div className="container_financial_record lg:h-[100vh]">
             <RecordFinancial />
         </div>
         </>

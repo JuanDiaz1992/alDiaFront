@@ -69,7 +69,6 @@
     font-size: 15px;
     background-color:var(--color-secondary);
     color: white;
-    
 }
 
 .buttonInactive{
@@ -116,21 +115,19 @@
 @media only screen and (max-width: 1273px){
 
     /*********************************Main*/
-    
     .main_div1--card1{
         left: 0;
     }
     .main_div1--card2{
         right: 0px;
     }
-        
     }
-    
-    
-    
-    
+
+
+
+
     @media only screen and (max-width: 1200px){
-    
+
         .section1,.section2,
         .section3,.section4,
         .section5,
@@ -153,15 +150,10 @@
         .companheros{
             width: 100%;
         }
-    
+
     }
-    
-    
-    
-    
     @media only screen and (max-width: 960px){
         /*********Section 2***********/
-    
         .section2__div--container{
             flex-direction: column;
             justify-content: center;
@@ -169,18 +161,18 @@
         .section2__div2{
             justify-content: center;
         }
-    
+
         .section2__div1{
             align-items: center;
         }
         .section2__div1--textContainer{
             width: 80%;
         }
-    
+
         .imgJoven{
             width: 50%;
         }
-    
+
         /*********Section 4***********/
         .section4__div__container{
             align-items: center;
@@ -191,7 +183,7 @@
         .section4__div__container__imgCont__div{
             gap: 5px;
         }
-    
+
         .circle{
             width: 250px;
         }
@@ -203,14 +195,9 @@
             gap: 25px;
         }
     }
-    
-    
-    
-    
-    
-    
+
     @media only screen and (max-width: 860px){
-    
+
         /*********Main***********/
         .main_div1--card1{
             display: none;
@@ -220,13 +207,10 @@
             flex-direction: column;
             gap: 15px;
         }
-        
         .section1__div1 div,.section1__div1 h2 {
             width: 80%;
         }
-    
-        
-    
+
         /*********Section 3***********/
         .section3__container__div1, .section3__container__div2{
             width: 80%;
@@ -242,7 +226,7 @@
         .imgHarrow{
             width: 150px;
         }
-        
+
         /*********Section 7***********/
         .section7__div__container__div2{
             flex-direction: column;
@@ -260,17 +244,14 @@
             width: 80%;
         }
     }
-    
-    
-    
-    
-      
+
+
     @media only screen and (max-width: 768px) {
         /*********MAIN***********/
         .main_div1_div--bannerContainer{
             margin-top: 60px;
         }
-    
+
         /*********NAV***********/
         .dropdown-content{
             display: block;
@@ -280,9 +261,7 @@
         .dropdown-content a{
             margin: 25px 0;
         }
-    
-    
-    
+
         .nav_div1{
             flex-direction: row-reverse;
         }
@@ -303,11 +282,11 @@
             overflow-y:auto;
             left: 100%;
             transition: left 0.3s;
-            
+
         }
         .nav-menu_visible{
             left: 0;
-    
+
         }
         .nav_toggle{
             display: block;
@@ -318,7 +297,6 @@
         }
         .nav_div1_div_ul--li:hover{
             background-color: #80808000;
-           
         }
         .nav_div1_div_ul--li a{
             padding: 8px 12px;
@@ -326,15 +304,11 @@
             color: white;
             background-color: rgba(240, 248, 255, 0);
         }
-    
         .nav_div1_div_ul--buttom a{
             color: white;
             border: 1px white solid;
         }
-    
-    
         /**Menú hamburgues*/
-    
         .nav_toggle{
             display: block;
         }
@@ -345,7 +319,7 @@
             position: relative;
             cursor: pointer;
             display: inline-block;
-          }
+        }
         .nav-icon-5 span{
             background-color:#00588D ;
             position: absolute;
@@ -388,16 +362,13 @@
             transform: rotate(-45deg);
             top: 13px;
         }
-        
+
         /*********Section 2***********/
         .section2__div2{
             margin-top: 50px;
         }
-    
-    
         /*********Section 4***********/
-    
-    
+
         .section4__div__container--imgCont{
             flex-direction: column;
             gap: 15px;
@@ -426,14 +397,7 @@
             flex-direction: column;
             align-items: flex-start;
         }
-    
-    
-    
     }
-      
-    
-    
-    
     @media only screen and (max-width: 560px){
         .main_div1_div--textContainer h1 {
             font-size: 40px;
@@ -442,12 +406,8 @@
         .section2__div2__div{
             min-height:250px;
         }
-    
-    
-    
         /*********form***********/
         .formContacto__div{
-    
             flex-direction: column;
         }
         .formContacto__div__div{
@@ -460,17 +420,11 @@
         .formLogin{
             width: 80%;
         }
-    
     }
-    
-    
+
     @media only screen and (max-width: 450px){
         /*********Section 2***********/
         .section2__div1--buttonContainer{
             flex-direction: column;
         }
     }
-    
-    
-    
-    
