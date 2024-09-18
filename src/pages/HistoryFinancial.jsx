@@ -22,7 +22,7 @@ function HistoryFinancial() {
 
   return (
     <>
-      <div className="card_history_container">
+      <div className="card_history_container overflow-hidden h-[500px]">
         <Tabs items={options} color="warning" aria-label="Tabs colors" radius="full">
           {(item) => (
             <Tab key={item.name} title={item.name}>

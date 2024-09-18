@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import {
