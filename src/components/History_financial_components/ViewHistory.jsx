@@ -1,6 +1,8 @@
 import formatCompact from "../../Scripts/formatearPesos";
 import { useState, useEffect } from "react";
-import { IoIosArrowForward, IoIosArrowBack, IoIosClose } from "react-icons/io";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { FaArrowAltCircleUp, FaArrowAltCircleDown, FaEdit  } from "react-icons/fa";
+import { MdDeleteOutline  } from "react-icons/md";
 import {
   CircularProgress,
   Modal,
@@ -18,6 +20,7 @@ import fetchDataGet from "../../api/fetchDataGet";
 import fetchDataDelete from "../../api/fetchDataDelete";
 import fetchDataImg from "../../Scripts/getPhoto";
 import Paginator from "../paginator";
+import FormRecord from "../Financial_record_components/FormRecord";
 
 
 function ViewHistory({ table }) {
@@ -31,9 +34,9 @@ function ViewHistory({ table }) {
   const [loadin, setLoadin] = useState(true);
   const [buttonEnable, setButtonEnable] = useState(false);
   const [deleteItemUpdate, setDeleteItemUpdate] = useState(false);
-  const [imgSelected, setImgSelected] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [viewModal,setModal] = useState([])
   const mesesDelAnio = [
     "Enero",
     "Febrero",
@@ -48,6 +51,9 @@ function ViewHistory({ table }) {
     "Noviembre",
     "Diciembre",
   ];
+
+
+
 
   //Obtiene la lista de los gatos e ingresos del mes o año
   const getData = async () => {
@@ -158,11 +164,7 @@ function ViewHistory({ table }) {
 
 
 
-  //Abre la imagen del gasto o ingreso
-  const openImg = (img) => {
-    onOpen();
-    setImgSelected(img);
-  };
+
 
 
   //Inicia el método getData
@@ -171,6 +173,24 @@ function ViewHistory({ table }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, year, deleteItemUpdate, pageNumber]);
 
+const openModa=(option, img, data)=>{
+  onOpen();
+  switch (option) {
+    case 1:
+      setModal(
+      <img
+        className="img_modal"
+        src={img}
+        alt="incomeOrExpensePicture"
+      />)
+      break;
+    case 2:
+      setModal(<FormRecord data={data} fromEdit={true}/>);
+      break;
+    default:
+      break;
+  }
+}
 
   return (
     <>
@@ -219,32 +239,39 @@ function ViewHistory({ table }) {
                     >
                       {allData.map((data, index) => (
                         <div className="record_info" key={index}>
-                          <div
-                            className={
-                              table === "incomes"
-                                ? "circle1History"
-                                : "circle2History"
-                            }
-                          ></div>
-                          <div className="record_info--info">
-                            <p>Descipción: {data.description}</p>
-                            <p>Categoría: {data.category.name}</p>
-                            <p>Total: {formatCompact(data.amount)}</p>
-                            <p>Fecha: {data.date}</p>
-                            {data.picture&&
-                                  <Image
-                                  isZoomed
-                                  onClick={() => openImg(data.picture)}
-                                  className="photo_mini"
-                                  src={data.picture}
-                                  alt="picture"
+                          {table=="incomes"?
+                          <FaArrowAltCircleUp className="text-[#ff7f3e] w-[25px]"/>
+                          :<FaArrowAltCircleDown className="text-[#043249] w-[25px]"/>
+                          }
+
+                          <div className="record_info--info flex flex-row justify-between flex-wrap">
+                            <div className="flex gap-[15px] flex-col">
+                              <p><strong>Descipción:</strong> {data.description}</p>
+                              <p><strong>Categoría:</strong> {data.category.name}</p>
+                              <p><strong>Total:</strong> {formatCompact(data.amount)}</p>
+                              <p><strong>Fecha:</strong> {data.date}</p>
+                              {data.is_planned?<p className="text-[#ff7f3e]"><strong>Entra en el presupuesto</strong></p>:<></>}
+                              <div className="flex">
+                                <MdDeleteOutline  className="text-red-500 w-[30px] transform transition-transform duration-300 hover:scale-110"
+                                  onClick={() => deleteItem(data, table)}
                                 />
-                            }
+                                <FaEdit className="text-green-500 w-[25px] transform transition-transform duration-300 hover:scale-110"
+                                  onClick={()=> openModa(2,"", table === "incomes"?data.idIncome:data.idExpense, table)}
+                                />
+                              </div>
+                            </div>
+                            {data.picture&&
+                                    <Image
+                                    isZoomed
+                                    onClick={() => openModa(1,data.picture)}
+                                    className="photo_mini"
+                                    src={data.picture}
+                                    alt="picture"
+                                  />
+                              }
                             <hr />
                           </div>
-                          <IoIosClose
-                            onClick={() => deleteItem(table === "incomes"?data.idIncome:data.idExpense, table)}
-                          />
+
                         </div>
                       ))}
                     </motion.div>
@@ -278,8 +305,8 @@ function ViewHistory({ table }) {
         </div>
       </div>
       <Modal
+        className="flex justify-center items-center h-[80vh] w-fit pt-[25px] overflow-y-auto"
         backdrop="opaque"
-        size="3xl"
         isOpen={isOpen}
         placement="center"
         onOpenChange={onOpenChange}
@@ -306,11 +333,7 @@ function ViewHistory({ table }) {
       >
         <ModalContent>
           <ModalBody>
-            <img
-              className="img_modal"
-              src={imgSelected}
-              alt="incomeOrExpensePicture"
-            />
+            {viewModal}
           </ModalBody>
         </ModalContent>
       </Modal>

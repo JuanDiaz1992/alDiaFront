@@ -1,6 +1,6 @@
 import dateToday from "../../Scripts/obtenerFechaActual";
 import { useEffect, useState, useRef } from "react";
-import { Select, SelectItem, Button, Divider } from "@nextui-org/react";
+import { Select, SelectItem, Button, Divider, Checkbox } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import convertToBase64 from "../../Scripts/converToBase64";
 import fetchDataPost from "../../api/fetchDataPost";
@@ -9,6 +9,7 @@ import fetchDataGet from "../../api/fetchDataGet";
 import { IoMdClose, IoIosCloseCircle, IoMdCheckmarkCircleOutline  } from "react-icons/io";
 import { FaCamera } from "react-icons/fa";
 import { isNumber } from "chart.js/helpers";
+
 function FormRecord() {
   const today = dateToday();
   const [descriptionLabel, setDescriptionLabel] = useState("");
@@ -18,6 +19,7 @@ function FormRecord() {
   const [categoryFromBd, setCategoryFromBd] = useState([]);
   const [category, setCategory] = useState(new Set([]));
   const [typeCategory, setType] = useState(new Set([]));
+  const [isPlanned, setIsPlanned] = useState(false);
   const [formIsOk, setStateForm] = useState(false);
   const [file, setFile] = useState(null);
   const [fileFull, setFileFUll] = useState(null);
@@ -113,6 +115,7 @@ function FormRecord() {
       date: date,
       amount: amount,
       description: description,
+      is_planned:isPlanned
     };
     if (table === "expenses") {
       body.categoryExpenses = categorySelected;
@@ -173,7 +176,7 @@ function FormRecord() {
   return (
     <>
       <div className="flex justify-center items-center w-[100%] max-w-[559px] h-[604px] rounded-[10px] pt-[45px] pb-[45px] pr-[20px] pl-[20px] relative bg-white">
-        <div className="form_record_financial_container ">
+        <div className="form_record_financial_container">
             <div className="input_new_record">
               <Select
                 id="departament"
@@ -188,10 +191,9 @@ function FormRecord() {
                 ))}
               </Select>
             </div>
+            <div className={typeCategory["size"] > 0 ? "" : "form_disabled"}>
             <form
-              className={
-                "formRecord " + (typeCategory["size"] > 0 ? "" : "form_disabled")
-              }
+              className="formRecord flex flex-row flex-wrap justify-between "
               onSubmit={(e) => sendInfo(e)}
             >
               <div className="input_new_record">
@@ -235,7 +237,7 @@ function FormRecord() {
                 </p>
               </div>
 
-              <div className="input_new_record">
+              <div className="input_new_record w-[46%]">
                 <label htmlFor="date">Fecha</label>
                 <input
                   id="date"
@@ -245,7 +247,7 @@ function FormRecord() {
                   max={today}
                 />
               </div>
-              <div className="input_new_record">
+              <div className="input_new_record w-[46%]">
                 <label htmlFor="amount">Monto</label>
                 <input
                   id="amount"
@@ -266,6 +268,13 @@ function FormRecord() {
                 />
               </div>
 
+
+              <div className="w-[100%] flex gap-[px] items-center">
+                <Checkbox color="success" value={isPlanned} onChange={(e) => setIsPlanned(e.target.checked)}> </Checkbox>
+                <p className="text-[12px] mt-[5px]">Marca esta casilla para añadir este registro al presupuesto</p>
+              </div>
+
+
               <div className="buttons_container">
                 <Button
                   color={formIsOk ? "primary" : "default"}
@@ -276,6 +285,8 @@ function FormRecord() {
                 </Button>
               </div>
             </form>
+            </div>
+
         </div>
 
       </div>
