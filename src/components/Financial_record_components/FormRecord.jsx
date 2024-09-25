@@ -1,14 +1,14 @@
 import dateToday from "../../Scripts/obtenerFechaActual";
 import { useEffect, useState, useRef } from "react";
-import { Select, SelectItem, Button, Divider, Checkbox } from "@nextui-org/react";
+import { Divider, Select, SelectItem } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import convertToBase64 from "../../Scripts/converToBase64";
 import fetchDataPost from "../../api/fetchDataPost";
 import changeNamePicture from "../../Scripts/changeNamePicture";
 import fetchDataGet from "../../api/fetchDataGet";
 import { IoMdClose, IoIosCloseCircle, IoMdCheckmarkCircleOutline  } from "react-icons/io";
-import { FaCamera } from "react-icons/fa";
 import { isNumber } from "chart.js/helpers";
+import FormFinancial from "../FormFinancial";
 
 function FormRecord() {
   const today = dateToday();
@@ -20,7 +20,6 @@ function FormRecord() {
   const [category, setCategory] = useState(new Set([]));
   const [typeCategory, setType] = useState(new Set([]));
   const [isPlanned, setIsPlanned] = useState(false);
-  const [formIsOk, setStateForm] = useState(false);
   const [file, setFile] = useState(null);
   const [fileFull, setFileFUll] = useState(null);
   const inputFileRef = useRef(null);
@@ -60,20 +59,6 @@ function FormRecord() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typeCategory]);
 
-
-  //Validar datos antes del envío
-  useEffect(() => {
-    if (
-      amount > 0 &&
-      date &&
-      category["size"] > 0 &&
-      description.length > 3
-    ) {
-      setStateForm(true);
-    } else {
-      setStateForm(false);
-    }
-  }, [amount, date, category, description]);
 
 
   //Obtiene el total de la factura si es legible
@@ -152,7 +137,6 @@ function FormRecord() {
       const urlTemporal = URL.createObjectURL(archivo);
       setFile(urlTemporal);
     }
-
   };
 
 
@@ -166,10 +150,6 @@ function FormRecord() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[fileFull])
 
-
-  const handleIconClick = () => {
-    document.getElementById("file").click();
-  };
 
 
 
@@ -192,12 +172,9 @@ function FormRecord() {
               </Select>
             </div>
             <div className={typeCategory["size"] > 0 ? "" : "form_disabled"}>
-            <form
-              className="formRecord flex flex-row flex-wrap justify-between "
-              onSubmit={(e) => sendInfo(e)}
-            >
-              <div className="input_new_record">
+            <div className="input_new_record">
                 <Select
+                  className="mb-[25px]"
                   id="departament"
                   label="Categoría"
                   onSelectionChange={setCategory}
@@ -212,83 +189,26 @@ function FormRecord() {
                 </Select>
               </div>
 
-              <div className="">
-                <input
-                      type="file"
-                      id="file"
-                      accept="image/jpeg, image/png, image/jpg"
-                      capture="camera"
-                      ref={inputFileRef}
-                      style={{ display: "none" }}
-                      onChange={manejarSeleccionImagen}
-                    />
-                    <Button
-                      radius="full"
-                      isIconOnly
-                      color="warning"
-                      variant="faded"
-                      aria-label="Take a photo"
-                      onClick={handleIconClick}
-                    >
-                      <FaCamera />
-                    </Button>
-                <p className="text_info">
-                  Si tienes una fotografría del comprobante, subelo aquí
-                </p>
-              </div>
-
-              <div className="input_new_record w-[46%]">
-                <label htmlFor="date">Fecha</label>
-                <input
-                  id="date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  max={today}
-                />
-              </div>
-              <div className="input_new_record w-[46%]">
-                <label htmlFor="amount">Monto</label>
-                <input
-                  id="amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  type="number"
-                  placeholder="0.00 COP"
-                />
-              </div>
-              <div className="input_new_record">
-                <label htmlFor="description">Descripción</label>
-                <textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  type="text"
-                  placeholder={descriptionLabel}
-                />
-              </div>
-
-
-              <div className="w-[100%] flex gap-[px] items-center">
-                <Checkbox color="success" value={isPlanned} onChange={(e) => setIsPlanned(e.target.checked)}> </Checkbox>
-                <p className="text-[12px] mt-[5px]">Marca esta casilla para añadir este registro al presupuesto</p>
-              </div>
-
-
-              <div className="buttons_container">
-                <Button
-                  color={formIsOk ? "primary" : "default"}
-                  className={formIsOk ? "" : "form_disabled"}
-                  type="submit"
-                >
-                  Registrar
-                </Button>
-              </div>
-            </form>
+              <FormFinancial
+                manejarSeleccionImagen ={manejarSeleccionImagen}
+                sendInfo = {sendInfo}
+                setCategory = {setCategory}
+                category = {category}
+                categoryFromBd ={categoryFromBd}
+                inputFileRef={inputFileRef}
+                date={date}
+                setDate={setDate}
+                today={today}
+                amount={amount}
+                setAmount={setAmount}
+                description={description}
+                setDescription ={setDescription}
+                descriptionLabel={descriptionLabel}
+                isPlanned={isPlanned}
+                setIsPlanned={setIsPlanned}
+              />
             </div>
-
         </div>
-
       </div>
       <div className={`${file ? "flex" : "hidden"} justify-center items-center w-[100%] max-w-[559px] h-fit md:h-[604px] rounded-[10px] pt-[45px] pb-[45px] relative bg-white`}>
         {file && <img src={file} alt="" className="object-cover w-[70%] rounded-lg" />}

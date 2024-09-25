@@ -1,60 +1,46 @@
 import { Select, SelectItem, Button, Checkbox } from "@nextui-org/react";
-import {useEffect, useState} from "react";
 import { FaCamera } from "react-icons/fa";
-import fetchDataGet from "../api/fetchDataGet";
-import dateToday from "../Scripts/obtenerFechaActual";
+import { useState, useEffect } from "react";
 
+function FormFinancial({
+  manejarSeleccionImagen,
+  sendInfo,
+  category,
+  inputFileRef,
+  date,
+  setDate,
+  today,
+  amount,
+  setAmount,
+  description,
+  setDescription,
+  descriptionLabel,
+  isPlanned,
+  setIsPlanned,
+  //Props del fomulario de edición
+  fromEdit,
 
-function FormFinancial({ sendInfo }) {
-  const today = dateToday();
-  const [descriptionLabel, setDescriptionLabel] = useState("");
-  const [date, setDate] = useState(today);
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
-  const [categoryFromBd, setCategoryFromBd] = useState([]);
-  const [category, setCategory] = useState(new Set([]));
-  const [typeCategory, setType] = useState(new Set([]));
-  const [isPlanned, setIsPlanned] = useState(false);
+}) {
   const [formIsOk, setStateForm] = useState(false);
-  const [file, setFile] = useState(null);
-  const [fileFull, setFileFUll] = useState(null);
-  const inputFileRef = useRef(null);
-  const options = [
-    {
-      name: "Gastos",
-      type: "expenses",
-      descriptionLabel: "Pago del arriendo",
-    },
-    {
-      name: "Ingresos",
-      type: "incomes",
-      descriptionLabel: "Sueldo quincena",
-    },
-  ];
+  const handleIconClick = () => {
+    document.getElementById("file").click();
+  };
+
+  //Validar datos antes del envío
+  useEffect(() => {
+    if (
+      amount > 0 &&
+      date &&
+      category["size"] > 0 &&
+      description.length > 3
+    ) {
+      setStateForm(true);
+    } else {
+      setStateForm(false);
+    }
+  }, [amount, date, category, description]);
 
 
-
-    //Obtiene las categorias de gastos
-    useEffect(() => {
-      const getData = async () => {
-        if (typeCategory["currentKey"]) {
-          let table = options[typeCategory["currentKey"]]["type"];
-          let response = await fetchDataGet(
-            `/api/v1/users/financial/categories/${table}`
-          );
-          if (response) {
-            if (table === "expenses") {
-              setDescriptionLabel(options[0]["descriptionLabel"]);
-            } else {
-              setDescriptionLabel(options[1]["descriptionLabel"]);
-            }
-            setCategoryFromBd(response);
-          }
-        }
-      };
-      getData();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [typeCategory]);
 
   return (
     <>
@@ -62,22 +48,6 @@ function FormFinancial({ sendInfo }) {
         className="formRecord flex flex-row flex-wrap justify-between "
         onSubmit={(e) => sendInfo(e)}
       >
-        <div className="input_new_record">
-          <Select
-            id="departament"
-            label="Categoría"
-            onSelectionChange={setCategory}
-            placeholder="Seleccione una categoría"
-            required
-          >
-            {categoryFromBd.map((category, index) => (
-              <SelectItem key={index} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
-
         <div className="">
           <input
             type="file"

@@ -20,7 +20,7 @@ import fetchDataGet from "../../api/fetchDataGet";
 import fetchDataDelete from "../../api/fetchDataDelete";
 import fetchDataImg from "../../Scripts/getPhoto";
 import Paginator from "../paginator";
-import FormRecord from "../Financial_record_components/FormRecord";
+import EditHistory from "./EditHistory";
 
 
 function ViewHistory({ table }) {
@@ -173,7 +173,7 @@ function ViewHistory({ table }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, year, deleteItemUpdate, pageNumber]);
 
-const openModa=(option, img, data)=>{
+const openModa=(option, img, data, table)=>{
   onOpen();
   switch (option) {
     case 1:
@@ -185,7 +185,7 @@ const openModa=(option, img, data)=>{
       />)
       break;
     case 2:
-      setModal(<FormRecord data={data} fromEdit={true}/>);
+      setModal(<EditHistory data={data} table={table} fromEdit={true}/>);
       break;
     default:
       break;
@@ -256,7 +256,7 @@ const openModa=(option, img, data)=>{
                                   onClick={() => deleteItem(data, table)}
                                 />
                                 <FaEdit className="text-green-500 w-[25px] transform transition-transform duration-300 hover:scale-110"
-                                  onClick={()=> openModa(2,"", table === "incomes"?data.idIncome:data.idExpense, table)}
+                                  onClick={()=> openModa(2,"",data,table)}
                                 />
                               </div>
                             </div>
@@ -332,7 +332,7 @@ const openModa=(option, img, data)=>{
         }}
       >
         <ModalContent>
-          <ModalBody>
+          <ModalBody className="overflow-auto pt-[25px] pb-[45px]">
             {viewModal}
           </ModalBody>
         </ModalContent>
