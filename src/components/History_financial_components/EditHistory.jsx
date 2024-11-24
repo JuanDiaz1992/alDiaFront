@@ -104,7 +104,8 @@ const sendInfo = async (e) => {
       console.error("Error al convertir el archivo a base64:", error);
     }
   }
-  let id = table=="expense"?data.idExpense:data.idIncome;
+
+  let id = table=="expenses"?data.idExpense:data.idIncome;
   let body = {
     id:id,
     picture: base64,
@@ -113,12 +114,12 @@ const sendInfo = async (e) => {
     description: description,
     is_planned:isPlanned
   };
-  console.log(body)
   if (table === "expenses") {
     body.categoryExpenses = categorySelected;
   } else if (table === "incomes") {
     body.categoryIncomes = categorySelected;
   }
+
   const response = await fetchDataPut(`/api/v1/users/financial/${table}/edit/`, body);
   if (parseInt(response.status) === 200) {
     console.log(response);
