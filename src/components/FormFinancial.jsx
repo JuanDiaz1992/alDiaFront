@@ -1,4 +1,4 @@
-import { Select, SelectItem, Button, Checkbox } from "@nextui-org/react";
+import { Button, Checkbox } from "@nextui-org/react";
 import { FaCamera } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
@@ -21,24 +21,25 @@ function FormFinancial({
   fromEdit,
 
 }) {
-  const [formIsOk, setStateForm] = useState(false);
+  const [formIsOk, setStateForm] = useState(true);
   const handleIconClick = () => {
     document.getElementById("file").click();
   };
 
-  //Validar datos antes del envío
-  useEffect(() => {
-    if (
-      amount > 0 &&
-      date &&
-      category["size"] > 0 &&
-      description.length > 3
-    ) {
-      setStateForm(true);
-    } else {
-      setStateForm(false);
-    }
-  }, [amount, date, category, description]);
+  // //Validar datos antes del envío
+  // useEffect(() => {
+  //   console.log(amount,date,category,description)
+  //   if (
+  //     amount > 0 &&
+  //     date &&
+  //     category["size"] > 0 &&
+  //     description.length > 3
+  //   ) {
+  //     setStateForm(true);
+  //   } else {
+  //     setStateForm(false);
+  //   }
+  // }, [amount, date, category, description]);
 
 
 

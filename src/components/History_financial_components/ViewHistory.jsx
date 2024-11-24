@@ -134,6 +134,7 @@ function ViewHistory({ table }) {
 
   //Elimina el ingreso o egreso solicitado
   const deleteItem = (idSelected, table) => {
+    let idItem = table=="incomes"? idSelected.idIncome : idSelected.idExpense;
     confirmAlert({
       title: "Confirmación de eliminación",
       message: `¿Estás seguro que deseas eliminar este registro?`,
@@ -142,7 +143,7 @@ function ViewHistory({ table }) {
           label: "Sí",
           onClick: async () => {
             try {
-              const result = await fetchDataDelete(`/api/v1/users/financial/${table}/delete/id/${idSelected}`);
+              const result = await fetchDataDelete(`/api/v1/users/financial/${table}/delete/id/${idItem}`);
               if(result) {
                   toast.success(result.message);
                   setDeleteItemUpdate(true);

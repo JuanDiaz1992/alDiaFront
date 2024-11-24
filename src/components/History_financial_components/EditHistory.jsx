@@ -1,8 +1,16 @@
 import FormFinancial from "../FormFinancial";
 import { useState, useEffect } from "react";
 import fetchDataGet from "../../api/fetchDataGet";
+import convertToBase64 from "../../Scripts/converToBase64";
+import fetchDataPost from "../../api/fetchDataPost";
+import fetchDataPut from "../../api/fetchDataPut";
+import { isNumber } from "chart.js/helpers";
+import changeNamePicture from "../../Scripts/changeNamePicture";
+import { toast } from "react-hot-toast";
+import { IoMdClose, IoIosCloseCircle, IoMdCheckmarkCircleOutline  } from "react-icons/io";
+import { Divider } from "@nextui-org/react";
 
-function EditHistory({data,table, fromEdit}) {
+function EditHistory({data,table}) {
   const [date, setDate] = useState(data.date);
   const [amount, setAmount] = useState(data.amount);
   const [description, setDescription] = useState(data.description);
@@ -12,7 +20,7 @@ function EditHistory({data,table, fromEdit}) {
   const [categoryFromBd, setCategoryFromBd] = useState([]);
   const [isPlanned, setIsPlanned] = useState(data.is_planned);
   const [fileFull, setFileFUll] = useState(null);
-  console.log(isPlanned)
+
   const options = [
     {
       name: "Gastos",
@@ -26,36 +34,106 @@ function EditHistory({data,table, fromEdit}) {
     },
   ];
 
-
-  useEffect(() => {
-    const getData = async () => {
-        let response = await fetchDataGet(
-          `/api/v1/users/financial/categories/${table}`
-        );
-        if (response) {
-          if (table === "expenses" && data.description!="" ) {
-            setDescriptionLabel(options[0]["descriptionLabel"]);
-          } else {
-            setDescriptionLabel(options[1]["descriptionLabel"]);
-          }
-          setCategoryFromBd(response);
+//Mostrar las categorías
+useEffect(() => {
+  const getData = async () => {
+      let response = await fetchDataGet(
+        `/api/v1/users/financial/categories/${table}`
+      );
+      if (response) {
+        if (table === "expenses" && data.description!="" ) {
+          setDescriptionLabel(options[0]["descriptionLabel"]);
+        } else {
+          setDescriptionLabel(options[1]["descriptionLabel"]);
         }
+        setCategoryFromBd(response);
       }
-    getData();
-  }, [table]);
-
-
-
-
-  //Mostrar imagen temporalmente
-  const manejarSeleccionImagen = (e) => {
-    setFileFUll(e.target.files[0]);
-    const archivo = e.target.files[0];
-    if (archivo) {
-      const urlTemporal = URL.createObjectURL(archivo);
-      setFile(urlTemporal);
     }
+  getData();
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [table]);
+
+//Obtiene el total de la factura si es legible
+const getMetadataFromImg = async () => {
+  let base64 = "";
+  let result = await convertToBase64(fileFull);
+  base64 = result.photo;
+  let body = {
+    img: base64,
   };
+  let response = await fetchDataPost(`/api/v1/utils/getinfoimg`,body);
+  if (response) {
+    if(isNumber(response.total) && amount == "" ){
+      setAmount(Number(response.total));
+    }
+  }
+};
+useEffect(()=>{
+  if(fileFull != null && amount == "" ){
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (validImageTypes.includes(fileFull.type)) {
+      getMetadataFromImg();
+    }
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[fileFull])
+
+
+//Mostrar imagen temporalmente
+const manejarSeleccionImagen = (e) => {
+  setFileFUll(e.target.files[0]);
+  const archivo = e.target.files[0];
+  if (archivo) {
+    const urlTemporal = URL.createObjectURL(archivo);
+    setFile(urlTemporal);
+  }
+};
+
+//Envío de formulario
+const sendInfo = async (e) => {
+  e.preventDefault();
+  let base64 = "";
+  let categorySelected = categoryFromBd[category-1];
+  if (fileFull) {
+    const tiempoActual = Date.now().toString();
+    let photo = changeNamePicture(fileFull, `${tiempoActual}-${"s"}`);
+    try {
+      let result = await convertToBase64(photo);
+      base64 = result.photo;
+    } catch (error) {
+      console.error("Error al convertir el archivo a base64:", error);
+    }
+  }
+  let id = table=="expense"?data.idExpense:data.idIncome;
+  let body = {
+    id:id,
+    picture: base64,
+    date: date,
+    amount: amount,
+    description: description,
+    is_planned:isPlanned
+  };
+  console.log(body)
+  if (table === "expenses") {
+    body.categoryExpenses = categorySelected;
+  } else if (table === "incomes") {
+    body.categoryIncomes = categorySelected;
+  }
+  const response = await fetchDataPut(`/api/v1/users/financial/${table}/edit/`, body);
+  if (parseInt(response.status) === 200) {
+    console.log(response);
+    }
+    toast((t) => (
+      <span className="message_toas">
+        {response.message? <div className="toas_message_ok"> <IoMdCheckmarkCircleOutline  />{response.message}</div> : <div className="toas_message_error"><IoIosCloseCircle /><> Ah ocurrido un error, intentelo de nuevo más tarde.</></div>}
+        <Divider orientation="vertical" />
+        <button onClick={() => toast.dismiss(t.id)}>
+          <IoMdClose />
+        </button>
+      </span>
+    ));
+  }
+
 
   return <>
     <div className="flex justify-center mb-[25px]">
@@ -77,6 +155,8 @@ function EditHistory({data,table, fromEdit}) {
       </select>
     </div>
     <FormFinancial
+      fromEdit={true}
+      sendInfo = {sendInfo}
       manejarSeleccionImagen={manejarSeleccionImagen}
       setDate={setDate}
       date={date}

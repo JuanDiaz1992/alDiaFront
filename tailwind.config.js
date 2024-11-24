@@ -7,7 +7,11 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        'mq1200': '1200px', // Puedes personalizar el tamaño que necesites
+      },
+    },
   },
   darkMode: "class",
   plugins: [nextui()],

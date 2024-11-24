@@ -78,13 +78,13 @@ function FormRecord() {
     }
   };
 
-
   //Envío de formulario
   const sendInfo = async (e) => {
     e.preventDefault();
     let base64 = "";
     let table = options[typeCategory["currentKey"]]["type"];
     let categorySelected = categoryFromBd[category["currentKey"]];
+    console.log(categorySelected);
     if (fileFull) {
       const tiempoActual = Date.now().toString();
       let photo = changeNamePicture(fileFull, `${tiempoActual}-${"s"}`);
@@ -102,6 +102,7 @@ function FormRecord() {
       description: description,
       is_planned:isPlanned
     };
+    console.log(body)
     if (table === "expenses") {
       body.categoryExpenses = categorySelected;
     } else if (table === "incomes") {

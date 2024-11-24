@@ -15,9 +15,9 @@ function Home() {
         </div>
 
 
-        <div className="bg-[#F0F0F0] flex justify-start items-center flex-wrap w-[100%] gap-x-[10px] lg:gap-x-[30px] gap-y-[70px] pl-[24px] pr-[24px] md:pr-[0] md:pl-[37px]">
+        <div className="bg-[#F0F0F0] flex flex-col mq1200:flex-row justify-start items-center w-[100%] gap-x-[10px] lg:gap-x-[30px] gap-y-[70px] pl-[24px] pr-[24px] md:pr-[0] md:pl-[37px]">
           {widgets.map((Widget, index) =>(
-              <div key={index} className="info_container w-[100%] max-w-[559px] h-[604px] rounded-[10px] pt-[45px] pb-[45px]  relative">
+              <div key={index} className="info_container w-[100%] mq1200:w-[50%] lg:max-w-[559px] h-[604px] rounded-[10px] pt-[45px] pb-[45px]  relative">
                 <h2 className="absolute left-0 top-[-30px] font-bold">Detalle de ingresos y gastos</h2>
                 <Widget/>
               </div>
