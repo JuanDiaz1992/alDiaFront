@@ -1,5 +1,5 @@
 import formatCompact from "../../Scripts/formatearPesos";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { FaArrowAltCircleUp, FaArrowAltCircleDown, FaEdit  } from "react-icons/fa";
 import { MdDeleteOutline  } from "react-icons/md";
@@ -21,10 +21,12 @@ import fetchDataDelete from "../../api/fetchDataDelete";
 import fetchDataImg from "../../Scripts/getPhoto";
 import Paginator from "../paginator";
 import EditHistory from "./EditHistory";
+import { HomeChangeContext } from "../../context/HomeContext";
 
 
 function ViewHistory({ table }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {state,dispatch} =useContext(HomeChangeContext);
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const dateFunction = date().split("-");
   const dateselected = dateFunction;
   const [month, setMonth] = useState(dateselected[1]);
@@ -53,7 +55,9 @@ function ViewHistory({ table }) {
   ];
 
 
-
+  const closeModal=()=>{
+    onClose();
+  }
 
   //Obtiene la lista de los gatos e ingresos del mes o año
   const getData = async () => {
@@ -145,6 +149,7 @@ function ViewHistory({ table }) {
             try {
               const result = await fetchDataDelete(`/api/v1/users/financial/${table}/delete/id/${idItem}`);
               if(result) {
+                  dispatch({type:"CHANGE"});
                   toast.success(result.message);
                   setDeleteItemUpdate(true);
                 }else{
@@ -164,15 +169,11 @@ function ViewHistory({ table }) {
   };
 
 
-
-
-
-
   //Inicia el método getData
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month, year, deleteItemUpdate, pageNumber]);
+  }, [month, year, deleteItemUpdate, pageNumber,state]);
 
 const openModa=(option, img, data, table)=>{
   onOpen();
@@ -186,7 +187,7 @@ const openModa=(option, img, data, table)=>{
       />)
       break;
     case 2:
-      setModal(<EditHistory data={data} table={table} fromEdit={true}/>);
+      setModal(<EditHistory data={data} table={table} closeModal={closeModal}/>);
       break;
     default:
       break;

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CircularProgress } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { HomeChangeContext } from "../../context/HomeContext";
 import date from "../../Scripts/obtenerFechaActual";
 import formatCompact from "../../Scripts/formatearPesos";
 import Graphics from "./Graphics";
@@ -9,7 +10,7 @@ import fetchDataGet from "../../api/fetchDataGet";
 import useLogout from "../../customHooks/logout";
 
 function ViewForMonth() {
-
+  const { state } = useContext(HomeChangeContext);
   const logout = useLogout();
   const dateFunction = date().split("-")
   const dateselected = dateFunction;
@@ -60,7 +61,7 @@ function ViewForMonth() {
   useEffect(() => {
       getData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month, year, logout]);
+  }, [month, year, logout,state]);
 
 
   const setMonthFuntion = (option)=>{
@@ -128,7 +129,7 @@ function ViewForMonth() {
                   <>
                     <div className="content_index--info_container--data_info--div">
                       <div className="circle1"></div>
-                      <p>Total gastos:</p>
+                      <p>Total gastos en este mes:</p>
                     </div>
                     <p>{formatCompact(expenses)}</p>
                   </>
@@ -141,7 +142,7 @@ function ViewForMonth() {
                   <>
                     <div className="content_index--info_container--data_info--div">
                       <div className="circle2"></div>
-                      <p>Total ingresos:</p>
+                      <p>Total ingresos en este mes:</p>
                     </div>
                     <p>{formatCompact(income)}</p>
                   </>

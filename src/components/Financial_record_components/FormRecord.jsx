@@ -19,6 +19,7 @@ function FormRecord() {
   const [categoryFromBd, setCategoryFromBd] = useState([]);
   const [category, setCategory] = useState(new Set([]));
   const [typeCategory, setType] = useState(new Set([]));
+  const [table,setTable] = useState("");
   const [isPlanned, setIsPlanned] = useState(false);
   const [file, setFile] = useState(null);
   const [fileFull, setFileFUll] = useState(null);
@@ -36,12 +37,12 @@ function FormRecord() {
     },
   ];
 
-
   //Obtiene las categorias de gastos
   useEffect(() => {
     const getData = async () => {
       if (typeCategory["currentKey"]) {
         let table = options[typeCategory["currentKey"]]["type"];
+        setTable(table)
         let response = await fetchDataGet(
           `/api/v1/users/financial/categories/${table}`
         );
@@ -84,7 +85,6 @@ function FormRecord() {
     let base64 = "";
     let table = options[typeCategory["currentKey"]]["type"];
     let categorySelected = categoryFromBd[category["currentKey"]];
-    console.log(categorySelected);
     if (fileFull) {
       const tiempoActual = Date.now().toString();
       let photo = changeNamePicture(fileFull, `${tiempoActual}-${"s"}`);
@@ -102,7 +102,6 @@ function FormRecord() {
       description: description,
       is_planned:isPlanned
     };
-    console.log(body)
     if (table === "expenses") {
       body.categoryExpenses = categorySelected;
     } else if (table === "incomes") {
@@ -172,6 +171,15 @@ function FormRecord() {
                 ))}
               </Select>
             </div>
+            {table=="incomes"&&
+              <div>
+                <div className="p-[10px] bg-[#f3a33b] rounded-[10px] border border-[#c78530]" >
+                  <p className="text-[white] text-[12px]">
+                    Importante! Solo puedes registrar ingresos para el mes actual o meses pasados. Si este ingreso corresponde a un mes futuro, podrás registrarlo cuando ese mes comience.
+                  </p>
+                </div>
+              </div>
+            }
             <div className={typeCategory["size"] > 0 ? "" : "form_disabled"}>
             <div className="input_new_record">
                 <Select

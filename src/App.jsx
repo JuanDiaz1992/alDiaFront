@@ -1,12 +1,11 @@
 import AppRouter from './router/AppRouterDoc';
-
-import { PictureProfilProvider } from "./context/profilePicture";
+import ContextProviders  from "./context/ContextProviders";
 function App() {
     return (
       <div className="App">
-          <PictureProfilProvider>
+          <ContextProviders>
               <AppRouter/>
-          </PictureProfilProvider>
+          </ContextProviders>
       </div>
     )
 }

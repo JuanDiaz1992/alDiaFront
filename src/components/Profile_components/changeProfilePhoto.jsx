@@ -73,7 +73,6 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
   return (
     <>
       <ModalContent>
-        {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               Foto de perfil
@@ -116,7 +115,6 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
               <br />
             </ModalFooter>
           </>
-        )}
       </ModalContent>
     </>
   );

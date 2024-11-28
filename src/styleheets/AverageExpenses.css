@@ -29,16 +29,13 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
     gap: 25px;
 }
 
 .content_index--info_container--data_info{
-    max-width: 300px;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 .content_index--info_container--data_info--div{
     display: flex;

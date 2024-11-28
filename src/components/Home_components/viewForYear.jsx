@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CircularProgress } from "@nextui-org/react";
 import { NavLink } from "react-router-dom";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -6,8 +6,10 @@ import date from "../../Scripts/obtenerFechaActual";
 import formatCompact from "../../Scripts/formatearPesos";
 import Graphics from "./Graphics";
 import fetchDataGet from "../../api/fetchDataGet";
+import { HomeChangeContext } from "../../context/HomeContext"; 
 
 function ViewForYear() {
+  const { state }= useContext(HomeChangeContext)
   const actuallyYear = date().split("-")[0];
   const [yearSelected, setYearSelected] = useState(actuallyYear);
   const [buttonEnable, setButtonEnable] = useState(false);
@@ -59,7 +61,7 @@ function ViewForYear() {
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [yearSelected]);
+  }, [yearSelected, state]);
 
 
   return (
@@ -100,7 +102,7 @@ function ViewForYear() {
                 <>
                   <div className="content_index--info_container--data_info--div">
                     <div className="circle1"></div>
-                    <p>Total gastos:</p>
+                    <p>Total gastos en este año:</p>
                   </div>
                   <p>{formatCompact(expenses)}</p>
                 </>
@@ -113,7 +115,7 @@ function ViewForYear() {
                 <>
                   <div className="content_index--info_container--data_info--div">
                     <div className="circle2"></div>
-                    <p>Total ingresos:</p>
+                    <p>Total ingresos en este año:</p>
                   </div>
                   <p>{formatCompact(income)}</p>
                 </>
