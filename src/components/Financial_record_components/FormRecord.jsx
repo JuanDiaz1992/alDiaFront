@@ -155,7 +155,7 @@ function FormRecord() {
 
   return (
     <>
-      <div className="flex justify-center items-center w-[100%] max-w-[559px] h-[604px] rounded-[10px] pt-[45px] pb-[45px] pr-[20px] pl-[20px] relative bg-white">
+      <div className="flex justify-center items-center w-[100%] max-w-[559px] rounded-[10px] pt-[45px] pb-[45px] pr-[20px] pl-[20px] relative bg-white">
         <div className="form_record_financial_container">
             <div className="input_new_record">
               <Select

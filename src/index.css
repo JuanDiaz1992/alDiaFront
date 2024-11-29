@@ -7,8 +7,8 @@
   --color-third: rgb(121, 121, 121);
 }
 
-*{
-  font-family: Lucida Sans Unicode;
+*,p,h1,h2,h3,h4,h5,h6{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .react-confirm-alert-overlay{
