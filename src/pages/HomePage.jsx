@@ -1,5 +1,7 @@
 import AverageExpenses from "./AverageExpenses";
 import HistoryFinancial from "./HistoryFinancial";
+import { BsCashCoin, BsFillJournalBookmarkFill } from "react-icons/bs";
+import { IoMdTrendingUp } from "react-icons/io";
 import TotalBalance from "../components/total_balance/TotalBalance";
 import "../styleheets/Home.css";
 import { HomeChangeContext } from "../context/HomeContext";
@@ -11,17 +13,20 @@ function Home() {
       {
         "widget": TotalBalance,
         "type":1,
-        "title":"Saldo Disponible"
+        "title":"Saldo Disponible",
+        "icon": BsCashCoin
       },
       {
         "widget": AverageExpenses,
         "type":2,
-        "title":"Promedio de ingresos y gastos"
+        "title":"Promedio de ingresos y gastos",
+        "icon":IoMdTrendingUp
       },
       {
         "widget": HistoryFinancial,
         "type":2,
-        "title":"Detalle de ingresos y gastos"
+        "title":"Detalle de ingresos y gastos",
+        "icon":BsFillJournalBookmarkFill
       }
   ];
   useEffect(() => {
@@ -50,7 +55,9 @@ function Home() {
               <>
                 <div className="w-[100%]">
                   <div key={index} className="info_container bg-[#043249] mq1200:min-w-[400px] max-w-fit rounded-[10px] pt-[45px] pb-[45px] pl-[20px] pr-[20px]  relative">
-                    <h2 className="absolute left-0 top-[-30px] font-bold">{item.title}</h2>
+                    <div className="flex flex-row items-center gap-[15px] w-[100%] absolute left-0 top-[-30px]">
+                      <h2 className="  font-bold">{item.title}</h2><item.icon/>
+                    </div>
                     <item.widget/>
                   </div>
                 </div>
@@ -58,7 +65,9 @@ function Home() {
               :
               <>
                 <div key={index} className="info_container w-[100%] mq1200:w-[48%] lg:max-w-[559px] h-[604px] rounded-[10px] pt-[45px] pb-[45px]  relative">
-                  <h2 className="absolute left-0 top-[-30px] font-bold">{item.title}</h2>
+                  <div className="flex flex-row items-center gap-[15px] w-[100%] absolute left-0 top-[-30px]">
+                      <h2 className="  font-bold">{item.title}</h2><item.icon/>
+                  </div>
                   <item.widget/>
                 </div>
               </>
