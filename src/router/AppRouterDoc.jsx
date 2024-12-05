@@ -10,6 +10,7 @@ import HistoryFinancial from "../pages/HistoryFinancial";
 import Profile from "../pages/Profile";
 import RequireAuth from "../components/RequireAuth.jsx";
 import PublicAuth from "../components/PublicAuth.jsx";
+import Heritage from "../pages/Heritage.jsx";
 
 function AppRouter() {
   const rol = localStorage.getItem("rol");
@@ -29,6 +30,7 @@ function AppRouter() {
             <Route element={<RequireAuth/>}>
               <Route path="/" element={<Home />} />
               <Route path="/registro_financiero" element={<RegistroFinanciero />}/>
+              <Route path="/patrimonios" element={<Heritage/>}/>
               <Route path="/historial" element={<HistoryFinancial />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<Navigate to="/Error404" replace />} />
