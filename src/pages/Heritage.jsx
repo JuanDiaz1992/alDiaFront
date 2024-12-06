@@ -1,4 +1,4 @@
-import GetHeritages from "../components/Heritages/GetHeritages";
+import GetHeritages from "../components/Heritages/SimpleGetHeritages";
 function Heritage(){
     return(
         <>
