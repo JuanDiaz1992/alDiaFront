@@ -7,10 +7,11 @@ function GetHeritages() {
   const [loading, setLoading] = useState(false);
   const getHeritagesApi = async () => {
     //const response = await fetchGetData(`/api/v1/users/heritages/getheritages?page=${0}&size=5`);
-    const response = await fetchGetData(
-      `/api/v1/users/heritages/gettotalheritages`
-    );
     try {
+      const response = await fetchGetData(
+        `/api/v1/users/heritages/gettotalheritages`
+      );
+      console.log(response)
       if (response.total > 0) {
         setHeritages(formatearPesos(response.total));
       }
