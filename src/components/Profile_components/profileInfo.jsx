@@ -85,12 +85,10 @@ function ProfileInfo() {
             </div>
           </div>
           <h3>
-            {user.firstName}{" "}
-            {user.middleName ? user.middleName : ""}{" "}
+            {user.name}{" "}
             {user.lastName}{" "}
             {user.surnamen ? user.surnamen : ""}
           </h3>
-          <p>@{localStorage.getItem("username")}</p>
           <div className="data_container_buttons">
             <Button color="primary">
               <AiFillEdit /> Editar perfil

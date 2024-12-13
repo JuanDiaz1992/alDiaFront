@@ -29,10 +29,11 @@ function NavBar() {
   const logout = useLogout();
   const user = {
     "photo": localStorage.getItem("photo"),
-    "firstName" : localStorage.getItem("firstName"),
+    "name" : localStorage.getItem("name"),
     "lastName": localStorage.getItem("lastName"),
     "occupation": localStorage.getItem("occupation")
   };
+  console.log(user.occupation)
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
   useEffect(() => {
@@ -112,8 +113,8 @@ function NavBar() {
               />
             </Link>
           <div>
-            <p className="nav_avatar_name font-semibold">{user.firstName + " " + user.lastName}</p>
-            <p className="nav_avatar_ocupation">{user.occupation ? user.occupation : ""}</p>
+            <p className="nav_avatar_name font-semibold">{user.name + " " + user.lastName}</p>
+            <p className="nav_avatar_ocupation">{user.occupation && user.occupation !== "null" ? user.occupation : ""}</p>
           </div>
 
         </div>

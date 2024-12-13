@@ -10,14 +10,14 @@ import Cookies from "js-cookie";
 import { toast, Toaster } from "react-hot-toast";
 function Login() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("/public/login", {
-        username: name,
+        email: email,
         password: password,
       });
 
@@ -25,8 +25,7 @@ function Login() {
         const data = response.data;
         localStorage.setItem("idUser",data.idUser);
         localStorage.setItem("username",data.username);
-        localStorage.setItem("firstName",data.firstName);
-        localStorage.setItem("middleName",data.middleName);
+        localStorage.setItem("name",data.name);
         localStorage.setItem("lastName",data.lastName);
         localStorage.setItem("surnamen",data.surnamen);
         localStorage.setItem("rol",data.rol);
@@ -66,13 +65,13 @@ function Login() {
         >
           <div className="formLogin__inputsPrincipales">
             <input
-              value={name}
-              name="username"
+              value={email}
+              name="email"
               onChange={(e) => {
-                setName(e.target.value);
+                setEmail(e.target.value);
               }}
               type="text"
-              placeholder="Usuario"
+              placeholder="Email"
               required
             />
           </div>
