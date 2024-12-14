@@ -43,7 +43,7 @@ function TotalBalance() {
   } else {
     return (
       <>
-        <div>
+        <div className="min-h-[160px]">
           {yearBalance != 0 ? (
             <>
               <p className="text-white">
@@ -77,7 +77,7 @@ function TotalBalance() {
             </>
           ) : (
             <p className="text-white">
-              No se han registrado ingresos o gastos para este año aún.
+              No se han registrado ingresos<br/> o gastos para este año aún.<br/><br/><br/>
             </p>
           )}
         </div>

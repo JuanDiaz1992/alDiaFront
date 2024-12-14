@@ -37,14 +37,21 @@ function NavBar() {
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
   useEffect(() => {
+
     const url = localStorage.getItem("photo");
+    console.log(url)
     if(url === null || url === ""){
       setProfilePhotoUrl(dafaultPhotoUser);
     }else{
-      getPhotoUrl(url)
-      .then(response=>{
-        setProfilePhotoUrl(response);
-      })
+      if(url.startsWith("/private")){
+        getPhotoUrl(url)
+        .then(response=>{
+          setProfilePhotoUrl(response);
+        })
+      }else{
+        setProfilePhotoUrl(url);
+      }
+
     }
     if(isChague.isChanged){
       dispatchPicturProfile({ type: 'RESETSTATUS' });

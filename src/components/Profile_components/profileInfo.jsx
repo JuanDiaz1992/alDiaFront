@@ -60,13 +60,19 @@ function ProfileInfo() {
 
   useEffect(() => {
     const url = localStorage.getItem("photo");
+    console.log(url)
     if(url === null || url === ""){
       setProfilePhotoUrl(dafaultPhotoUser);
     }else{
-      getPhotoUrl(url)
-      .then(response=>{
-        setProfilePhotoUrl(response);
-      })
+      if(url.startsWith("/private/")){
+        getPhotoUrl(url)
+        .then(response=>{
+          setProfilePhotoUrl(response);
+        })
+      }else{
+        setProfilePhotoUrl(url);
+      }
+
     }
   }, [isChague.isChanged]);
 
@@ -75,7 +81,7 @@ function ProfileInfo() {
         <div className="data_container">
           <div className="avatar_container">
             <Avatar
-              src={profilePhotoUrl ? profilePhotoUrl : dafaultPhotoUser}
+              src={profilePhotoUrl}
               isBordered
               radius="full"
               className="w-20 h-20 text-large"

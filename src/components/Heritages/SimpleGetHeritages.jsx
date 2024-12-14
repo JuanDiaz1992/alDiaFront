@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Skeleton } from "@nextui-org/react";
 import fetchGetData from "../../api/fetchDataGet";
 import formatearPesos from "../../Scripts/formatearPesos";
 function GetHeritages() {
@@ -27,26 +27,33 @@ function GetHeritages() {
   if (!loading) {
     return (
       <>
-        <p>Cargando...</p>
+        <div className="max-w-[300px] w-full flex flex-col items-start ">
+          <Skeleton className="flex w-[70%] h-[17px] rounded-md"/><br/>
+          <Skeleton className="flex w-[100%] h-[55px] rounded-md"/><br/>
+          <Skeleton className="flex w-[70%] h-[17px] rounded-md"/><br/>
+          <Skeleton className="flex w-[70%] h-[17px] rounded-md"/>
+        </div>
       </>
     );
   } else {
     return (
       <>
+      <div className="min-h-[160px]">
         {heritages != 0 ? (
-          <div>
+          <>
             <p className="text-black text-[40px] font-bold mb-[20px]">{heritages}</p>
             <Button color="warning">Ver Detalles</Button>
-          </div>
+          </>
         ) : (
-          <div>
+          <>
             <p className="mb-[20px]">
               No hay registro de patrimonios, puedes registrarlos en el
               siguiente enlace
             </p>
             <Button color="warning">Patrimonios</Button>
-          </div>
+          </>
         )}
+        </div>
       </>
     );
   }
