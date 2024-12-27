@@ -3,8 +3,8 @@ import { Button } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import capitalizeFisrtLetter from "../../Scripts/upperCase";
 import fetchDataPostPublic from "../../api/fetchDataPostPublic";
-import { useNavigate } from "react-router-dom";
-function FirstForm(){
+
+function FirstForm({setFinalData,setSelectPage}){
     const [name, setName] = useState("");
     const [firstLastName, setFirstLastName] = useState("");
     const [secondLastName, setSecondLastName] = useState("");
@@ -12,7 +12,8 @@ function FirstForm(){
     const [password, setPassword] = useState("");
     const [confirmPasword, setConfirmPasword] = useState("");
     const [formState,setFormState] = useState(false);
-    const navigate = useNavigate();
+    const [button,setStateButton] = useState("Envíar")
+
 
     const validateForm=()=>{
       if(name.length>2 && firstLastName.length>2 && email.length>10 && password.length>6 && confirmPasword.length>6){
@@ -27,6 +28,7 @@ function FirstForm(){
     },[name, firstLastName, email, password, confirmPasword]);
 
     const setForm = (e) => {
+        setStateButton("Enviando...");
         e.preventDefault();
         const request = {
           "name":name !==""? capitalizeFisrtLetter(name) : name,
@@ -36,18 +38,18 @@ function FirstForm(){
           "password":password,
           "confirmPassword":confirmPasword,
         }
-        fetchDataPostPublic("/public/register",request)
+        fetchDataPostPublic("/public/emailvalidate",request)
         .then(data=>{
             if (parseInt(data.status)===200) {
               toast.success(data.message);
-              navigate("/");
+              setFinalData(request);
+              setSelectPage(1);
             }else if(parseInt(data.status)===409){
               toast.error(data.message);
             }
         }).catch(()=>{
           toast.error("No hay conexión, intentelo de nuevo.");
         })
-
       };
     return(
         <>
@@ -128,7 +130,7 @@ function FirstForm(){
               placeholder="********"
             />
           </div>
-          <Button className="button_record_form" type="submit" color={formState?"primary":"default"}>Siguiente</Button>
+          <Button className="button_record_form" type="submit" color={formState?"primary":"default"}>{button}</Button>
           <p className="info_record">*Si no posee segundo nombre o segundo apellido, deje esos campos en blanco</p>
         </form>
         </>

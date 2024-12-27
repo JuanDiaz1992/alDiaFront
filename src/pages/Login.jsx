@@ -1,20 +1,18 @@
 import "../styleheets/Login.css";
 import logo from "../img/logo_simple.png";
-import { AiOutlineGoogle } from "react-icons/ai";
 import { Button } from "@nextui-org/react";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import axios from "../api/axiosNoAuthInstance";
 import Cookies from "js-cookie";
 import { toast, Toaster } from "react-hot-toast";
-import { gapi } from "gapi-script";
-import GoogleLogin from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const clientId=import.meta.env.VITE_CLIENT_ID_GOOGLE;
+
 
   const onLogin = async (e) => {
     e.preventDefault();
@@ -58,7 +56,7 @@ function Login() {
       if (error.response && error.response.status === 403) {
         toast((t) => (
           <span className="notification_error">
-            <p>Usuario o contraseña incorrectos</p>
+            <p>Ah ocurrido un error, intentelo de nuevo más tarde</p>
             <button onClick={() => toast.dismiss(t.id)}>
               <AiFillCloseCircle />
             </button>
@@ -72,17 +70,8 @@ function Login() {
 
   }
   const onFailureGoogle=()=>{
-
+    toast.error("Error al iniciar sesión con Google");
   }
-  useEffect(()=>{
-    const start =()=>{
-      gapi.auth2.init({
-        clientId:clientId,
-      })
-    }
-    gapi.load("client:auth2",start);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
   const saveDataOnLocalStore=(response)=>{
     const data = response.data;
     localStorage.setItem("idUser",data.idUser);
@@ -144,24 +133,16 @@ function Login() {
               <a href="/" className="text-[16xpx]">Olvidé mi contraseña</a>
             </div>
           </div>
-          <Button type="submit">Iniciar Sesión</Button>
+          <Button type="submit" className="rounded-md ">Iniciar Sesión</Button>
         </form>
-        <div className="section1_login_buttons_content">
-          <GoogleLogin 
-            clientId={clientId}
+        <div className="w-[100%] mt-[25px]">
+          <GoogleLogin
             onSuccess={loginWhitGoogle}
-            onFailure={onFailureGoogle}
+            onError={onFailureGoogle}
+            className="w-[100%]"
             cookiePolicy={"single_host_policy"}
-            render={(renderProps) => (
-              <Button
-                startContent={<AiOutlineGoogle />}
-                className="google_button"
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                Iniciar sesión con Google
-              </Button>
-            )}
+            ux_mode="popup"
+            prompt="select_account"
           />
         </div>
         <div className="flex gap-2 justify-center mt-[40px] w-[100%] text-[16px]">

@@ -33,29 +33,34 @@ function NavBar() {
     "lastName": localStorage.getItem("lastName"),
     "occupation": localStorage.getItem("occupation")
   };
-  console.log(user.occupation)
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
 
-  useEffect(() => {
-
+  const getPicture=()=>{
     const url = localStorage.getItem("photo");
     console.log(url)
-    if(url === null || url === ""){
+    if(url === null || url === "" || url === "null" || url === undefined){
       setProfilePhotoUrl(dafaultPhotoUser);
     }else{
-      if(url.startsWith("/private")){
-        getPhotoUrl(url)
-        .then(response=>{
-          setProfilePhotoUrl(response);
-        })
-      }else{
-        setProfilePhotoUrl(url);
+      try {
+        if(url.startsWith("/private")){
+          getPhotoUrl(url)
+          .then(response=>{
+            setProfilePhotoUrl(response);
+          })
+        }else{
+          setProfilePhotoUrl(url);
+        }
+      } catch (error) {
+        setProfilePhotoUrl(dafaultPhotoUser);
       }
 
     }
     if(isChague.isChanged){
       dispatchPicturProfile({ type: 'RESETSTATUS' });
     }
+  }
+  useEffect(() => {
+    getPicture();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChague.isChanged]);
 
@@ -115,10 +120,9 @@ function NavBar() {
               className="transition-transform"
               color="warning"
               size="md"
-              src={profilePhotoUrl}
-              alt="Profile"
-              />
-            </Link>
+              showFallback
+              src={profilePhotoUrl}/>
+          </Link>
           <div>
             <p className="nav_avatar_name font-semibold">{user.name + " " + user.lastName}</p>
             <p className="nav_avatar_ocupation">{user.occupation && user.occupation !== "null" ? user.occupation : ""}</p>
