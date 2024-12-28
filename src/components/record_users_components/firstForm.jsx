@@ -1,5 +1,5 @@
 import { useEffect, useState }from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Input, Form } from "@nextui-org/react";
 import { toast } from "react-hot-toast";
 import capitalizeFisrtLetter from "../../Scripts/upperCase";
 import fetchDataPostPublic from "../../api/fetchDataPostPublic";
@@ -12,7 +12,7 @@ function FirstForm({setFinalData,setSelectPage}){
     const [password, setPassword] = useState("");
     const [confirmPasword, setConfirmPasword] = useState("");
     const [formState,setFormState] = useState(false);
-    const [button,setStateButton] = useState("Envíar")
+    const [button_text,setStateButton] = useState("Envíar")
 
 
     const validateForm=()=>{
@@ -28,111 +28,113 @@ function FirstForm({setFinalData,setSelectPage}){
     },[name, firstLastName, email, password, confirmPasword]);
 
     const setForm = (e) => {
-        setStateButton("Enviando...");
         e.preventDefault();
-        const request = {
-          "name":name !==""? capitalizeFisrtLetter(name) : name,
-          "lastName":firstLastName !==""? capitalizeFisrtLetter(firstLastName) : firstLastName,
-          "surnamen": secondLastName !==""&& capitalizeFisrtLetter(secondLastName),
-          "email":email,
-          "password":password,
-          "confirmPassword":confirmPasword,
+        if(formState){
+          setStateButton("Enviando...");
+
+          const request = {
+            "name":name !==""? capitalizeFisrtLetter(name) : name,
+            "lastName":firstLastName !==""? capitalizeFisrtLetter(firstLastName) : firstLastName,
+            "surnamen": secondLastName !==""&& capitalizeFisrtLetter(secondLastName),
+            "email":email,
+            "password":password,
+            "confirmPassword":confirmPasword,
+          }
+          fetchDataPostPublic("/public/emailvalidate",request)
+          .then(data=>{
+              if (parseInt(data.status)===200) {
+                toast.success(data.message);
+                setFinalData(request);
+                setSelectPage(1);
+              }else if(parseInt(data.status)===409){
+                toast.error(data.message);
+              }
+          }).catch(()=>{
+            toast.error("No hay conexión, intentelo de nuevo.");
+          })
+        }else{
+          toast.error("Completa todos los campos");
+          setStateButton("Envíar");
         }
-        fetchDataPostPublic("/public/emailvalidate",request)
-        .then(data=>{
-            if (parseInt(data.status)===200) {
-              toast.success(data.message);
-              setFinalData(request);
-              setSelectPage(1);
-            }else if(parseInt(data.status)===409){
-              toast.error(data.message);
-            }
-        }).catch(()=>{
-          toast.error("No hay conexión, intentelo de nuevo.");
-        })
+
       };
     return(
         <>
-        <form onSubmit={(e)=>setForm(e)} className="form_record">
-          <div className="names_container">
-            <div className="input_new_record">
-            <label htmlFor="firstName">Nombres</label>
-            <input
+        <Form onSubmit={(e)=>setForm(e)} className="flex flex-col gap-[24px]">
+            <Input
+              color="warning"
               id="firstName"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
               }}
               type="text"
-              placeholder="María Camila"
+              placeholder="Nombres"
+              errorMessage="Por favor ingrese un nombre valido"
             />
-            </div>
-          </div>
-          <div className="names_container">
-            <div className="input_new_record">
-              <label htmlFor="firstLastName">Primer Apellido</label>
-              <input
+          <div className="flex gap-[24px]">
+              <Input
+                className="w-[48%]"
+                color="warning"
                 id="firstLastName"
                 value={firstLastName}
                 onChange={(e) => {
                   setFirstLastName(e.target.value);
                 }}
                 type="text"
-                placeholder="Marín"
+                placeholder="Primer Apellido"
               />
-            </div>
-            <div className="input_new_record">
-              <label htmlFor="secondLastName">Segundo Apellido</label>
-              <input
+              <Input
+                className="w-[48%]"
+                color="warning"
                 id="secondLastName"
                 value={secondLastName}
                 onChange={(e) => {
                   setSecondLastName(e.target.value);
                 }}
                 type="text"
-                placeholder="Castellanos"
+                placeholder="Segundo Apellido"
               />
             </div>
-          </div>
-          <div className="input_new_record">
-            <label htmlFor="email">Email</label>
-            <input
+            <Input
+              color="warning"
               id="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
               type="email"
-              placeholder="correo@correo.com"
+              placeholder="Email"
+              errorMessage="Por favor ingrese un correo valido"
             />
-          </div>
-          <div className="input_new_record">
-            <label htmlFor="password">Contraseña</label>
-            <input
+
+
+            <Input
+              color="warning"
               id="password"
               type="password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
-              placeholder="********"
+              placeholder="Contraseña"
             />
-          </div>
-          <div className="input_new_record  ">
-            <label htmlFor="confirmPasword">Confirme la contraseña</label>
-            <input
+
+
+            <Input
+              color="warning"
               id="confirmPasword"
               type="password"
               value={confirmPasword}
               onChange={(e) => {
                 setConfirmPasword(e.target.value);
               }}
-              placeholder="********"
+              placeholder="Confirme la contraseña"
             />
-          </div>
-          <Button className="button_record_form" type="submit" color={formState?"primary":"default"}>{button}</Button>
-          <p className="info_record">*Si no posee segundo nombre o segundo apellido, deje esos campos en blanco</p>
-        </form>
+
+          <Button className="button_record_form" type="submit" color={formState?"primary":"default"}>{button_text}</Button>
+          <p className="text-[12px]">*Si no posees segundo apellido, deja ese campo en blanco</p>
+        </Form>
         </>
     )
 }

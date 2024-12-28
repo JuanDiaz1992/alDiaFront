@@ -1,5 +1,5 @@
 import "../styleheets/Login.css";
-import logo from "../img/logo_simple.png";
+import logo from "../img/logo_simple.webp";
 import { Button } from "@nextui-org/react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useState } from "react";
@@ -35,7 +35,6 @@ function Login() {
           </span>
         ));
       } else {
-        console.log(error);
         toast.error("Error de conexión");
       }
     }
@@ -43,8 +42,6 @@ function Login() {
 
 
   const loginWhitGoogle=async (response)=>{
-    console.log(response);
-
     try{
       const responseFromApi = await axios.post("/public/google", {
         response
@@ -63,7 +60,6 @@ function Login() {
           </span>
         ));
       } else {
-        console.log(error);
         toast.error("Error de conexión");
       }
     }

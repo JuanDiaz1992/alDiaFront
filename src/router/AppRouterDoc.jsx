@@ -11,6 +11,7 @@ import Profile from "../pages/Profile";
 import RequireAuth from "../components/RequireAuth.jsx";
 import PublicAuth from "../components/PublicAuth.jsx";
 import Heritage from "../pages/Heritage.jsx";
+import ResetPassword from "../pages/ResetPassword.jsx";
 
 function AppRouter() {
   const rol = localStorage.getItem("rol");
@@ -24,6 +25,7 @@ function AppRouter() {
             <Route element={<PublicAuth/>}>
               <Route path="/login" element={<Login />}/>
               <Route path="/newRecord" element={<NewRecord />} />
+              <Route path="/reset-password/:token?" element={<ResetPassword />} />
             </Route>
             <Route path="*" element={<Error404 />} />
             <Route path="/adminPage" element={rol === roles[0] ? <Admin /> : <Navigate to="/Error404" replace />} />

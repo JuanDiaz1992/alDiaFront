@@ -12,14 +12,12 @@ function ComfirmCode({ finalData }) {
   const sendCode = (e) => {
     e.preventDefault();
     let data = finalData;
-    console.log(data);
     data.confirmCode = code;
-
     fetchDataPostPublic("/public/register", data)
       .then((data) => {
         if (parseInt(data.status) === 200) {
-          toast.success(data.message);
           navigate("/");
+          toast.success(data.message);
         } else if (parseInt(data.status) === 409) {
           toast.error(data.message);
         }
@@ -44,38 +42,17 @@ function ComfirmCode({ finalData }) {
 
   return (
     <>
-      <form onSubmit={(e) => sendCode(e)} className="form_record">
-        <h3>Confirmemos tu correo</h3>
+      <h3 className="pt-[70px] pb-[40px]">Confirmemos tu correo</h3>
+      <form onSubmit={(e) => sendCode(e)} className="h-[100%]  flex flex-col gap-[24px] ">
         <div>
           <InputOtp
-            classNames={{
-              segmentWrapper: "gap-x-0",
-              segment: [
-                "relative",
-                "h-10",
-                "w-10",
-                "border-y",
-                "border-r",
-                "first:rounded-l-md",
-                "first:border-l",
-                "last:rounded-r-md",
-                "border-default-200",
-                "data-[active=true]:border",
-                "data-[active=true]:z-20",
-                "data-[active=true]:ring-2",
-                "data-[active=true]:ring-offset-2",
-                "data-[active=true]:ring-offset-background",
-                "data-[active=true]:ring-foreground",
-              ],
-            }}
             length={6}
             id="code"
             value={code}
             onValueChange={setCode}
-            description="Ingresa los 6 dígitos que se enviaron a tu correo"
           />
         </div>
-
+        <p className="text-[12px] text-[#464646]">Ingresa los 6 dígitos que se enviaron a tu correo</p>
         <Button
           className="button_record_form"
           type="submit"
