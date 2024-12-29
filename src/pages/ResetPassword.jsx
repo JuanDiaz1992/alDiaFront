@@ -16,7 +16,7 @@ function ResetPassword() {
   );
 
   useEffect(()=>{
-    if(token && token.trim() !== "" && token.length ==8){
+    if(token && token.trim() !== "" && token.length ==20){
       setPage(<SendNewPassword token={token}/>);
     }else{
       setPage(<SendMail/>);

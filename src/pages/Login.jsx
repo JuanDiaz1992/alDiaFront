@@ -126,7 +126,7 @@ function Login() {
           </div>
           <div className="formLogin__inputsSecundarios">
             <div className="formLogin__inputsSecundarios--div">
-              <a href="/" className="text-[16xpx]">Olvidé mi contraseña</a>
+              <NavLink  to="/reset-password" className="text-[16xpx]">Olvidé mi contraseña</NavLink>
             </div>
           </div>
           <Button type="submit" className="rounded-md ">Iniciar Sesión</Button>

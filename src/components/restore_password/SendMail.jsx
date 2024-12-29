@@ -7,7 +7,7 @@ function SendMail() {
   const [formState, setFormState] = useState(false);
   const [button_text, setStateButton] = useState("Envíar");
   const [message,setMessage] =useState("");
-
+  const baseUrl = window.location.origin;
   useEffect(() => {
     if (email.length > 10) {
       setFormState(true);
@@ -22,9 +22,9 @@ function SendMail() {
       try {
         setStateButton("Enviando...");
         const response = await fetchDataPostPublic("/public/restorepassword",{
-          "email":email
+          "email":email,
+          "host":baseUrl+"/"
         });
-        console.log(response);
         if(response.status === "200"){
           setMessage(response.message);
         }else {
@@ -48,7 +48,7 @@ function SendMail() {
             <h3 className="text-center">{message}</h3>
           )
       :(
-        <Form onSubmit={(e) => setForm(e)} className="flex flex-col gap-[24px]">
+        <Form onSubmit={(e) => setForm(e)} className="flex flex-col gap-[24px] w-[100%]">
         <Input
           color="warning"
           label="Correo"
@@ -66,9 +66,6 @@ function SendMail() {
         >
           {button_text}
         </Button>
-        <p className="text-[12px]">
-          *Ingresa la nueva contraseña, recuerda usar números y letras
-        </p>
       </Form>
       )}
       </>

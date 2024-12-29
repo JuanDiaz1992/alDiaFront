@@ -1,12 +1,14 @@
 import { Form, Input, Button } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import fetchDataPostPublic from "../../api/fetchDataPostPublic";
+import { useNavigate } from "react-router-dom";
 function SendNewPassword({token}) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [formState, setFormState] = useState(false);
   const [button_text, setStateButton] = useState("Envíar");
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (
       password.length > 6 &&
@@ -19,12 +21,29 @@ function SendNewPassword({token}) {
     }
   }, [password, confirmPassword]);
 
-  const setForm = (e) => {
+  const setForm = async (e) => {
     e.preventDefault();
-    if (formState) {
-      setStateButton("Enviando...");
-    } else {
-      toast.error("Completa todos los campos");
+    try{
+      if (formState) {
+        setStateButton("Enviando...");
+        let response = await fetchDataPostPublic("/public/resetpassword",{
+          "newPassword":confirmPassword,
+          "token":token
+        });
+        if(response.status=="200"){
+          toast.success(response.message);
+          navigate("/login")
+        }else{
+          toast(response.message,{
+            duration: 6000,
+          });
+        }
+      } else {
+        toast.error("Completa todos los campos");
+      }
+    }catch(error){
+      toast.error("Ah ocurrido un error, intentelo de nuevo más tarde");
+    }finally{
       setStateButton("Envíar");
     }
   };
