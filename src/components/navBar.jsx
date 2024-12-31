@@ -34,7 +34,6 @@ function NavBar() {
     "occupation": localStorage.getItem("occupation")
   };
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
-
   const getPicture=()=>{
     const url = localStorage.getItem("photo");
     console.log(url)
