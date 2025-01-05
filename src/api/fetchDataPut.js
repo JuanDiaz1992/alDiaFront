@@ -10,11 +10,10 @@ async function fetchDataPut(apiEndpoint, body) {
       'Content-Type': 'application/json',
     },
   });
-
-  if (response.status !== 200) {
-    throw new Error(`API request failed with status ${response.status}`);
+  if (response.status !==200) {
+    throw new Error(`Error fetching data: ${response.message}`);
   }
-  return response.data;
+  return await response.data;
 }
 
 export default fetchDataPut;

@@ -7,10 +7,12 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Spinner
 } from "@nextui-org/react";
 import fetchDataPut from "../../api/fetchDataPut";
 import fetchDataDelete from "../../api/fetchDataDelete";
 import convertToBase64 from "../../Scripts/converToBase64";
+
 import { toast } from "react-hot-toast";
 import { useProfilePictureContext } from "../../context/profilePicture";
 
@@ -19,6 +21,7 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
   const { dispatchPicturProfile } = useProfilePictureContext();
   const photo = localStorage.getItem("photo");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [loading,setLoading] = useState(false);
 
 
   const handleIconClick = () => {
@@ -32,6 +35,7 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
 
   useEffect(() => {
     const sendPicture = async ()=>{
+      setLoading(true);
       try {
         let base64 = null;
         if (selectedFile) {
@@ -54,6 +58,8 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
         }
       } catch (error) {
         toast.error('Ocurrió un error, intentelo de nuevo')
+      }finally{
+        setLoading(false);
       }
 
     }
@@ -75,7 +81,7 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
       <ModalContent>
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Foto de perfil
+              <h3>Foto de perfil</h3>
             </ModalHeader>
             <ModalBody>
               <form className="change_picture_container">
@@ -87,9 +93,11 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
                   style={{ display: "none" }}
                   onChange={handleFileChange}
                 />
+                {loading?
+                  <Spinner/>:
                 <Button
                   radius="full"
-                  onClick={handleIconClick}
+                  onPress={handleIconClick}
                   isIconOnly
                   color="warning"
                   variant="faded"
@@ -97,6 +105,7 @@ function ChangeProfilePhoto({ setChangesProps, onOpenChange }) {
                 >
                   <FaCamera />
                 </Button>
+                }
                 {photo !== null&&
                     <Button
                     radius="full"

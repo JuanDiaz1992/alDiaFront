@@ -23,31 +23,49 @@ import fetchDataGet from "../../api/fetchDataGet";
 import dafaultPhotoUser from "../../img/default_user.png";
 import { useProfilePictureContext } from "../../context/profilePicture";
 import getPhotoUrl from "../../Scripts/getPhoto";
-import uselogout from "../../customHooks/logout";
+import ChangePassword from "./changePassword";
 function ProfileInfo() {
-  const logout = uselogout();
+
+
   const { isChague } = useProfilePictureContext();
   const [user,setUser]=useState([])
   const [viewMore, setViewMore] = useState(false);
   const [haveChanges,setChanges] = useState(false);
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+  const [optionModal,setOptionModal]=useState();
   /*Manejadores modal*/
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const fromExternalApp = localStorage.getItem("fromExternalApp");
 
-
-
+  const setModal =(option)=>{
+    switch(option){
+      case 1:
+        setOptionModal(
+          <ChangeProfilePhoto
+          onOpenChange={onOpenChange}
+          setChangesProps={setChanges}
+          />
+        );
+        break;
+      case 2:
+        setOptionModal(
+          <ChangePassword
+          onOpenChange={onOpenChange}
+          setChangesProps={setChanges}
+          />
+          );
+        break;
+    }
+    onOpen();
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetchDataGet("/api/v1/users/profile");
-        if (response.status === 403) {
-          logout();
-        } else {
-          let user = response;
-          if (user) {
-            setUser(user.profile);
-          }
+        let user = response;
+        if (user) {
+          setUser(user.profile);
         }
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -55,12 +73,11 @@ function ProfileInfo() {
       setChanges(false);
     };
     fetchData();
-  }, [setUser, setChanges, logout, haveChanges]);
+  }, [setUser, setChanges, haveChanges]);
 
 
   useEffect(() => {
     const url = localStorage.getItem("photo");
-    console.log(url)
     if(url === null || url === ""){
       setProfilePhotoUrl(dafaultPhotoUser);
     }else{
@@ -86,7 +103,7 @@ function ProfileInfo() {
               radius="full"
               className="w-20 h-20 text-large"
             />
-            <div className="iconContainer" onClick={onOpen}>
+            <div className="iconContainer" onClick={()=>{setModal(1)}}>
               <AiFillCamera />
             </div>
           </div>
@@ -99,10 +116,13 @@ function ProfileInfo() {
             <Button color="primary">
               <AiFillEdit /> Editar perfil
             </Button>
-            <Button color="default">
-              <MdPassword />
-              Contraseña
-            </Button>
+            {fromExternalApp !="true" &&
+              <Button color="default" onPress={()=>{setModal(2)}}>
+                <MdPassword />
+                Contraseña
+              </Button>
+            }
+
           </div>
           <div>
             <h4>
@@ -209,10 +229,7 @@ function ProfileInfo() {
           }
         }}
       >
-        <ChangeProfilePhoto
-          onOpenChange={onOpenChange}
-          setChangesProps={setChanges}
-          />
+        {optionModal}
       </Modal>
     </>
   );

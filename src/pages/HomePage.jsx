@@ -9,6 +9,7 @@ import { HomeChangeContext } from "../context/HomeContext";
 import { useContext,useEffect } from "react";
 import SimpleGetHeritages from "../components/Heritages/SimpleGetHeritages";
 function Home() {
+
   const {state, dispatch} = useContext(HomeChangeContext);
   const nameUser = localStorage.getItem("firstName");
   const widgets = [

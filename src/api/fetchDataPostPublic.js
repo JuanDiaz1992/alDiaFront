@@ -11,9 +11,6 @@ async function fetchDataPostPublic(apiEndpoint,body) {
     },
   };
   const response = await fetch(url, defaultOptions);
-  if (!response.ok) {
-    console.log(response.statusText)
-  }
   return await response.json();
 
 }

@@ -78,6 +78,7 @@ function Login() {
     localStorage.setItem("rol",data.rol);
     localStorage.setItem("photo",data.photo);
     localStorage.setItem("occupation",data.occupation);
+    localStorage.setItem("fromExternalApp",data.fromExternalApp);
     localStorage.setItem("isLoggin",true);
     const token = data.token;
     Cookies.set("token", token, { SameSite: "None", secure: true });

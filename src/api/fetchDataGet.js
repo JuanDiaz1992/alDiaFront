@@ -11,10 +11,6 @@ async function fetchGetData(apiEndpoint) {
       'Content-Type': 'application/json',
     },
   });
-
-  if (response.status !==200 ) {
-    throw new Error(`API request failed with status ${response.status}`);
-  }
   return response.data;
 
 }

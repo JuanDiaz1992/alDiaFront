@@ -28,6 +28,7 @@ function NavBar() {
   const location = useLocation();
   const logout = useLogout();
   const user = {
+    "firstName": localStorage.getItem("name").split(" ")[0],
     "photo": localStorage.getItem("photo"),
     "name" : localStorage.getItem("name"),
     "lastName": localStorage.getItem("lastName"),
@@ -36,7 +37,6 @@ function NavBar() {
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
   const getPicture=()=>{
     const url = localStorage.getItem("photo");
-    console.log(url)
     if(url === null || url === "" || url === "null" || url === undefined){
       setProfilePhotoUrl(dafaultPhotoUser);
     }else{
@@ -123,17 +123,13 @@ function NavBar() {
               src={profilePhotoUrl}/>
           </Link>
           <div>
-            <p className="nav_avatar_name font-semibold">{user.name + " " + user.lastName}</p>
+            <p className="nav_avatar_name font-semibold">
+              {user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1).toLowerCase() + " " + user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1).toLowerCase()}
+            </p>
             <p className="nav_avatar_ocupation">{user.occupation && user.occupation !== "null" ? user.occupation : ""}</p>
           </div>
-
         </div>
-
-
       </nav>
-
-
-
       <div className="nav_botton">
         <div className="nav_botton-container">
           <NavLink
