@@ -24,6 +24,7 @@ import dafaultPhotoUser from "../../img/default_user.png";
 import { useProfilePictureContext } from "../../context/profilePicture";
 import getPhotoUrl from "../../Scripts/getPhoto";
 import ChangePassword from "./changePassword";
+import EditProfile from "./editProfile";
 function ProfileInfo() {
 
 
@@ -50,6 +51,15 @@ function ProfileInfo() {
       case 2:
         setOptionModal(
           <ChangePassword
+          onOpenChange={onOpenChange}
+          setChangesProps={setChanges}
+          />
+          );
+        break;
+      case 3:
+        setOptionModal(
+          <EditProfile
+          user={user}
           onOpenChange={onOpenChange}
           setChangesProps={setChanges}
           />
@@ -113,7 +123,7 @@ function ProfileInfo() {
             {user.surnamen ? user.surnamen : ""}
           </h3>
           <div className="data_container_buttons">
-            <Button color="primary">
+            <Button color="primary" onPress={()=>{setModal(3)}}>
               <AiFillEdit /> Editar perfil
             </Button>
             {fromExternalApp !="true" &&
