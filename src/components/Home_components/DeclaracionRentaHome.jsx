@@ -26,33 +26,42 @@ export default function DeclaracionRentaHome() {
     getIsDeclaration();
   }, [state]);
 
-  const handleGenerarDeclaracion = async () => {
+const handleGenerarDeclaracion = async () => {
     if (!info?.debeDeclarar) return;
     
     setGeneratingPDF(true);
     try {
-      const response = await fetchGetData('/api/v1/declaracion-renta/generar-declaracion');
-      console.log(response)
-      if (!response.ok) {
-        throw new Error('Error al generar el PDF');
-      }
+        const response = await fetchGetData('/api/v1/declaracion-renta/generar-declaracion');
+        
+        if (!response.success) {
+            throw new Error(response.error || "Error al generar el PDF");
+        }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `declaracion_renta_2025.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+        // Decodificar el PDF desde Base64
+        const byteCharacters = atob(response.data.pdf);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], {type: 'application/pdf'});
+
+        // Descargar el PDF
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', response.data.filename);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
 
     } catch (error) {
-      console.error("Error:", error);
-      alert(error.message || "Error al generar la declaración");
+        console.error("Error:", error);
+        alert(error.message || "Error al generar la declaración");
     } finally {
-      setGeneratingPDF(false);
+        setGeneratingPDF(false);
     }
-  };
+};
 
   if (loading) {
     return (
