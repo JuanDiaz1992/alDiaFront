@@ -65,7 +65,8 @@ function NavBar() {
 
   const navLinks = [
     { path: "/", label: "Inicio", icon:stats },
-    { path: "/registro_financiero", label: "Añadir Registro", icon: add },
+    { path: "/registro_financiero", label: "Registro", icon: add },
+    { path: "/patrimonios", label: "Patrimonios", icon: add },
     { path: "/profile", label: "Perfil", icon: iconAcount},
     { path: "/configuration", label: "Ajustes", icon: settings  },
   ];
