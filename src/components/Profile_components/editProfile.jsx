@@ -12,93 +12,113 @@ import { useState, useEffect } from "react";
 import dateToday from "../../Scripts/obtenerFechaActual";
 import fetchDataPut from "../../api/fetchDataPut";
 import toast from "react-hot-toast";
-function EditProfile({ user, onOpenChange }) {
+
+function EditProfile({ user, onOpenChange, setChanges }) {
   const documents = [
-    {
-      name: "Cédula de ciudadanía",
-      id: 1,
-    },
-    {
-      name: "Cédula de extranjería",
-      id: 3,
-    },
-    {
-      name: "Tarjeta de extranjería",
-      id: 4,
-    },
-    {
-      name: "Pasaporte",
-      id: 5,
-    },
+    { name: "Cédula de ciudadanía", id: 1, value: "CEDULA_DE_CIDADANIA" },
+    { name: "Cédula de extranjería", id: 3, value: "CEDULA_DE_EXTRANJERIA" },
+    { name: "Tarjeta de extranjería", id: 4, value: "TARJETA_DE_EXTRANJERIA" },
+    { name: "Pasaporte", id: 5, value: "PASAPORTE" },
   ];
 
   const civilStates = [
-    {
-      name: "Soltero",
-      id: 1,
-    },
-    {
-      name: "Casado",
-      id: 2,
-    },
-    {
-      name: "Unión Libre",
-      id: 3,
-    },
-    {
-      name: "Divorsiado",
-      id: 4,
-    },
-    {
-      name: "Separado",
-      id: 5,
-    },
-    {
-      name: "Viudo",
-      id: 5,
-    },
+    { name: "Soltero", id: 1, value: "SOLTERO" },
+    { name: "Casado", id: 2, value: "CASADO" },
+    { name: "Unión Libre", id: 3, value: "UNION_LIBRE" },
+    { name: "Divorsiado", id: 4, value: "DIVORSIADO" },
+    { name: "Separado", id: 5, value: "SEPARADO" },
+    { name: "Viudo", id: 6, value: "VIUDO" },
   ];
-  //Este bloque de código le resta 18 años a la fecha actual
+
+  // Fecha máxima para nacimiento
   const today = dateToday();
   const year = today.split("-")[0] - 18;
   const maxDate = `${year}-${today.split("-")[1]}-${today.split("-")[2]}`;
-  /**********************************************************************/
 
-  const [formState, setFormState] = useState(true);
-
-  /*Los siguientes 3 estados obtienen la información de departamentos
-  y municipios de Colombia, se usa para filtrar el seleccionado */
+  // Estados para departamentos y ciudades
   const [departmentsAndCities, setDepartmentsAndCities] = useState([]);
   const [departament, setDepartamet] = useState([]);
   const [cities, setCities] = useState([]);
 
-  /*Estos estados contienen la información del formulario*/
-  const [name, setName] = useState(user.name ? user.name : "");
-  const [lastName, setLastName] = useState(user.lastName ? user.lastName : "");
-  const [surnamen, setSurnamen] = useState(user.surnamen ? user.surnamen : "");
-  const [typeDocument, setTypeDocument] = useState([]);
-  const [document, setDocument] = useState(user.document ? user.document : "");
-  const [birthdate, setBirthdate] = useState(
-    user.birthDate ? user.birthDate : ""
-  );
-  const [address, setAddress] = useState(user.address ? user.address : "");
-  const [phone, setPhone] = useState("");
+  // Estados del formulario
+  const [name, setName] = useState(user.name || "");
+  const [lastName, setLastName] = useState(user.lastName || "");
+  const [surnamen, setSurnamen] = useState(user.surnamen || "");
+  const [document, setDocument] = useState(user.document || "");
+  const [birthdate, setBirthdate] = useState(user.birthDate || "");
+  const [address, setAddress] = useState(user.address || "");
+  const [phone, setPhone] = useState(user.numberPhone || "");
+  const [occupation, setOccupation] = useState(user.occupation || "");
+  const [dataPolitic, setDataPolitic] = useState(user.dataTreatment || false);
+
+  // Preselección de tipo de documento
+  const [typeDocument, setTypeDocument] = useState(() => {
+    const found = documents.find((doc) => doc.value === user.typeDocument);
+    return found ? found.id : "";
+  });
+
+  // Preselección de estado civil
+  const [civilState, setCivilState] = useState(() => {
+    const found = civilStates.find((state) => state.value === user.civilStatus);
+    return found ? found.id : "";
+  });
+
+  // Preselección de departamento y ciudad
   const [departamentSelect, setDepartametSelect] = useState(null);
   const [citiSelecte, setCitiSelecte] = useState(null);
-  const [civilState, setcivilState] = useState(null);
-  const [occupation, setOccupation] = useState(
-    user.occupation ? user.occupation : ""
-  );
-  const [dataPolitic, setDataPolitic] = useState(false);
 
+  // Cargar departamentos y ciudades
+  useEffect(() => {
+    fetch("https://www.datos.gov.co/resource/95qx-tzs7.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setDepartmentsAndCities(data);
+        const newArray = [
+          ...new Set(data.map((departament) => departament.departamento)),
+        ];
+        setDepartamet(newArray);
+
+        // Preselección de departamento
+        if (user.department) {
+          const depIndex = newArray.findIndex(
+            (dep) => dep.toLowerCase() === user.department.toLowerCase()
+          );
+          if (depIndex !== -1) setDepartametSelect(depIndex);
+        }
+      });
+  }, [user.department]);
+
+  // Cargar ciudades según departamento seleccionado
+  useEffect(() => {
+    if (departamentSelect !== null && departament[departamentSelect]) {
+      const filterDepartments = departmentsAndCities.filter(
+        (departamentFilter) =>
+          departamentFilter.departamento === departament[departamentSelect]
+      );
+      const newArray = [
+        ...new Set(filterDepartments.map((cities) => cities.municipio)),
+      ];
+      setCities(newArray);
+
+      // Preselección de ciudad
+      if (user.town) {
+        const cityIndex = newArray.findIndex(
+          (city) => city.toLowerCase() === user.town.toLowerCase()
+        );
+        if (cityIndex !== -1) setCitiSelecte(cityIndex);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [departamentSelect, departmentsAndCities, user.town]);
+
+  // Envío del formulario
   const sendForm = async () => {
     const body = {};
 
     if (name) body.name = name;
     if (lastName) body.lastName = lastName;
     if (surnamen) body.surnamen = surnamen;
-    if (typeDocument && documents[typeDocument]?.id)
-      body.typeDocument = documents[typeDocument].id;
+    if (typeDocument) body.typeDocument = typeDocument;
     if (document) body.document = document;
     if (birthdate) body.birthDate = birthdate;
     if (departamentSelect !== null && departament[departamentSelect])
@@ -106,8 +126,7 @@ function EditProfile({ user, onOpenChange }) {
     if (citiSelecte !== null && cities[citiSelecte])
       body.town = cities[citiSelecte];
     if (address) body.address = address;
-    if (civilState !== null && civilStates[civilState]?.id)
-      body.civilStatus = civilStates[civilState].id;
+    if (civilState) body.civilStatus = civilState;
     if (phone) body.numberPhone = phone;
     if (occupation) body.occupation = occupation;
     if (dataPolitic !== undefined) body.dataTreatment = dataPolitic;
@@ -124,32 +143,6 @@ function EditProfile({ user, onOpenChange }) {
       toast.error("Ocurrió un error al actualizar los datos.");
     }
   };
-  useEffect(() => {
-    fetch("https://www.datos.gov.co/resource/95qx-tzs7.json")
-      .then((response) => response.json())
-      .then((data) => {
-        setDepartmentsAndCities(data);
-        const newArray = [
-          ...new Set(data.map((departament) => departament.departamento)),
-        ];
-        setDepartamet(newArray);
-      });
-  }, []);
-  //Este bloque de código toma el departamento seleccionado y muestra los municipios que pertenecen a él
-  const filterCities = () => {
-    const filterDepartments = departmentsAndCities.filter(
-      (departamentFilter) =>
-        departamentFilter.departamento === departament[departamentSelect]
-    );
-    const newArray = [
-      ...new Set(filterDepartments.map((cities) => cities.municipio)),
-    ];
-    setCities(newArray);
-  };
-  useEffect(() => {
-    filterCities(departamentSelect);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [departamentSelect]);
 
   return (
     <>
@@ -186,13 +179,14 @@ function EditProfile({ user, onOpenChange }) {
               />
             </div>
             <Select
+              selectedKeys={typeDocument ? [typeDocument] : []}
               onChange={(e) => setTypeDocument(e.target.value)}
               label="Seleccione su tipo de documento"
               required
             >
-              {documents.map((document_set, index) => (
-                <SelectItem key={index} value={document_set.id}>
-                  {document_set.name}
+              {documents.map((document) => (
+                <SelectItem key={document.id} value={document.id}>
+                  {document.name}
                 </SelectItem>
               ))}
             </Select>
@@ -227,24 +221,30 @@ function EditProfile({ user, onOpenChange }) {
               label="Dirección"
             />
             <Select
-              onChange={(e) => setDepartametSelect(e.target.value)}
+              selectedKeys={
+                departamentSelect !== null ? [departamentSelect.toString()] : []
+              }
+              onChange={(e) => setDepartametSelect(Number(e.target.value))}
               label="Elija su departamento actual"
               required
             >
               {departament.map((departament, index) => (
-                <SelectItem key={index} value={departament}>
+                <SelectItem key={index} value={index}>
                   {departament}
                 </SelectItem>
               ))}
             </Select>
             <Select
-              onChange={(e) => setCitiSelecte(e.target.value)}
+              selectedKeys={
+                citiSelecte !== null ? [citiSelecte.toString()] : []
+              }
+              onChange={(e) => setCitiSelecte(Number(e.target.value))}
               label="Elija su municipio actual"
               required
             >
-              {cities.map((departament, index) => (
-                <SelectItem key={index} value={departament}>
-                  {departament}
+              {cities.map((city, index) => (
+                <SelectItem key={index} value={index}>
+                  {city}
                 </SelectItem>
               ))}
             </Select>
@@ -263,18 +263,19 @@ function EditProfile({ user, onOpenChange }) {
               onChange={(e) => {
                 setOccupation(e.target.value);
               }}
-              type="phone"
+              type="text"
               placeholder="Independiente"
               label="Ocupación"
               required
             />
             <Select
-              onChange={(e) => setcivilState(e.target.value)}
+              selectedKeys={civilState ? [civilState] : []}
+              onChange={(e) => setCivilState(e.target.value)}
               label="Estado Civil"
               required
             >
-              {civilStates.map((state, index) => (
-                <SelectItem key={index} value={state.id}>
+              {civilStates.map((state) => (
+                <SelectItem key={state.id} value={state.id}>
                   {state.name}
                 </SelectItem>
               ))}
@@ -285,11 +286,15 @@ function EditProfile({ user, onOpenChange }) {
               casilla, usted acepta que sus datos serán utilizados con este
               propósito, de acuerdo con nuestra política de privacidad.
             </label>
-            <Checkbox onValueChange={setDataPolitic} color="success">
+            <Checkbox
+              onValueChange={setDataPolitic}
+              color="success"
+              isSelected={dataPolitic}
+            >
               Acepto
             </Checkbox>
           </form>
-          <Button color={formState ? "success" : "default"} onPress={sendForm}>
+          <Button color="success" onPress={sendForm}>
             Envíar
           </Button>
         </ModalBody>
@@ -297,4 +302,5 @@ function EditProfile({ user, onOpenChange }) {
     </>
   );
 }
+
 export default EditProfile;

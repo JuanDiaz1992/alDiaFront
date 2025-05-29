@@ -17,39 +17,65 @@ function FormFinancial({
   descriptionLabel,
   isPlanned,
   setIsPlanned,
-  //Props del fomulario de edición
   fromEdit,
-
 }) {
-  const [formIsOk, setStateForm] = useState(true);
+  const [amountInput, setAmountInput] = useState(amount);
+  const [formIsOk, setStateForm] = useState(false);
+
+  const formatNumber = (value) => {
+    if (!value) return "";
+    // Elimina todo lo que no sea número
+    const numeric = value.replace(/\D/g, "");
+    // Formatea con separador de miles
+    return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  const handleAmountChange = (e) => {
+    const rawValue = e.target.value.replace(/\./g, "");
+    setAmountInput(formatNumber(rawValue));
+    setAmount(rawValue); // Guarda el valor sin puntos en el estado original
+  };
+
   const handleIconClick = () => {
     document.getElementById("file").click();
   };
 
-  // //Validar datos antes del envío
-  // useEffect(() => {
-  //   console.log(amount,date,category,description)
-  //   if (
-  //     amount > 0 &&
-  //     date &&
-  //     category["size"] > 0 &&
-  //     description.length > 3
-  //   ) {
-  //     setStateForm(true);
-  //   } else {
-  //     setStateForm(false);
-  //   }
-  // }, [amount, date, category, description]);
+  useEffect(() => {
+    if (!amount) setAmountInput("");
+  }, [amount]);
 
+  // Validar datos antes del envío
+  useEffect(() => {
+    // category puede ser Set o Array, revisa según tu implementación
+    const categoryOk =
+      category && (category.size ? category.size > 0 : category.length > 0);
+    if (
+      Number(amount) > 0 &&
+      date &&
+      categoryOk &&
+      description &&
+      description.length > 3
+    ) {
+      setStateForm(true);
+    } else {
+      setStateForm(false);
+    }
+  }, [amount, date, category, description]);
 
+  // Evita enviar si el formulario no es válido
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formIsOk) return;
+    sendInfo(e);
+  };
 
   return (
     <>
       <form
-        className="formRecord flex flex-row flex-wrap justify-between "
-        onSubmit={(e) => sendInfo(e)}
+        className="formRecord flex flex-row flex-wrap justify-between gap-4"
+        onSubmit={handleSubmit}
       >
-        <div className="">
+        <div className="flex flex-col items-center w-full mb-4">
           <input
             type="file"
             id="file"
@@ -69,60 +95,74 @@ function FormFinancial({
           >
             <FaCamera />
           </Button>
-          <p className="text_info">
-            Si tienes una fotografría del comprobante, subelo aquí
+          <p className="text_info text-xs text-gray-500 mt-2 text-center">
+            Si tienes una fotografía del comprobante, súbela aquí
           </p>
         </div>
 
-        <div className="input_new_record w-[46%]">
-          <label htmlFor="date">Fecha</label>
+        <div className="input_new_record flex flex-col w-[46%] mb-2">
+          <label htmlFor="date" className="mb-1 font-medium text-gray-700">
+            Fecha
+          </label>
           <input
             id="date"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             max={today}
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-warning-400"
           />
         </div>
-        <div className="input_new_record w-[46%]">
-          <label htmlFor="amount">Monto</label>
+        <div className="input_new_record flex flex-col w-[46%] mb-2">
+          <label htmlFor="amount" className="mb-1 font-medium text-gray-700">
+            Monto
+          </label>
           <input
             id="amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            type="number"
+            value={amountInput}
+            onChange={handleAmountChange}
+            type="text"
+            inputMode="numeric"
             placeholder="0.00 COP"
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-warning-400"
           />
         </div>
-        <div className="input_new_record">
-          <label htmlFor="description">Descripción</label>
+        <div className="input_new_record flex flex-col w-full mb-2">
+          <label
+            htmlFor="description"
+            className="mb-1 font-medium text-gray-700"
+          >
+            Descripción
+          </label>
           <textarea
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-warning-400"
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             type="text"
             placeholder={descriptionLabel}
+            rows={2}
           />
         </div>
 
-        <div className="w-[100%] flex gap-[px] items-center">
+        <div className="w-full flex items-center gap-2 mb-2">
           <Checkbox
             color="success"
-            value={isPlanned}
+            checked={isPlanned}
             onChange={(e) => setIsPlanned(e.target.checked)}
-          >
-            {" "}
-          </Checkbox>
-          <p className="text-[12px] mt-[5px]">
+            className="mr-2"
+          />
+          <label className="text-[13px] text-gray-600">
             Marca esta casilla para añadir este registro al presupuesto
-          </p>
+          </label>
         </div>
 
-        <div className="buttons_container">
+        <div className="buttons_container w-full flex justify-end">
           <Button
             color={formIsOk ? "primary" : "default"}
             className={formIsOk ? "" : "form_disabled"}
             type="submit"
+            disabled={!formIsOk}
           >
             Registrar
           </Button>
@@ -131,4 +171,5 @@ function FormFinancial({
     </>
   );
 }
+
 export default FormFinancial;

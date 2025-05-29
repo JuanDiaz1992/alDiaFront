@@ -2,7 +2,12 @@ import { useEffect, useState, useContext } from "react";
 import fetchGetData from "../../api/fetchDataGet";
 import { Button, Spinner } from "@nextui-org/react";
 import { HomeChangeContext } from "../../context/HomeContext";
-import { HiOutlineCurrencyDollar, HiOutlineHome, HiOutlineCheckCircle } from "react-icons/hi2";
+import {
+  HiOutlineCurrencyDollar,
+  HiOutlineHome,
+  HiOutlineCheckCircle,
+} from "react-icons/hi2";
+import { toast } from "react-hot-toast";
 
 export default function DeclaracionRentaHome() {
   const { state } = useContext(HomeChangeContext);
@@ -26,42 +31,64 @@ export default function DeclaracionRentaHome() {
     getIsDeclaration();
   }, [state]);
 
-const handleGenerarDeclaracion = async () => {
+  const handleGenerarDeclaracion = async () => {
     if (!info?.debeDeclarar) return;
-    
+
     setGeneratingPDF(true);
     try {
-        const response = await fetchGetData('/api/v1/declaracion-renta/generar-declaracion');
-        
-        if (!response.success) {
-            throw new Error(response.error || "Error al generar el PDF");
-        }
+      const response = await fetchGetData(
+        "/api/v1/declaracion-renta/generar-declaracion"
+      );
+      if (!response.success) {
+        // Manejo de error por si acaso, aunque normalmente no debería entrar aquí
+        toast.error(
+          response.message || response.error || "Error al generar el PDF"
+        );
+        return;
+      }
 
-        // Decodificar el PDF desde Base64
-        const byteCharacters = atob(response.data.pdf);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], {type: 'application/pdf'});
+      // Decodificar el PDF desde Base64
+      const byteCharacters = atob(response.data.pdf);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
 
-        // Descargar el PDF
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', response.data.filename);
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-
+      // Descargar el PDF
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", response.data.filename);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
     } catch (error) {
-        console.error("Error:", error);
-        alert(error.message || "Error al generar la declaración");
+      // Aquí capturas el error de axios
+      const data = error.response?.data;
+      if (data && data.camposFaltantes) {
+        toast.error(
+          (data.message || data.error || "Datos incompletos") +
+            (data.camposFaltantes.length
+              ? `\nFaltan: ${data.camposFaltantes
+                  .map((c) => c.charAt(0).toUpperCase() + c.slice(1))
+                  .join(", ")}`
+              : "")
+        );
+      } else {
+        toast.error(
+          data?.message ||
+            data?.error ||
+            error.message ||
+            "Error al generar la declaración"
+        );
+      }
+      console.error("Error:", error);
     } finally {
-        setGeneratingPDF(false);
+      setGeneratingPDF(false);
     }
-};
+  };
 
   if (loading) {
     return (
@@ -100,7 +127,13 @@ const handleGenerarDeclaracion = async () => {
           </p>
           <div className="w-full space-y-4">
             {/* Sección de Ingresos */}
-            <div className={`p-4 rounded-xl border transition-all duration-200 ${motivoIngresos.supera ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-100'}`}>
+            <div
+              className={`p-4 rounded-xl border transition-all duration-200 ${
+                motivoIngresos.supera
+                  ? "bg-red-50 border-red-200"
+                  : "bg-gray-50 border-gray-100"
+              }`}
+            >
               <h3 className="font-semibold text-gray-800 flex items-center gap-1">
                 <HiOutlineCurrencyDollar className="w-5 h-5 text-blue-400" />
                 Ingresos Anuales 2024
@@ -110,13 +143,25 @@ const handleGenerarDeclaracion = async () => {
                 <span className="mx-1 text-gray-400">/</span>
                 <span>{info.topes?.ingresosAnuales}</span>
               </p>
-              <p className={`text-sm mt-2 ${motivoIngresos.supera ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
+              <p
+                className={`text-sm mt-2 ${
+                  motivoIngresos.supera
+                    ? "text-red-600 font-semibold"
+                    : "text-gray-600"
+                }`}
+              >
                 {motivoIngresos.mensaje}
               </p>
             </div>
 
             {/* Sección de Patrimonio */}
-            <div className={`p-4 rounded-xl border transition-all duration-200 ${motivoPatrimonio.supera ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-100'}`}>
+            <div
+              className={`p-4 rounded-xl border transition-all duration-200 ${
+                motivoPatrimonio.supera
+                  ? "bg-red-50 border-red-200"
+                  : "bg-gray-50 border-gray-100"
+              }`}
+            >
               <h3 className="font-semibold text-gray-800 flex items-center gap-1">
                 <HiOutlineHome className="w-5 h-5 text-yellow-400" />
                 Patrimonio Total
@@ -126,13 +171,19 @@ const handleGenerarDeclaracion = async () => {
                 <span className="mx-1 text-gray-400">/</span>
                 <span>{info.topes?.patrimonio}</span>
               </p>
-              <p className={`text-sm mt-2 ${motivoPatrimonio.supera ? 'text-red-600 font-semibold' : 'text-gray-600'}`}>
+              <p
+                className={`text-sm mt-2 ${
+                  motivoPatrimonio.supera
+                    ? "text-red-600 font-semibold"
+                    : "text-gray-600"
+                }`}
+              >
                 {motivoPatrimonio.mensaje}
               </p>
             </div>
           </div>
-          <Button 
-            color="warning" 
+          <Button
+            color="warning"
             className="mt-6 font-bold w-full shadow-md hover:scale-[1.02] transition-transform"
             onClick={handleGenerarDeclaracion}
             disabled={generatingPDF}
@@ -143,7 +194,7 @@ const handleGenerarDeclaracion = async () => {
                 Generando...
               </div>
             ) : (
-              'Generar declaración de renta'
+              "Generar declaración de renta"
             )}
           </Button>
         </>
